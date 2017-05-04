@@ -37,6 +37,9 @@ defmodule Uaddresses.Districts do
   """
   def get_district!(id), do: Repo.get!(District, id)
 
+  def get_district(nil), do: nil
+  def get_district(id), do: Repo.get(District, id)
+
   @doc """
   Creates a district.
 
