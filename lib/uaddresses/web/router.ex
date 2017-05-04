@@ -24,7 +24,7 @@ defmodule Uaddresses.Web.Router do
   scope "/", Uaddresses.Web do
     pipe_through :api
 
-    get "/page", PageController, :index
     resources "/regions", RegionController, except: [:new, :edit]
+    resources "/districts", DistrictController, except: [:new, :edit]
   end
 end

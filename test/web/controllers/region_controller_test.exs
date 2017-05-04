@@ -1,17 +1,13 @@
 defmodule Uaddresses.Web.RegionControllerTest do
   use Uaddresses.Web.ConnCase
 
-  alias Uaddresses.Regions
+  import Uaddresses.SimpleFactory
+
   alias Uaddresses.Regions.Region
 
   @create_attrs %{name: "some region"}
   @update_attrs %{name: "some updated region"}
   @invalid_attrs %{name: nil}
-
-  def fixture(:region) do
-    {:ok, region} = Regions.create_region(@create_attrs)
-    region
-  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}

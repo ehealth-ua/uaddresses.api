@@ -38,6 +38,22 @@ defmodule Uaddresses.Regions do
   def get_region!(id), do: Repo.get!(Region, id)
 
   @doc """
+    Gets a single region.
+
+    Raises `Ecto.NoResultsError` if the Region does not exist.
+
+    ## Examples
+
+        iex> get_region(123)
+        %Region{}
+
+        iex> get_region(456)
+        nil
+    """
+  def get_region(nil), do: nil
+  def get_region(id), do: Repo.get(Region, id)
+
+  @doc """
   Creates a region.
 
   ## Examples

@@ -4,7 +4,7 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Regions.Region do
   def change do
     create table(:regions, primary_key: false) do
       add :id, :uuid, primary_key: true
-      add :name, :string, size: 50
+      add :name, :string, size: 50, null: false
     end
   end
 end
