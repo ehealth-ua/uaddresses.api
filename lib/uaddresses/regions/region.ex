@@ -5,5 +5,6 @@ defmodule Uaddresses.Regions.Region do
 
   schema "regions" do
     field :name, :string
+    has_many :districts, Uaddresses.Districts.District
   end
 end

@@ -18,6 +18,11 @@ defmodule Uaddresses.SimpleFactory do
     district
   end
 
+  def district(params) do
+    {:ok, district} = Districts.create_district(params)
+    district
+  end
+
   def settlement do
     %{id: region_id} = region()
     %{id: district_id} = district()

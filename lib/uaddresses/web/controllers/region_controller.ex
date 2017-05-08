@@ -38,4 +38,11 @@ defmodule Uaddresses.Web.RegionController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def districts(conn, %{"id" => id}) do
+    with %Uaddresses.Regions.Region{} = region = Regions.get_region!(id),
+      %Uaddresses.Regions.Region{} = region = Regions.preload_districts(region) do
+      render(conn, "list_districts.json", region: region)
+    end
+  end
 end

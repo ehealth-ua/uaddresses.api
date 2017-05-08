@@ -46,12 +46,15 @@ defmodule Uaddresses.Web.RegionControllerTest do
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "deletes chosen region", %{conn: conn} do
-    region = fixture(:region)
-    conn = delete conn, region_path(conn, :delete, region)
-    assert response(conn, 204)
-    assert_error_sent 404, fn ->
-      get conn, region_path(conn, :show, region)
-    end
+  test "list districts", %{conn: conn} do
+    %{id: region_id} = region()
+    first_district = district(%{name: "First district", region_id: region_id})
+    second_district = district(%{name: "Second district", region_id: region_id})
+
+    conn = get conn, "/details/region/#{region_id}/districts"
+    assert json_response(conn, 200)["data"] == [
+        %{"id" => first_district.id, "district" => "First district"},
+        %{"id" => second_district.id, "district" => "Second district"}
+      ]
   end
 end

@@ -60,13 +60,4 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     conn = put conn, district_path(conn, :update, district), district: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
-
-  test "deletes chosen district", %{conn: conn} do
-    district = fixture(:district)
-    conn = delete conn, district_path(conn, :delete, district)
-    assert response(conn, 204)
-    assert_error_sent 404, fn ->
-      get conn, district_path(conn, :show, district)
-    end
-  end
 end

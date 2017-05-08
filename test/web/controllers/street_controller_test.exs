@@ -99,13 +99,4 @@ defmodule Uaddresses.Web.StreetControllerTest do
     conn = put conn, street_path(conn, :update, street), street: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
-
-  test "deletes chosen street", %{conn: conn} do
-    street = fixture(:street)
-    conn = delete conn, street_path(conn, :delete, street)
-    assert response(conn, 204)
-    assert_error_sent 404, fn ->
-      get conn, street_path(conn, :show, street)
-    end
-  end
 end

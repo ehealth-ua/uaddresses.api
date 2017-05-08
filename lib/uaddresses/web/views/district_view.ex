@@ -17,4 +17,11 @@ defmodule Uaddresses.Web.DistrictView do
       name: district.name
     }
   end
+
+  def render("district_by_region.json", %{district: district}) do
+    %{
+      id: district.id,
+      district: district.name
+    }
+  end
 end

@@ -78,13 +78,4 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     conn = put conn, settlement_path(conn, :update, settlement), settlement: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
-
-  test "deletes chosen settlement", %{conn: conn} do
-    settlement = fixture(:settlement)
-    conn = delete conn, settlement_path(conn, :delete, settlement)
-    assert response(conn, 204)
-    assert_error_sent 404, fn ->
-      get conn, settlement_path(conn, :show, settlement)
-    end
-  end
 end

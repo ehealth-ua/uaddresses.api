@@ -37,6 +37,8 @@ defmodule Uaddresses.Regions do
   """
   def get_region!(id), do: Repo.get!(Region, id)
 
+  def preload_districts(%Region{} = region), do: Repo.preload(region, :districts)
+
   @doc """
     Gets a single region.
 
@@ -84,7 +86,6 @@ defmodule Uaddresses.Regions do
 
   """
   def update_region(%Region{} = region, attrs) do
-
     region
     |> region_changeset(attrs)
     |> Repo.update()
