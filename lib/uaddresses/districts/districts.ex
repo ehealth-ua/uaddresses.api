@@ -21,6 +21,13 @@ defmodule Uaddresses.Districts do
     Repo.all(District)
   end
 
+  def list_by_ids(ids) do
+    District
+    |> where([d], d.id in ^ids)
+    |> Repo.all
+    |> Repo.preload(:region)
+  end
+
   @doc """
   Gets a single district.
 
@@ -58,6 +65,7 @@ defmodule Uaddresses.Districts do
     %District{}
     |> district_changeset(attrs)
     |> Repo.insert()
+    |> insert_to_ets()
   end
 
   @doc """
@@ -76,7 +84,18 @@ defmodule Uaddresses.Districts do
     district
     |> district_changeset(attrs)
     |> Repo.update()
+    |> insert_to_ets()
   end
+
+  def insert_to_ets({:ok, %District{} = district}) do
+    %{region: %{name: region_name}} = Repo.preload(district, :region)
+
+    :ets.insert(:districts,
+      {district.id, district.region_id, String.downcase(region_name), String.downcase(district.name)})
+
+    {:ok, district}
+  end
+  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Deletes a District.
@@ -119,11 +138,16 @@ defmodule Uaddresses.Districts do
     |> get_field(field)
     |> Uaddresses.Regions.get_region()
     |> result_region_exists_validation(changeset)
-
   end
 
   defp result_region_exists_validation(nil, changeset) do
     add_error(changeset, :region_id, "Selected region doesn't exists'")
   end
   defp result_region_exists_validation(%Uaddresses.Regions.Region{}, changeset), do: changeset
+
+  def search_changeset(attrs) do
+    %Uaddresses.Districts.Search{}
+    |> cast(attrs, [:region_id, :region, :district])
+    |> validate_required([:region])
+  end
 end

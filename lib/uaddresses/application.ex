@@ -43,5 +43,6 @@ defmodule Uaddresses do
 
   def setup_ets_tables() do
     :ets.new(:regions, [:set, :public, :named_table])
+    :ets.new(:districts, [:set, :public, :named_table])
   end
 end

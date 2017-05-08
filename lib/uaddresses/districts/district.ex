@@ -5,7 +5,9 @@ defmodule Uaddresses.Districts.District do
 
   schema "districts" do
     field :name, :string
+
     belongs_to :region, Uaddresses.Regions.Region, type: Ecto.UUID
+
     has_many :settlements, Uaddresses.Settlements.Settlement
   end
 end

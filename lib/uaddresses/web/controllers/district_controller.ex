@@ -46,4 +46,26 @@ defmodule Uaddresses.Web.DistrictController do
       render(conn, "list_settlements.json", district: district)
     end
   end
+
+  def search(conn, params) do
+    district_name = Map.get(params, "district", "")
+
+    with changeset = %Ecto.Changeset{valid?: true} <- Districts.search_changeset(params) do
+      districts =
+        :districts
+        |> :ets.match_object(get_match_pattern(changeset.changes))
+        |> Enum.filter(fn {_, _, _, name} -> String.contains?(name, district_name) end)
+        |> List.foldl([], fn ({district_id, _, _, _}, acc) -> acc ++ [district_id] end)
+        |> Districts.list_by_ids()
+
+        render(conn, "search.json", districts: districts)
+    end
+  end
+
+  defp get_match_pattern(%{region: _region_name, region_id: region_id}) do
+    {:"$1", region_id, :"$3", :"$4"}
+  end
+  defp get_match_pattern(%{region: region_name}) do
+    {:"$1", :"$2", String.downcase(region_name), :"$4"}
+  end
 end

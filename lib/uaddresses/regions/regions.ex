@@ -25,7 +25,6 @@ defmodule Uaddresses.Regions do
     Region
     |> where([r], r.id in ^ids)
     |> Repo.all
-
   end
 
   @doc """
@@ -81,11 +80,7 @@ defmodule Uaddresses.Regions do
     |> insert_to_ets()
   end
 
-  def insert_to_ets({:ok, %Region{} = region}) do
-    :ets.insert(:regions, {region.id, String.downcase(region.name)})
-    {:ok, %Region{} = region}
-  end
-  def insert_to_ets({:error, reason}), do: {:error, reason}
+
 
   @doc """
   Updates a region.
@@ -103,7 +98,15 @@ defmodule Uaddresses.Regions do
     region
     |> region_changeset(attrs)
     |> Repo.update()
+    |> insert_to_ets()
   end
+
+  def insert_to_ets({:ok, %Region{} = region}) do
+    :ets.insert(:regions, {region.id, String.downcase(region.name)})
+
+    {:ok, region}
+  end
+  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Deletes a Region.
