@@ -42,16 +42,19 @@ defmodule Uaddresses.SimpleFactory do
     %{id: district_id} = district()
     %{id: settlement_id} = settlement()
 
+    street(%{
+      district_id: district_id,
+      region_id: region_id,
+      settlement_id: settlement_id,
+      street_name: "some street_name",
+      street_number: "some street_number",
+      street_type: "вулиця", postal_code: "some postal_code"
+      }
+    )
+  end
 
-    {:ok, street} =
-      Streets.create_street(%{
-        district_id: district_id,
-        region_id: region_id,
-        settlement_id: settlement_id,
-        street_name: "some street_name",
-        street_number: "some street_number",
-        street_type: "some street_type", postal_code: "some postal_code"}
-        )
-     street
+  def street(params) do
+    {:ok, street} = Streets.create_street(params)
+    street
   end
 end

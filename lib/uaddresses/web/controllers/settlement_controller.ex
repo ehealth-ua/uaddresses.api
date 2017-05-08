@@ -54,19 +54,14 @@ defmodule Uaddresses.Web.SettlementController do
         render(conn, "search.json", settlements: settlements)
     end
   end
-#  {
-#          settlement.id,
-#          settlement.region_id,
-#          settlement.district_id,
-#          String.downcase(region_name),
-#          String.downcase(district_name),
-#          String.downcase(settlement.name)
-#        }
 
-  defp get_match_pattern(%{region: region_name, district: district_name}) do
-    {:"$1", :"$2", :"$3", String.downcase(region_name), String.downcase(district_name), :"$6"}
+  defp get_match_pattern(changes) do
+    {:"$1", :"$2", :"$3", get_region_name(changes), get_district_name(changes), :"$6"}
   end
-  defp get_match_pattern(%{region: region_name}) do
-    {:"$1", :"$2", :"$3", String.downcase(region_name), :"$4", :"$6"}
-  end
+
+  defp get_region_name(%{region: region_name}), do: String.downcase(region_name)
+  defp get_region_name(_), do: :"$4"
+
+  defp get_district_name(%{district: district_name}), do: String.downcase(district_name)
+  defp get_district_name(_), do: :"$5"
 end

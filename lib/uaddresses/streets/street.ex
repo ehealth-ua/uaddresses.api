@@ -4,14 +4,15 @@ defmodule Uaddresses.Streets.Street do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "streets" do
-    field :district_id, Ecto.UUID
     field :postal_code, :string
-    field :region_id, Ecto.UUID
-    field :settlement_id, Ecto.UUID
     field :street_name, :string
     field :street_number, :string
     field :street_type, :string
 
     has_many :aliases, Uaddresses.Streets.Aliases
+
+    belongs_to :region, Uaddresses.Regions.Region, type: Ecto.UUID
+    belongs_to :settlement, Uaddresses.Settlements.Settlement, type: Ecto.UUID
+    belongs_to :district, Uaddresses.Districts.District, type: Ecto.UUID
   end
 end

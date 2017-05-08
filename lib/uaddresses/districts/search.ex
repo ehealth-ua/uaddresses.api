@@ -1,6 +1,6 @@
 defmodule Uaddresses.Districts.Search do
   use Ecto.Schema
-  schema "_" do
+  schema "" do
     field :district, :string
     field :region_id, Ecto.UUID
     field :region, :string

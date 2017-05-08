@@ -22,6 +22,7 @@ defmodule Uaddresses.Web.SettlementView do
       settlement_name: settlement.name
     }
   end
+
   def render("settlement.json", %{settlement: settlement}) do
     %{id: settlement.id,
       district_id: settlement.district_id,

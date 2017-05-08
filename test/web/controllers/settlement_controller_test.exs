@@ -126,6 +126,5 @@ defmodule Uaddresses.Web.SettlementControllerTest do
       %{"district" => "Миколаївський", "id" => s_6.id,
         "region" => "Одеська", "settlement_name" => "Якесь село"},
     ]
-
   end
 end

@@ -12,7 +12,7 @@ defmodule Uaddresses.StreetsTest do
     settlement_id: "7488a646-e31f-11e4-aace-600308960662",
     street_name: "some street_name",
     street_number: "some street_number",
-    street_type: "some street_type",
+    street_type: "вулиця",
     postal_code: "some postal_code"
   }
 
@@ -22,7 +22,7 @@ defmodule Uaddresses.StreetsTest do
     settlement_id: "7488a646-e31f-11e4-aace-600308960668",
     street_name: "some updated street_name",
     street_number: "some updated street_number",
-    street_type: "some updated street_type",
+    street_type: "провулок",
     postal_code: "some updated postal_code"
   }
 
@@ -60,7 +60,7 @@ defmodule Uaddresses.StreetsTest do
     assert street.settlement_id == settlement_id
     assert street.street_name == "some street_name"
     assert street.street_number == "some street_number"
-    assert street.street_type == "some street_type"
+    assert street.street_type == "вулиця"
     assert street.postal_code == "some postal_code"
   end
 
@@ -84,7 +84,7 @@ defmodule Uaddresses.StreetsTest do
     assert street.settlement_id == settlement_id
     assert street.street_name == "some updated street_name"
     assert street.street_number == "some updated street_number"
-    assert street.street_type == "some updated street_type"
+    assert street.street_type == "провулок"
     assert street.postal_code == "some updated postal_code"
   end
 

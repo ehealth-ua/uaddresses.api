@@ -21,6 +21,12 @@ defmodule Uaddresses.Streets do
     Repo.all(Street)
   end
 
+  def list_by_ids(ids) do
+    Street
+    |> where([s], s.id in ^ids)
+    |> Repo.all
+    |> Repo.preload([:region, :district, :settlement, :aliases])
+  end
   @doc """
   Gets a single street.
 
@@ -59,13 +65,14 @@ defmodule Uaddresses.Streets do
       insert_street_result
     end)
     |> build_result()
+    |> insert_to_ets()
   end
 
   def build_result({:ok, transaction_result}), do: transaction_result
 
   def insert_street_aliases({:error, reason}), do: {:error, reason}
   def insert_street_aliases({:ok, %Street{} = street}) do
-    %{street_id: street.id,name: String.downcase(street.street_name)}
+    %{street_id: street.id,name: street.street_name}
     |> street_aliases_changeset()
     |> Repo.insert!()
   end
@@ -90,7 +97,30 @@ defmodule Uaddresses.Streets do
       update_street_result
     end)
     |> build_result()
+    |> insert_to_ets()
   end
+
+  def insert_to_ets({:ok, %Street{} = street}) do
+    %{region: %{name: region_name}, district: %{name: district_name}, settlement: %{name: settlement_name}} =
+      Repo.preload(street, [:settlement, :region, :district])
+
+    :ets.insert(:streets,
+      {
+        street.id,
+        street.settlement_id,
+        String.downcase(region_name),
+        String.downcase(district_name),
+        String.downcase(settlement_name),
+        String.downcase(street.street_name),
+        String.downcase(street.street_type),
+        String.downcase(street.street_number),
+        String.downcase(street.postal_code),
+      }
+    )
+
+    {:ok, street}
+  end
+  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Deletes a Street.
@@ -133,6 +163,7 @@ defmodule Uaddresses.Streets do
       [:district_id, :region_id, :settlement_id, :street_type, :street_name, :street_number, :postal_code])
     |> validate_required([:district_id, :region_id, :settlement_id, :street_type,
       :street_name, :street_number, :postal_code])
+    |> validate_inclusion(:street_type, ["провулок", "бульвар", "проспект", "узвіз", "вулиця"])
     |> validate_region_exists(:region_id)
     |> validate_district_exists(:district_id)
     |> validate_settlement_exists(:settlement_id)
@@ -177,105 +208,11 @@ defmodule Uaddresses.Streets do
   end
   defp result_settlement_exists_validation(%Uaddresses.Settlements.Settlement{}, changeset), do: changeset
 
-  alias Uaddresses.Streets.Aliases
-
-  @doc """
-  Returns the list of streets_aliases.
-
-  ## Examples
-
-      iex> list_streets_aliases()
-      [%Aliases{}, ...]
-
-  """
-  def list_streets_aliases do
-    Repo.all(Aliases)
-  end
-
-  @doc """
-  Gets a single aliases.
-
-  Raises `Ecto.NoResultsError` if the Aliases does not exist.
-
-  ## Examples
-
-      iex> get_aliases!(123)
-      %Aliases{}
-
-      iex> get_aliases!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_aliases!(id), do: Repo.get!(Aliases, id)
-
-  @doc """
-  Creates a aliases.
-
-  ## Examples
-
-      iex> create_aliases(%{field: value})
-      {:ok, %Aliases{}}
-
-      iex> create_aliases(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_aliases(attrs \\ %{}) do
-    %Aliases{}
-    |> aliases_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a aliases.
-
-  ## Examples
-
-      iex> update_aliases(aliases, %{field: new_value})
-      {:ok, %Aliases{}}
-
-      iex> update_aliases(aliases, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_aliases(%Aliases{} = aliases, attrs) do
-    aliases
-    |> aliases_changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a Aliases.
-
-  ## Examples
-
-      iex> delete_aliases(aliases)
-      {:ok, %Aliases{}}
-
-      iex> delete_aliases(aliases)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_aliases(%Aliases{} = aliases) do
-    Repo.delete(aliases)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking aliases changes.
-
-  ## Examples
-
-      iex> change_aliases(aliases)
-      %Ecto.Changeset{source: %Aliases{}}
-
-  """
-  def change_aliases(%Aliases{} = aliases) do
-    aliases_changeset(aliases, %{})
-  end
-
-  defp aliases_changeset(%Aliases{} = aliases, attrs) do
-    aliases
-    |> cast(attrs, [:street_id, :name])
-    |> validate_required([:street_id, :name])
+  def search_changeset(attrs) do
+    %Uaddresses.Streets.Search{}
+    |> cast(attrs, [:settlement_name, :settlement_id, :street_name, :street_type, :street_number, :postal_code, :region,
+      :district])
+    |> validate_required([:settlement_name, :street_name, :street_number])
+    |> validate_inclusion(:street_type, ["провулок", "бульвар", "проспект", "узвіз", "вулиця"])
   end
 end

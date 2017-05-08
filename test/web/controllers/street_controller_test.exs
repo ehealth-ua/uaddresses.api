@@ -12,7 +12,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
     settlement_id: "7488a646-e31f-11e4-aace-600308960662",
     street_name: "some street_name",
     street_number: "some street_number",
-    street_type: "some street_type"
+    street_type: "вулиця"
   }
 
   @update_attrs %{
@@ -22,7 +22,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
     settlement_id: "7488a646-e31f-11e4-aace-600308960668",
     street_name: "some UPDATED street_name",
     street_number: "some updated street_number",
-    street_type: "some updated street_type"
+    street_type: "провулок"
   }
 
   @invalid_attrs %{
@@ -63,7 +63,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "settlement_id" => settlement_id,
       "street_name" => "some street_name",
       "street_number" => "some street_number",
-      "street_type" => "some street_type", "type" => "street",
+      "street_type" => "вулиця", "type" => "street",
       "aliases" => ["some street_name"]}
   end
 
@@ -92,13 +92,84 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "settlement_id" => settlement_id,
       "street_name" => "some UPDATED street_name",
       "street_number" => "some updated street_number",
-      "street_type" => "some updated street_type", "type" => "street",
-      "aliases" => ["some street_name", "some updated street_name"]}
+      "street_type" => "провулок", "type" => "street",
+      "aliases" => ["some street_name", "some UPDATED street_name"]}
   end
 
   test "does not update chosen street and renders errors when data is invalid", %{conn: conn} do
     street = fixture(:street)
     conn = put conn, street_path(conn, :update, street), street: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
+  end
+
+  test "search", %{conn: conn} do
+    r_1 = region(%{name: "Київ"})
+    r_2 = region(%{name: "Одеська"})
+    d_1 = district(%{region_id: r_1.id, name: "Київ"})
+    d_3 = district(%{region_id: r_2.id, name: "Миколаївський"})
+
+    set_1 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Київ"})
+
+    set_2 = settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Миколаївка"})
+
+    # Одеська, Миколаївський, Миколаївка, вулиця Соломії Крушельницької 7 02140
+    str_1 = street(%{region_id: r_2.id, district_id: d_3.id, settlement_id: set_2.id,
+      street_name: "Соломії Крушельницької", street_type: "вулиця", street_number: "7", postal_code: "02140"})
+    # Київ, Київ, Київ, бульвар Тараса Шевченка 31 02141
+    str_2 = street(%{region_id: r_1.id, district_id: d_1.id, settlement_id: set_1.id,
+      street_name: "Тараса Шевченка", street_type: "бульвар", street_number: "13", postal_code: "02141"})
+    # Київ, Київ, Київ, вулиця Тараса Шевченка 13 02142
+    str_3 = street(%{region_id: r_1.id, district_id: d_1.id, settlement_id: set_1.id,
+      street_name: "Тараса Шевченка", street_type: "вулиця", street_number: "13", postal_code: "02142"})
+    conn = put conn, street_path(conn, :update, str_1), street: %{street_name: "Нове ім'я"}
+
+    conn = get conn, "/search/streets/"
+    assert json_response(conn, 422)
+
+    conn = get conn, "/search/streets/?region=Київ&settlement_name=Київ&street_number=13&street_name=Шевченка"
+
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Київ", "id" => str_2.id, "postal_code" => "02141",
+        "region" => "Київ", "settlement_name" => "Київ", "street_name" => "Тараса Шевченка",
+        "street_number" => "13", "street_type" => "бульвар", "aliases" => ["Тараса Шевченка"]},
+      %{"district" => "Київ", "id" => str_3.id, "postal_code" => "02142",
+        "region" => "Київ", "settlement_name" => "Київ", "street_name" => "Тараса Шевченка",
+        "street_number" => "13", "street_type" => "вулиця", "aliases" => ["Тараса Шевченка"]}
+    ]
+
+    conn = get conn,
+      "/search/streets/?region=Київ&settlement_name=Київ&street_number=13&street_name=Шевченка&postal_code=02142"
+
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Київ", "id" => str_3.id, "postal_code" => "02142",
+        "region" => "Київ", "settlement_name" => "Київ", "street_name" => "Тараса Шевченка",
+        "street_number" => "13", "street_type" => "вулиця", "aliases" => ["Тараса Шевченка"]}
+    ]
+
+    conn = get conn,
+      "/search/streets/?region=Київ&settlement_name=Київ&street_number=13&street_name=Шевченка&street_type=вулиця"
+
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Київ", "id" => str_3.id, "postal_code" => "02142",
+        "region" => "Київ", "settlement_name" => "Київ", "street_name" => "Тараса Шевченка",
+        "street_number" => "13", "street_type" => "вулиця", "aliases" => ["Тараса Шевченка"]}
+    ]
+
+    # settlement id has greater weight
+    conn = get conn,
+      "/search/streets/?region=Київ&settlement_name=Київ&street_number=7&street_name=круш&settlement_id=#{set_2.id}"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Миколаївський", "id" => str_1.id, "postal_code" => "02140",
+        "region" => "Одеська", "settlement_name" => "Миколаївка", "street_name" => "Нове ім'я",
+        "street_number" => "7", "street_type" => "вулиця", "aliases" => ["Соломії Крушельницької", "Нове ім'я"]}
+    ]
+
+    conn = get conn,
+      "/search/streets/?region=Київ&settlement_name=Київ&street_number=7&street_name=ім'я&settlement_id=#{set_2.id}"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Миколаївський", "id" => str_1.id, "postal_code" => "02140",
+        "region" => "Одеська", "settlement_name" => "Миколаївка", "street_name" => "Нове ім'я",
+        "street_number" => "7", "street_type" => "вулиця", "aliases" => ["Соломії Крушельницької", "Нове ім'я"]}
+    ]
   end
 end
