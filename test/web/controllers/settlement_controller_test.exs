@@ -78,4 +78,54 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     conn = put conn, settlement_path(conn, :update, settlement), settlement: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
+
+  test "search", %{conn: conn} do
+    r_1 = region(%{name: "Київська"})
+    r_2 = region(%{name: "Одеська"})
+    d_1 = district(%{region_id: r_1.id, name: "Білоцерківський"})
+    d_2 = district(%{region_id: r_1.id, name: "Рокитнянський"})
+    d_3 = district(%{region_id: r_2.id, name: "Миколаївський"})
+    d_4 = district(%{region_id: r_2.id, name: "Комінтернівський"})
+
+    settlement(%{region_id: r_1.id, district_id: d_2.id, name: "Рокитне"})
+    s_2 = settlement(%{region_id: r_1.id, district_id: d_2.id, name: "Бакумівка"})
+
+    s_3 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Володарка"})
+    s_4 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Біла Церква"})
+
+    settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Миколаївка"})
+    s_6 = settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Якесь село"})
+
+    s_7 = settlement(%{region_id: r_2.id, district_id: d_4.id, name: "Комінтерне"})
+    s_8 = settlement(%{region_id: r_2.id, district_id: d_4.id, name: "Новосілки 2"})
+
+    conn = get conn, "/search/settlements/"
+    assert json_response(conn, 422)
+
+    conn = get conn, "/search/settlements/?region=Київська&settlement_name=а"
+
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Рокитнянський", "id" => s_2.id,
+        "region" => "Київська", "settlement_name" => "Бакумівка"},
+      %{"district" => "Білоцерківський", "id" => s_3.id,
+        "region" => "Київська", "settlement_name" => "Володарка"},
+      %{"district" => "Білоцерківський", "id" => s_4.id,
+        "region" => "Київська", "settlement_name" => "Біла Церква"}
+    ]
+
+    conn = get conn, "/search/settlements/?region=Одеська&district=Комінтернівський"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Комінтернівський", "id" => s_7.id,
+        "region" => "Одеська", "settlement_name" => "Комінтерне"},
+      %{"district" => "Комінтернівський", "id" => s_8.id,
+        "region" => "Одеська", "settlement_name" => "Новосілки 2"},
+    ]
+
+    conn = get conn, "/search/settlements/?region=Одеська&settlement_name=Якесь село"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Миколаївський", "id" => s_6.id,
+        "region" => "Одеська", "settlement_name" => "Якесь село"},
+    ]
+
+  end
 end

@@ -21,6 +21,13 @@ defmodule Uaddresses.Settlements do
     Repo.all(Settlement)
   end
 
+  def list_by_ids(ids) do
+    Settlement
+    |> where([s], s.id in ^ids)
+    |> Repo.all
+    |> Repo.preload([:region, :district])
+  end
+
   @doc """
   Gets a single settlement.
 
@@ -56,6 +63,7 @@ defmodule Uaddresses.Settlements do
     %Settlement{}
     |> settlement_changeset(attrs)
     |> Repo.insert()
+    |> insert_to_ets()
   end
 
   @doc """
@@ -74,7 +82,26 @@ defmodule Uaddresses.Settlements do
     settlement
     |> settlement_changeset(attrs)
     |> Repo.update()
+    |> insert_to_ets()
   end
+
+  def insert_to_ets({:ok, %Settlement{} = settlement}) do
+    %{region: %{name: region_name}, district: %{name: district_name}} = Repo.preload(settlement, [:region, :district])
+
+    :ets.insert(:settlements,
+      {
+        settlement.id,
+        settlement.region_id,
+        settlement.district_id,
+        String.downcase(region_name),
+        String.downcase(district_name),
+        String.downcase(settlement.name)
+      }
+    )
+
+    {:ok, settlement}
+  end
+  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Deletes a Settlement.
@@ -138,4 +165,10 @@ defmodule Uaddresses.Settlements do
     add_error(changeset, :district_id, "Selected district doesn't exists'")
   end
   defp result_district_exists_validation(%Uaddresses.Districts.District{}, changeset), do: changeset
+
+  def search_changeset(attrs) do
+    %Uaddresses.Settlements.Search{}
+    |> cast(attrs, [:settlement_name, :district, :region])
+    |> validate_required([:region])
+  end
 end

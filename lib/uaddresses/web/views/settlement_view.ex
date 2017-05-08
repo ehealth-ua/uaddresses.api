@@ -10,6 +10,18 @@ defmodule Uaddresses.Web.SettlementView do
     render_one(settlement, SettlementView, "settlement.json")
   end
 
+  def render("search.json", %{settlements: settlements}) do
+    render_many(settlements, SettlementView, "search_one.json")
+  end
+
+  def render("search_one.json", %{settlement: settlement}) do
+    %{
+      id: settlement.id,
+      region: settlement.region.name,
+      district: settlement.district.name,
+      settlement_name: settlement.name
+    }
+  end
   def render("settlement.json", %{settlement: settlement}) do
     %{id: settlement.id,
       district_id: settlement.district_id,

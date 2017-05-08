@@ -39,4 +39,34 @@ defmodule Uaddresses.Web.SettlementController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def search(conn, params) do
+    settlement_name = Map.get(params, "settlement_name", "")
+
+    with changeset = %Ecto.Changeset{valid?: true} <- Settlements.search_changeset(params) do
+      settlements =
+        :settlements
+        |> :ets.match_object(get_match_pattern(changeset.changes))
+        |> Enum.filter(fn {_, _, _, _, _, name} -> String.contains?(name, String.downcase(settlement_name)) end)
+        |> List.foldl([], fn ({settlement_id, _, _, _, _, _}, acc) -> acc ++ [settlement_id] end)
+        |> Settlements.list_by_ids()
+
+        render(conn, "search.json", settlements: settlements)
+    end
+  end
+#  {
+#          settlement.id,
+#          settlement.region_id,
+#          settlement.district_id,
+#          String.downcase(region_name),
+#          String.downcase(district_name),
+#          String.downcase(settlement.name)
+#        }
+
+  defp get_match_pattern(%{region: region_name, district: district_name}) do
+    {:"$1", :"$2", :"$3", String.downcase(region_name), String.downcase(district_name), :"$6"}
+  end
+  defp get_match_pattern(%{region: region_name}) do
+    {:"$1", :"$2", :"$3", String.downcase(region_name), :"$4", :"$6"}
+  end
 end

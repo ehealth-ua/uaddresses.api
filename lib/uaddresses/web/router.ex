@@ -34,6 +34,7 @@ defmodule Uaddresses.Web.Router do
 
     get "/search/regions/", RegionController, :search
     get "/search/districts/", DistrictController, :search
+    get "/search/settlements/", SettlementController, :search
 
   end
 end

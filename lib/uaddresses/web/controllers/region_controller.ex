@@ -52,7 +52,7 @@ defmodule Uaddresses.Web.RegionController do
     regions =
       :regions
       |> :ets.match_object({:"$1", :"$2"})
-      |> Enum.filter(fn {_region_id, region_name} -> String.contains?(region_name, name) end)
+      |> Enum.filter(fn {_region_id, region_name} -> String.contains?(region_name, String.downcase(name)) end)
       |> List.foldl([], fn ({region_id, _region_name}, acc) -> acc ++ [region_id] end)
       |> Regions.list_by_ids()
 
