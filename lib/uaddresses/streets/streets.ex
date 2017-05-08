@@ -37,6 +37,8 @@ defmodule Uaddresses.Streets do
   """
   def get_street!(id), do: Repo.get!(Street, id)
 
+  def preload_aliases(%Street{} = street), do: Repo.preload(street, :aliases)
+
   @doc """
   Creates a street.
 
@@ -50,9 +52,22 @@ defmodule Uaddresses.Streets do
 
   """
   def create_street(attrs \\ %{}) do
-    %Street{}
-    |> street_changeset(attrs)
-    |> Repo.insert()
+    street_changeset = street_changeset(%Street{}, attrs)
+    Repo.transaction(fn ->
+      insert_street_result = Repo.insert(street_changeset)
+      insert_street_aliases(insert_street_result)
+      insert_street_result
+    end)
+    |> build_result()
+  end
+
+  def build_result({:ok, transaction_result}), do: transaction_result
+
+  def insert_street_aliases({:error, reason}), do: {:error, reason}
+  def insert_street_aliases({:ok, %Street{} = street}) do
+    %{street_id: street.id,name: street.street_name}
+    |> street_aliases_changeset()
+    |> Repo.insert!()
   end
 
   @doc """
@@ -68,9 +83,13 @@ defmodule Uaddresses.Streets do
 
   """
   def update_street(%Street{} = street, attrs) do
-    street
-    |> street_changeset(attrs)
-    |> Repo.update()
+    street_changeset = street_changeset(street, attrs)
+    Repo.transaction(fn ->
+      update_street_result = Repo.update(street_changeset)
+      insert_street_aliases(update_street_result)
+      update_street_result
+    end)
+    |> build_result()
   end
 
   @doc """
@@ -100,6 +119,12 @@ defmodule Uaddresses.Streets do
   """
   def change_street(%Street{} = street) do
     street_changeset(street, %{})
+  end
+
+  defp street_aliases_changeset(attrs) do
+    %Uaddresses.Streets.Aliases{}
+    |> cast(attrs, [:street_id, :name])
+    |> validate_required([:street_id, :name])
   end
 
   defp street_changeset(%Street{} = street, attrs) do
@@ -151,4 +176,106 @@ defmodule Uaddresses.Streets do
     add_error(changeset, :settlement_id, "Selected settlement doesn't exists'")
   end
   defp result_settlement_exists_validation(%Uaddresses.Settlements.Settlement{}, changeset), do: changeset
+
+  alias Uaddresses.Streets.Aliases
+
+  @doc """
+  Returns the list of streets_aliases.
+
+  ## Examples
+
+      iex> list_streets_aliases()
+      [%Aliases{}, ...]
+
+  """
+  def list_streets_aliases do
+    Repo.all(Aliases)
+  end
+
+  @doc """
+  Gets a single aliases.
+
+  Raises `Ecto.NoResultsError` if the Aliases does not exist.
+
+  ## Examples
+
+      iex> get_aliases!(123)
+      %Aliases{}
+
+      iex> get_aliases!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_aliases!(id), do: Repo.get!(Aliases, id)
+
+  @doc """
+  Creates a aliases.
+
+  ## Examples
+
+      iex> create_aliases(%{field: value})
+      {:ok, %Aliases{}}
+
+      iex> create_aliases(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_aliases(attrs \\ %{}) do
+    %Aliases{}
+    |> aliases_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a aliases.
+
+  ## Examples
+
+      iex> update_aliases(aliases, %{field: new_value})
+      {:ok, %Aliases{}}
+
+      iex> update_aliases(aliases, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_aliases(%Aliases{} = aliases, attrs) do
+    aliases
+    |> aliases_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Aliases.
+
+  ## Examples
+
+      iex> delete_aliases(aliases)
+      {:ok, %Aliases{}}
+
+      iex> delete_aliases(aliases)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_aliases(%Aliases{} = aliases) do
+    Repo.delete(aliases)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking aliases changes.
+
+  ## Examples
+
+      iex> change_aliases(aliases)
+      %Ecto.Changeset{source: %Aliases{}}
+
+  """
+  def change_aliases(%Aliases{} = aliases) do
+    aliases_changeset(aliases, %{})
+  end
+
+  defp aliases_changeset(%Aliases{} = aliases, attrs) do
+    aliases
+    |> cast(attrs, [:street_id, :name])
+    |> validate_required([:street_id, :name])
+  end
 end

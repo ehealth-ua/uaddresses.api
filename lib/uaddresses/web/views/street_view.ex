@@ -18,6 +18,12 @@ defmodule Uaddresses.Web.StreetView do
       street_type: street.street_type,
       street_name: street.street_name,
       street_number: street.street_number,
-      postal_code: street.postal_code}
+      postal_code: street.postal_code,
+      aliases: render_many(street.aliases, StreetView, "aliases.json")
+     }
+  end
+
+  def render("aliases.json", %{street: aliasModel}) do
+    aliasModel.name
   end
 end

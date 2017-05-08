@@ -63,7 +63,8 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "settlement_id" => settlement_id,
       "street_name" => "some street_name",
       "street_number" => "some street_number",
-      "street_type" => "some street_type", "type" => "street"}
+      "street_type" => "some street_type", "type" => "street",
+      "aliases" => ["some street_name"]}
   end
 
   test "does not create street and renders errors when data is invalid", %{conn: conn} do
@@ -91,7 +92,8 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "settlement_id" => settlement_id,
       "street_name" => "some updated street_name",
       "street_number" => "some updated street_number",
-      "street_type" => "some updated street_type", "type" => "street"}
+      "street_type" => "some updated street_type", "type" => "street",
+      "aliases" => ["some street_name", "some updated street_name"]}
   end
 
   test "does not update chosen street and renders errors when data is invalid", %{conn: conn} do

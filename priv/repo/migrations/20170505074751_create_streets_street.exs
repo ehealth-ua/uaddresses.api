@@ -2,7 +2,8 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Streets.Street do
   use Ecto.Migration
 
   def change do
-    create table(:streets) do
+    create table(:streets, primary_key: false) do
+      add :id, :uuid, primary_key: true
       add :district_id, :uuid
       add :region_id, :uuid
       add :settlement_id, :uuid
