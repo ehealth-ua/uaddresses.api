@@ -59,11 +59,14 @@ defmodule Uaddresses.Streets do
   """
   def create_street(attrs \\ %{}) do
     street_changeset = street_changeset(%Street{}, attrs)
-    Repo.transaction(fn ->
-      insert_street_result = Repo.insert(street_changeset)
-      insert_street_aliases(insert_street_result)
-      insert_street_result
-    end)
+    transaction =
+      Repo.transaction(fn ->
+        insert_street_result = Repo.insert(street_changeset)
+        insert_street_aliases(insert_street_result)
+        insert_street_result
+      end)
+
+    transaction
     |> build_result()
     |> insert_to_ets()
   end
@@ -72,7 +75,7 @@ defmodule Uaddresses.Streets do
 
   def insert_street_aliases({:error, reason}), do: {:error, reason}
   def insert_street_aliases({:ok, %Street{} = street}) do
-    %{street_id: street.id,name: street.street_name}
+    %{street_id: street.id, name: street.street_name}
     |> street_aliases_changeset()
     |> Repo.insert!()
   end
@@ -91,11 +94,14 @@ defmodule Uaddresses.Streets do
   """
   def update_street(%Street{} = street, attrs) do
     street_changeset = street_changeset(street, attrs)
-    Repo.transaction(fn ->
-      update_street_result = Repo.update(street_changeset)
-      insert_street_aliases(update_street_result)
-      update_street_result
-    end)
+    transaction =
+      Repo.transaction(fn ->
+        update_street_result = Repo.update(street_changeset)
+        insert_street_aliases(update_street_result)
+        update_street_result
+      end)
+
+    transaction
     |> build_result()
     |> insert_to_ets()
   end

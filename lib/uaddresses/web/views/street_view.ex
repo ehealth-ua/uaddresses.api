@@ -9,7 +9,7 @@ defmodule Uaddresses.Web.StreetView do
   def render("show.json", %{street: street}) do
     render_one(street, StreetView, "street.json")
   end
-  
+
   def render("search.json", %{streets: streets}) do
     render_many(streets, StreetView, "search_one.json")
   end

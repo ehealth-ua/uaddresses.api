@@ -51,9 +51,9 @@ defmodule Uaddresses.Web.StreetController do
       streets =
         :streets
         |> :ets.match_object(get_match_pattern(changeset.changes))
-        |> Enum.filter(fn {_, _, _, _, _, name, _, _, _, } ->
+        |> Enum.filter(fn {_, _, _, _, _, name, _, _, _,} ->
           String.contains?(name, String.downcase(settlement_name)) end)
-        |> List.foldl([], fn ({street_id, _, _, _, _, _, _, _, _, }, acc) -> acc ++ [street_id] end)
+        |> List.foldl([], fn ({street_id, _, _, _, _, _, _, _, _,}, acc) -> acc ++ [street_id] end)
         |> Streets.list_by_ids()
 
         render(conn, "search.json", streets: streets)
@@ -72,13 +72,13 @@ defmodule Uaddresses.Web.StreetController do
 
   defp get_region_name(%{region_name: region_name}), do: String.downcase(region_name)
   defp get_region_name(_), do: :"$3"
-  
+
   defp get_district_name(%{district_name: district_name}), do: String.downcase(district_name)
   defp get_district_name(_), do: :"$4"
-  
+
   defp get_settlement_name(%{settlement_name: settlement_name}), do: String.downcase(settlement_name)
   defp get_settlement_name(_), do: :"$5"
-  
+
   defp get_street_type(%{street_type: street_type}), do: String.downcase(street_type)
   defp get_street_type(_), do: :"$7"
 

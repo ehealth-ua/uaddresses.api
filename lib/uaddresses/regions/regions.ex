@@ -80,8 +80,6 @@ defmodule Uaddresses.Regions do
     |> insert_to_ets()
   end
 
-
-
   @doc """
   Updates a region.
 
