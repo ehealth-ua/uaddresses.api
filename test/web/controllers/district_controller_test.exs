@@ -60,4 +60,16 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     conn = put conn, district_path(conn, :update, district), district: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
+
+  test "list of settlements by district", %{conn: conn} do
+    district = district()
+    first = settlement(%{name: "First settlement", region_id: district.region_id, district_id: district.id})
+    second = settlement(%{name: "Second settlement", region_id: district.region_id, district_id: district.id})
+
+    conn = get conn, "/details/district/#{district.id}/settlements"
+    assert json_response(conn, 200)["data"] == [
+        %{"id" => first.id, "settlement_name" => "First settlement"},
+        %{"id" => second.id, "settlement_name" => "Second settlement"}
+      ]
+  end
 end

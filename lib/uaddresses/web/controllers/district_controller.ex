@@ -39,4 +39,11 @@ defmodule Uaddresses.Web.DistrictController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def settlements(conn, %{"id" => id}) do
+    with %District{} = district = Districts.get_district!(id),
+      %District{} = district = Districts.preload_settlements(district) do
+      render(conn, "list_settlements.json", district: district)
+    end
+  end
 end

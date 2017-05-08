@@ -40,6 +40,8 @@ defmodule Uaddresses.Districts do
   def get_district(nil), do: nil
   def get_district(id), do: Repo.get(District, id)
 
+
+  def preload_settlements(%District{} = district), do: Repo.preload(district, :settlements)
   @doc """
   Creates a district.
 

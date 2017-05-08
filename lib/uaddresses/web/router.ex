@@ -30,6 +30,7 @@ defmodule Uaddresses.Web.Router do
     resources "/streets", StreetController, except: [:new, :edit, :delete]
 
     get "/details/region/:id/districts", RegionController, :districts
+    get "/details/district/:id/settlements", DistrictController, :settlements
 
   end
 end

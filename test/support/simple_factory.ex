@@ -32,6 +32,11 @@ defmodule Uaddresses.SimpleFactory do
     settlement
   end
 
+  def settlement(params) do
+    {:ok, settlement} = Settlements.create_settlement(params)
+    settlement
+  end
+
   def street do
     %{id: region_id} = region()
     %{id: district_id} = district()
