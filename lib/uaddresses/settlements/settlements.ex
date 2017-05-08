@@ -37,6 +37,9 @@ defmodule Uaddresses.Settlements do
   """
   def get_settlement!(id), do: Repo.get!(Settlement, id)
 
+  def get_settlement(nil), do: nil
+  def get_settlement(id), do: Repo.get(Settlement, id)
+
   @doc """
   Creates a settlement.
 
