@@ -65,7 +65,7 @@ defmodule Uaddresses.Streets do
 
   def insert_street_aliases({:error, reason}), do: {:error, reason}
   def insert_street_aliases({:ok, %Street{} = street}) do
-    %{street_id: street.id,name: street.street_name}
+    %{street_id: street.id,name: String.downcase(street.street_name)}
     |> street_aliases_changeset()
     |> Repo.insert!()
   end

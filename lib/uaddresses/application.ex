@@ -20,6 +20,8 @@ defmodule Uaddresses do
       # worker(Uaddresses.Worker, [arg1, arg2, arg3]),
     ]
 
+    setup_ets_tables()
+
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Uaddresses.Supervisor]
@@ -37,5 +39,9 @@ defmodule Uaddresses do
   @doc false
   def load_from_system_env(config) do
     {:ok, Confex.process_env(config)}
+  end
+
+  def setup_ets_tables() do
+    :ets.new(:regions, [:set, :public, :named_table])
   end
 end

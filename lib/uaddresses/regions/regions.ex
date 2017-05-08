@@ -21,6 +21,13 @@ defmodule Uaddresses.Regions do
     Repo.all(Region)
   end
 
+  def list_by_ids(ids) do
+    Region
+    |> where([r], r.id in ^ids)
+    |> Repo.all
+
+  end
+
   @doc """
   Gets a single region.
 
@@ -71,7 +78,14 @@ defmodule Uaddresses.Regions do
     %Region{}
     |> region_changeset(attrs)
     |> Repo.insert()
+    |> insert_to_ets()
   end
+
+  def insert_to_ets({:ok, %Region{} = region}) do
+    :ets.insert(:regions, {region.id, String.downcase(region.name)})
+    {:ok, %Region{} = region}
+  end
+  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Updates a region.

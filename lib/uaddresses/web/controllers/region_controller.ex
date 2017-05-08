@@ -45,4 +45,17 @@ defmodule Uaddresses.Web.RegionController do
       render(conn, "list_districts.json", region: region)
     end
   end
+
+  def search(conn, params) do
+    name = Map.get(params, "region", "")
+
+    regions =
+      :regions
+      |> :ets.match_object({:"$1", :"$2"})
+      |> Enum.filter(fn {region_id, region_name} -> String.contains?(region_name, name) end)
+      |> List.foldl([], fn ({region_id, _region_name}, acc) -> acc ++ [region_id] end)
+      |> Regions.list_by_ids()
+
+    render(conn, "index.json", regions: regions)
+  end
 end

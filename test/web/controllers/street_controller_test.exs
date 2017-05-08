@@ -20,7 +20,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
     postal_code: "some updated postal_code",
     region_id: "7488a646-e31f-11e4-aace-600308960668",
     settlement_id: "7488a646-e31f-11e4-aace-600308960668",
-    street_name: "some updated street_name",
+    street_name: "some UPDATED street_name",
     street_number: "some updated street_number",
     street_type: "some updated street_type"
   }
@@ -90,7 +90,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "postal_code" => "some updated postal_code",
       "region_id" => region_id,
       "settlement_id" => settlement_id,
-      "street_name" => "some updated street_name",
+      "street_name" => "some UPDATED street_name",
       "street_number" => "some updated street_number",
       "street_type" => "some updated street_type", "type" => "street",
       "aliases" => ["some street_name", "some updated street_name"]}

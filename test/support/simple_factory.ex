@@ -8,14 +8,17 @@ defmodule Uaddresses.SimpleFactory do
   def fixture(:street), do: street()
 
   def region do
-    {:ok, region} = Regions.create_region(%{name: "some region"})
+    region(%{name: "some region"})
+  end
+
+  def region(params) do
+    {:ok, region} = Regions.create_region(params)
     region
   end
 
   def district do
     %{id: region_id} = region()
-    {:ok, district} = Districts.create_district(%{name: "some name", region_id: region_id})
-    district
+    district(%{name: "some name", region_id: region_id})
   end
 
   def district(params) do
@@ -26,10 +29,7 @@ defmodule Uaddresses.SimpleFactory do
   def settlement do
     %{id: region_id} = region()
     %{id: district_id} = district()
-
-    {:ok, settlement} =
-      Settlements.create_settlement(%{name: "some name", region_id: region_id, district_id: district_id})
-    settlement
+    settlement(%{name: "some name", region_id: region_id, district_id: district_id})
   end
 
   def settlement(params) do
