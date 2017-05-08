@@ -5,9 +5,35 @@ defmodule Uaddresses.Web.StreetControllerTest do
 
   alias Uaddresses.Streets.Street
 
-  @create_attrs %{district_id: "7488a646-e31f-11e4-aace-600308960662", postal_code: "some postal_code", region_id: "7488a646-e31f-11e4-aace-600308960662", settlement_id: "7488a646-e31f-11e4-aace-600308960662", street_name: "some street_name", street_number: "some street_number", street_type: "some street_type"}
-  @update_attrs %{district_id: "7488a646-e31f-11e4-aace-600308960668", postal_code: "some updated postal_code", region_id: "7488a646-e31f-11e4-aace-600308960668", settlement_id: "7488a646-e31f-11e4-aace-600308960668", street_name: "some updated street_name", street_number: "some updated street_number", street_type: "some updated street_type"}
-  @invalid_attrs %{district_id: nil, postal_code: nil, region_id: nil, settlement_id: nil, street_name: nil, street_number: nil, street_type: nil}
+  @create_attrs %{
+    district_id: "7488a646-e31f-11e4-aace-600308960662",
+    postal_code: "some postal_code",
+    region_id: "7488a646-e31f-11e4-aace-600308960662",
+    settlement_id: "7488a646-e31f-11e4-aace-600308960662",
+    street_name: "some street_name",
+    street_number: "some street_number",
+    street_type: "some street_type"
+  }
+
+  @update_attrs %{
+    district_id: "7488a646-e31f-11e4-aace-600308960668",
+    postal_code: "some updated postal_code",
+    region_id: "7488a646-e31f-11e4-aace-600308960668",
+    settlement_id: "7488a646-e31f-11e4-aace-600308960668",
+    street_name: "some updated street_name",
+    street_number: "some updated street_number",
+    street_type: "some updated street_type"
+  }
+
+  @invalid_attrs %{
+    district_id: nil,
+    postal_code: nil,
+    region_id: nil,
+    settlement_id: nil,
+    street_name: nil,
+    street_number: nil,
+    street_type: nil
+  }
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}

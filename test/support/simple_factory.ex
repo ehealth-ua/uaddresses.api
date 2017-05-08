@@ -7,7 +7,7 @@ defmodule Uaddresses.SimpleFactory do
   def fixture(:settlement), do: settlement()
   def fixture(:street), do: street()
 
-  def region() do
+  def region do
     {:ok, region} = Regions.create_region(%{name: "some region"})
     region
   end
@@ -44,5 +44,4 @@ defmodule Uaddresses.SimpleFactory do
         )
      street
   end
-
 end

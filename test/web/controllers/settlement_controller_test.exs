@@ -5,9 +5,24 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
   alias Uaddresses.Settlements.Settlement
 
-  @create_attrs %{district_id: "7488a646-e31f-11e4-aace-600308960662", name: "some name", region_id: "7488a646-e31f-11e4-aace-600308960662"}
-  @update_attrs %{district_id: "7488a646-e31f-11e4-aace-600308960668", name: "some updated name", region_id: "7488a646-e31f-11e4-aace-600308960668"}
-  @invalid_attrs %{district_id: nil, name: nil, region_id: nil}
+  @create_attrs %{
+    district_id: "7488a646-e31f-11e4-aace-600308960662",
+    name: "some name",
+    region_id: "7488a646-e31f-11e4-aace-600308960662"
+  }
+
+  @update_attrs %{
+    district_id: "7488a646-e31f-11e4-aace-600308960668",
+    name: "some updated name",
+    region_id: "7488a646-e31f-11e4-aace-600308960668"
+  }
+
+  @invalid_attrs %{
+    district_id: nil,
+    name: nil,
+    region_id: nil
+  }
+
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}

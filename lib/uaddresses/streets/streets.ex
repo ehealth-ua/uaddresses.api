@@ -104,8 +104,10 @@ defmodule Uaddresses.Streets do
 
   defp street_changeset(%Street{} = street, attrs) do
     street
-    |> cast(attrs, [:district_id, :region_id, :settlement_id, :street_type, :street_name, :street_number, :postal_code])
-    |> validate_required([:district_id, :region_id, :settlement_id, :street_type, :street_name, :street_number, :postal_code])
+    |> cast(attrs,
+      [:district_id, :region_id, :settlement_id, :street_type, :street_name, :street_number, :postal_code])
+    |> validate_required([:district_id, :region_id, :settlement_id, :street_type,
+      :street_name, :street_number, :postal_code])
     |> validate_region_exists(:region_id)
     |> validate_district_exists(:district_id)
     |> validate_settlement_exists(:settlement_id)

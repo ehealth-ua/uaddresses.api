@@ -6,9 +6,34 @@ defmodule Uaddresses.StreetsTest do
   alias Uaddresses.Streets
   alias Uaddresses.Streets.Street
 
-  @create_attrs %{district_id: "7488a646-e31f-11e4-aace-600308960662", region_id: "7488a646-e31f-11e4-aace-600308960662", settlement_id: "7488a646-e31f-11e4-aace-600308960662", street_name: "some street_name", street_number: "some street_number", street_type: "some street_type", postal_code: "some postal_code"}
-  @update_attrs %{district_id: "7488a646-e31f-11e4-aace-600308960668", region_id: "7488a646-e31f-11e4-aace-600308960668", settlement_id: "7488a646-e31f-11e4-aace-600308960668", street_name: "some updated street_name", street_number: "some updated street_number", street_type: "some updated street_type", postal_code: "some updated postal_code"}
-  @invalid_attrs %{district_id: nil, region_id: nil, settlement_id: nil, street_name: nil, street_number: nil, street_type: nil}
+  @create_attrs %{
+    district_id: "7488a646-e31f-11e4-aace-600308960662",
+    region_id: "7488a646-e31f-11e4-aace-600308960662",
+    settlement_id: "7488a646-e31f-11e4-aace-600308960662",
+    street_name: "some street_name",
+    street_number: "some street_number",
+    street_type: "some street_type",
+    postal_code: "some postal_code"
+  }
+
+  @update_attrs %{
+    district_id: "7488a646-e31f-11e4-aace-600308960668",
+    region_id: "7488a646-e31f-11e4-aace-600308960668",
+    settlement_id: "7488a646-e31f-11e4-aace-600308960668",
+    street_name: "some updated street_name",
+    street_number: "some updated street_number",
+    street_type: "some updated street_type",
+    postal_code: "some updated postal_code"
+  }
+
+  @invalid_attrs %{
+    district_id: nil,
+    region_id: nil,
+    settlement_id: nil,
+    street_name: nil,
+    street_number: nil,
+    street_type: nil
+  }
 
   test "list_streets/1 returns all streets" do
     street = fixture(:street)
