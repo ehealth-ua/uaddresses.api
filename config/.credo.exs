@@ -11,6 +11,7 @@
         {Credo.Check.Readability.MaxLineLength, priority: :low, max_length: 120},
         {Credo.Check.Readability.Specs, exit_status: 0},
         {Credo.Check.Readability.ModuleDoc, exit_status: 0},
+        {Credo.Check.Readability.SpaceAfterCommas, exit_status: 0},
       ]
     }
   ]
