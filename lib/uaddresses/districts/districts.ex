@@ -5,6 +5,7 @@ defmodule Uaddresses.Districts do
 
   import Ecto.{Query, Changeset}, warn: false
   alias Uaddresses.Repo
+  alias Uaddresses.Regions
 
   alias Uaddresses.Districts.District
 
@@ -46,7 +47,6 @@ defmodule Uaddresses.Districts do
 
   def get_district(nil), do: nil
   def get_district(id), do: Repo.get(District, id)
-
 
   def preload_settlements(%District{} = district), do: Repo.preload(district, :settlements)
   @doc """
@@ -136,7 +136,7 @@ defmodule Uaddresses.Districts do
   defp validate_region_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Uaddresses.Regions.get_region()
+    |> Regions.get_region()
     |> result_region_exists_validation(changeset)
   end
 

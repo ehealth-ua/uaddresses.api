@@ -4,6 +4,7 @@ defmodule Uaddresses do
   """
 
   use Application
+  alias Uaddresses.Web.Endpoint
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -20,7 +21,6 @@ defmodule Uaddresses do
       # worker(Uaddresses.Worker, [arg1, arg2, arg3]),
     ]
 
-
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Uaddresses.Supervisor]
@@ -34,7 +34,7 @@ defmodule Uaddresses do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    Uaddresses.Web.Endpoint.config_change(changed, removed)
+    Endpoint.config_change(changed, removed)
     :ok
   end
 

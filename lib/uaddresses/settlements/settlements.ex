@@ -5,6 +5,8 @@ defmodule Uaddresses.Settlements do
 
   import Ecto.{Query, Changeset}, warn: false
   alias Uaddresses.Repo
+  alias Uaddresses.Districts
+  alias Uaddresses.Regions
 
   alias Uaddresses.Settlements.Settlement
 
@@ -143,7 +145,7 @@ defmodule Uaddresses.Settlements do
   defp validate_region_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Uaddresses.Regions.get_region()
+    |> Regions.get_region()
     |> result_region_exists_validation(changeset)
 
   end
@@ -156,7 +158,7 @@ defmodule Uaddresses.Settlements do
   defp validate_district_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Uaddresses.Districts.get_district()
+    |> Districts.get_district()
     |> result_district_exists_validation(changeset)
 
   end

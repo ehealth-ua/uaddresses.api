@@ -4,8 +4,11 @@ defmodule Uaddresses.Streets do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Uaddresses.Repo
 
+  alias Uaddresses.Repo
+  alias Uaddresses.Districts
+  alias Uaddresses.Settlements
+  alias Uaddresses.Regions
   alias Uaddresses.Streets.Street
 
   @doc """
@@ -178,7 +181,7 @@ defmodule Uaddresses.Streets do
   defp validate_region_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Uaddresses.Regions.get_region()
+    |> Regions.get_region()
     |> result_region_exists_validation(changeset)
 
   end
@@ -191,7 +194,7 @@ defmodule Uaddresses.Streets do
   defp validate_district_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Uaddresses.Districts.get_district()
+    |> Districts.get_district()
     |> result_district_exists_validation(changeset)
 
   end
@@ -204,7 +207,7 @@ defmodule Uaddresses.Streets do
   defp validate_settlement_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Uaddresses.Settlements.get_settlement()
+    |> Settlements.get_settlement()
     |> result_settlement_exists_validation(changeset)
 
   end
