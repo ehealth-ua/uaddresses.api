@@ -28,7 +28,6 @@ defmodule Uaddresses do
     setup_ets_tables()
 
     Supervisor.start_link(children, opts)
-
   end
 
   # Tell Phoenix to update the endpoint configuration

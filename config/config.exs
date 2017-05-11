@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :uaddresses, key: :value
+#     config :uaddresses_api, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:uaddresses, :key)
+#     Application.get_env(:uaddresses_api, :key)
 #
 # Or configure a 3rd-party app:
 #
@@ -23,11 +23,11 @@ use Mix.Config
 # Or read environment variables in runtime (!) as:
 #
 #     :var_name, "${ENV_VAR_NAME}"
-config :uaddresses,
+config :uaddresses_api,
   ecto_repos: [Uaddresses.Repo]
 
 # Configure your database
-config :uaddresses, Uaddresses.Repo,
+config :uaddresses_api, Uaddresses.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: {:system, "DB_NAME", "uaddresses_dev"},
   username: {:system, "DB_USER", "postgres"},
@@ -39,7 +39,7 @@ config :uaddresses, Uaddresses.Repo,
 
 # General application configuration
 # Configures the endpoint
-config :uaddresses, Uaddresses.Web.Endpoint,
+config :uaddresses_api, Uaddresses.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "kCj2tpqzsnxcsciNm5JLDnUgJChdtFCO5RMyIlnUfSw1bhxxgYGvM/OX3v2mosnU",
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]

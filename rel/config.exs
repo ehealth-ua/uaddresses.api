@@ -14,9 +14,9 @@ environment :default do
   set cookie: cookie
 end
 
-release :uaddresses do
-  set version: current_version(:uaddresses)
+release :uaddresses_api do
+  set version: current_version(:uaddresses_api)
   set applications: [
-    uaddresses: :permanent
+    uaddresses_api: :permanent
   ]
 end

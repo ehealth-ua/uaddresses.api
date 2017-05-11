@@ -2,10 +2,10 @@ defmodule Uaddresses.Web.Endpoint do
   @moduledoc """
   Phoenix Endpoint for uaddresses application.
   """
-  use Phoenix.Endpoint, otp_app: :uaddresses
+  use Phoenix.Endpoint, otp_app: :uaddresses_api
 
   # Allow acceptance tests to run in concurrent mode
-  if Application.get_env(:uaddresses, :sql_sandbox) do
+  if Application.get_env(:uaddresses_api, :sql_sandbox) do
     plug Phoenix.Ecto.SQL.Sandbox
   end
 

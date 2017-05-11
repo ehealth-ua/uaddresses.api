@@ -4,7 +4,7 @@ defmodule Uaddresses.Mixfile do
   @version "0.1.0"
 
   def project do
-    [app: :uaddresses,
+    [app: :uaddresses_api,
      description: "Add description to your package.",
      package: package(),
      version: @version,
@@ -51,8 +51,8 @@ defmodule Uaddresses.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:distillery, "~> 1.2"},
-     {:confex, "~> 1.4"},
-     {:logger_json, "~> 0.3.0"},
+     {:confex, "~> 2.0"},
+     {:logger_json, "~> 0.4.0"},
      {:poison, "~> 3.1"},
      {:ecto, "~> 2.1"},
      {:postgrex, "~> 0.13.2"},
@@ -74,7 +74,7 @@ defmodule Uaddresses.Mixfile do
     [contributors: ["Nebo #15"],
      maintainers: ["Nebo #15"],
      licenses: ["LISENSE.md"],
-     links: %{github: "https://github.com/Nebo15/uaddresses"},
+     links: %{github: "https://github.com/Nebo15/uaddresses.api"},
      files: ~w(lib LICENSE.md mix.exs README.md)]
   end
 

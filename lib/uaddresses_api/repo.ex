@@ -4,7 +4,7 @@ defmodule Uaddresses.Repo do
 
   More info: https://hexdocs.pm/ecto/Ecto.Repo.html
   """
-  use Ecto.Repo, otp_app: :uaddresses
+  use Ecto.Repo, otp_app: :uaddresses_api
 
   @doc """
   Dynamically loads the repository configuration from the environment variables.

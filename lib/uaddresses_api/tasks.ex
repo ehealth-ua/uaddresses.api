@@ -1,10 +1,10 @@
-defmodule :uaddresses_tasks do
+defmodule :uaddresses_api_tasks do
   @moduledoc """
   Nice way to apply migrations inside a released application.
 
   Example:
 
-      uaddresses/bin/uaddresses command uaddresses_tasks migrate!
+      uaddresses_api/bin/uaddresses_api command uaddresses_api_tasks migrate!
   """
   import Mix.Ecto, warn: false
 
@@ -44,7 +44,7 @@ defmodule :uaddresses_tasks do
 
   defp load_app do
     start_applications([:logger, :postgrex, :ecto])
-    :ok = Application.load(:uaddresses)
+    :ok = Application.load(:uaddresses_api)
   end
 
   defp start_applications(apps) do
