@@ -23,6 +23,12 @@ defmodule Uaddresses.Settlements do
     Repo.all(Settlement)
   end
 
+  def list_settlements_with_regions_and_districts do
+    Settlement
+    |> Repo.all()
+    |> Repo.preload([:region, :district])
+  end
+
   def list_by_ids(ids) do
     Settlement
     |> where([s], s.id in ^ids)
@@ -48,6 +54,11 @@ defmodule Uaddresses.Settlements do
 
   def get_settlement(nil), do: nil
   def get_settlement(id), do: Repo.get(Settlement, id)
+
+  def get_by(clauses) do
+    Settlement
+    |> Repo.get_by(clauses)
+  end
 
   @doc """
   Creates a settlement.
@@ -136,8 +147,8 @@ defmodule Uaddresses.Settlements do
 
   defp settlement_changeset(%Settlement{} = settlement, attrs) do
     settlement
-    |> cast(attrs, [:district_id, :region_id, :name])
-    |> validate_required([:district_id, :region_id, :name])
+    |> cast(attrs, [:district_id, :region_id, :name, :mountain_group])
+    |> validate_required([:district_id, :region_id, :name, :mountain_group])
     |> validate_region_exists(:region_id)
     |> validate_district_exists(:district_id)
   end

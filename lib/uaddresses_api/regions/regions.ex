@@ -27,6 +27,11 @@ defmodule Uaddresses.Regions do
     |> Repo.all
   end
 
+  def get_by(clauses) do
+    Region
+    |> Repo.get_by(clauses)
+  end
+
   @doc """
   Gets a single region.
 

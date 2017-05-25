@@ -8,13 +8,15 @@ defmodule Uaddresses.Web.SettlementControllerTest do
   @create_attrs %{
     district_id: "7488a646-e31f-11e4-aace-600308960662",
     name: "some name",
-    region_id: "7488a646-e31f-11e4-aace-600308960662"
+    region_id: "7488a646-e31f-11e4-aace-600308960662",
+    mountain_group: false
   }
 
   @update_attrs %{
     district_id: "7488a646-e31f-11e4-aace-600308960668",
     name: "some updated name",
-    region_id: "7488a646-e31f-11e4-aace-600308960668"
+    region_id: "7488a646-e31f-11e4-aace-600308960668",
+    mountain_group: true
   }
 
   @invalid_attrs %{
@@ -47,6 +49,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
       "district_id" => district_id,
       "name" => "some name",
       "region_id" => region_id,
+      "mountain_group" => false,
       "type" => "settlement"}
   end
 
@@ -70,6 +73,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
       "district_id" => district_id,
       "name" => "some updated name",
       "region_id" => region_id,
+      "mountain_group" => true,
       "type" => "settlement"}
   end
 
@@ -106,25 +110,25 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     assert json_response(conn, 200)["data"] == [
       %{"district" => "Рокитнянський", "id" => s_2.id,
-        "region" => "Київська", "settlement_name" => "Бакумівка"},
+        "region" => "Київська", "settlement_name" => "Бакумівка", "mountain_group" => false},
       %{"district" => "Білоцерківський", "id" => s_3.id,
-        "region" => "Київська", "settlement_name" => "Володарка"},
+        "region" => "Київська", "settlement_name" => "Володарка", "mountain_group" => false},
       %{"district" => "Білоцерківський", "id" => s_4.id,
-        "region" => "Київська", "settlement_name" => "Біла Церква"}
+        "region" => "Київська", "settlement_name" => "Біла Церква", "mountain_group" => false}
     ]
 
     conn = get conn, "/search/settlements/?region=Одеська&district=Комінтернівський"
     assert json_response(conn, 200)["data"] == [
       %{"district" => "Комінтернівський", "id" => s_7.id,
-        "region" => "Одеська", "settlement_name" => "Комінтерне"},
+        "region" => "Одеська", "settlement_name" => "Комінтерне", "mountain_group" => false},
       %{"district" => "Комінтернівський", "id" => s_8.id,
-        "region" => "Одеська", "settlement_name" => "Новосілки 2"},
+        "region" => "Одеська", "settlement_name" => "Новосілки 2", "mountain_group" => false},
     ]
 
     conn = get conn, "/search/settlements/?region=Одеська&settlement_name=Якесь село"
     assert json_response(conn, 200)["data"] == [
       %{"district" => "Миколаївський", "id" => s_6.id,
-        "region" => "Одеська", "settlement_name" => "Якесь село"},
+        "region" => "Одеська", "settlement_name" => "Якесь село", "mountain_group" => false},
     ]
   end
 end

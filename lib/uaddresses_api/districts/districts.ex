@@ -22,6 +22,17 @@ defmodule Uaddresses.Districts do
     Repo.all(District)
   end
 
+  def list_districts_with_regions do
+    District
+    |> Repo.all()
+    |> Repo.preload(:region)
+  end
+
+  def get_by(clauses) do
+    District
+    |> Repo.get_by(clauses)
+  end
+
   def list_by_ids(ids) do
     District
     |> where([d], d.id in ^ids)

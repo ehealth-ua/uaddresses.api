@@ -19,7 +19,8 @@ defmodule Uaddresses.Web.SettlementView do
       id: settlement.id,
       region: settlement.region.name,
       district: settlement.district.name,
-      settlement_name: settlement.name
+      settlement_name: settlement.name,
+      mountain_group: settlement.mountain_group
     }
   end
 
@@ -27,7 +28,9 @@ defmodule Uaddresses.Web.SettlementView do
     %{id: settlement.id,
       district_id: settlement.district_id,
       region_id: settlement.region_id,
-      name: settlement.name}
+      name: settlement.name,
+      mountain_group: settlement.mountain_group
+      }
   end
 
   def render("settlement_by_district.json", %{settlement: settlement}) do

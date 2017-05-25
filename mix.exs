@@ -62,6 +62,7 @@ defmodule Uaddresses.Mixfile do
      {:multiverse, "~> 0.4.3"},
      {:eview, ">= 0.0.0"},
      {:phoenix_ecto, "~> 3.2"},
+     {:ex_csv, "~> 0.1.5"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
      {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},

@@ -1,0 +1,45 @@
+[regions]
+id | UUID | NOT NULL
+name | VARCHAR('50') | NOT NULL
+
+[districts]
+id | UUID | NOT NULL
+region_id | UUID | NOT NULL
+name | VARCHAR('100') | NOT NULL
+
+[settlements]
+id | UUID | NOT NULL
+name | UUID | NOT NULL
+district_id | UUID | NOT NULL
+region_id | UUID | NOT NULL
+mountain_group | VARCHAR(150)
+
+[streets]
+id | UUID | NOT NULL
+district_id | UUID | NOT NULL
+region_id | UUID | NOT NULL
+settlement_id | UUID | NOT NULL
+street_type | VARCHAR(10) | NOT NULL
+street_name | VARCHAR(150) | NOT NULL
+street_number | VARCHAR(10) | NOT NULL
+postal_code | VARCHAR(10) | NOT NULL
+
+[streets_aliases]
+id | UUID | NOT NULL
+street_id | UUID | NOT NULL
+name | VARCHAR(150) | NOT NULL
+
+(UAdresses)
+regions
+districts
+settlements
+streets
+streets_aliases
+
+regions 1--+ districts
+regions 1--+ settlements
+districts 1--+ settlements
+settlements 1--+ streets
+regions 1--+ streets
+districts 1--+ streets
+streets 1--+ streets_aliases

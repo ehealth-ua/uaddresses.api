@@ -11,6 +11,12 @@ defmodule Uaddresses.Streets do
   alias Uaddresses.Regions
   alias Uaddresses.Streets.Street
 
+  @street_types [
+    "дорога", "урочище", "шлях", "набережна", "вулиця відсутня", "лінія", "квартал", "завулок", "містечко",
+    "острів", "спуск", "в’їзд", "майдан", "мікрорайон", "жилий масив", "шосе", "парк", "тупік", "хутір", "проїзд",
+    "провулок", "бульвар", "проспект", "узвіз", "вулиця", "площа", "селище"
+  ]
+
   @doc """
   Returns the list of streets.
 
@@ -172,7 +178,7 @@ defmodule Uaddresses.Streets do
       [:district_id, :region_id, :settlement_id, :street_type, :street_name, :street_number, :postal_code])
     |> validate_required([:district_id, :region_id, :settlement_id, :street_type,
       :street_name, :street_number, :postal_code])
-    |> validate_inclusion(:street_type, ["провулок", "бульвар", "проспект", "узвіз", "вулиця"])
+    |> validate_inclusion(:street_type, @street_types)
     |> validate_region_exists(:region_id)
     |> validate_district_exists(:district_id)
     |> validate_settlement_exists(:settlement_id)
@@ -222,6 +228,6 @@ defmodule Uaddresses.Streets do
     |> cast(attrs, [:settlement_name, :settlement_id, :street_name, :street_type, :street_number, :postal_code, :region,
       :district])
     |> validate_required([:settlement_name, :street_name, :street_number])
-    |> validate_inclusion(:street_type, ["провулок", "бульвар", "проспект", "узвіз", "вулиця"])
+    |> validate_inclusion(:street_type, @street_types)
   end
 end

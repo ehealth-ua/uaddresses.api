@@ -51,9 +51,9 @@ defmodule Uaddresses.Web.StreetController do
       streets =
         :streets
         |> :ets.match_object(get_match_pattern(changeset.changes))
-        |> Enum.filter(fn {_, _, _, _, _, name, _, _, _,} ->
+        |> Enum.filter(fn {_, _, _, _, _, name, _, _, _} ->
           String.contains?(name, String.downcase(settlement_name)) end)
-        |> List.foldl([], fn ({street_id, _, _, _, _, _, _, _, _,}, acc) -> acc ++ [street_id] end)
+        |> List.foldl([], fn ({street_id, _, _, _, _, _, _, _, _}, acc) -> acc ++ [street_id] end)
         |> Streets.list_by_ids()
 
         render(conn, "search.json", streets: streets)
