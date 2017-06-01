@@ -4,6 +4,9 @@ defmodule Uaddresses.Web.DistrictController do
   alias Uaddresses.Districts
   alias Uaddresses.Districts.District
 
+  alias Uaddresses.Settlements
+  alias Uaddresses.Settlements.Settlement
+
   action_fallback Uaddresses.Web.FallbackController
 
   def index(conn, _params) do
@@ -40,10 +43,11 @@ defmodule Uaddresses.Web.DistrictController do
     end
   end
 
-  def settlements(conn, %{"id" => id}) do
+  def settlements(conn, %{"id" => id} = params) do
     with %District{} = district = Districts.get_district!(id),
-      %District{} = district = Districts.preload_settlements(district) do
-      render(conn, "list_settlements.json", district: district)
+      {settlements, paging} = Settlements.get_settlements_by_district_id(id, params),
+      settlements = filter_settlements(settlements, params) do
+      render(conn, "list_settlements.json", district: district, paging: paging, settlements: settlements)
     end
   end
 
@@ -51,15 +55,20 @@ defmodule Uaddresses.Web.DistrictController do
     district_name = Map.get(params, "district", "")
 
     with changeset = %Ecto.Changeset{valid?: true} <- Districts.search_changeset(params) do
-      districts =
+      {districts, paging} =
         :districts
         |> :ets.match_object(get_match_pattern(changeset.changes))
         |> Enum.filter(fn {_, _, _, name} -> String.contains?(name, String.downcase(district_name)) end)
         |> List.foldl([], fn ({district_id, _, _, _}, acc) -> acc ++ [district_id] end)
-        |> Districts.list_by_ids()
+        |> Districts.list_by_ids(params)
 
-        render(conn, "search.json", districts: districts)
+        render(conn, "search.json", districts: districts, paging: paging)
     end
+  end
+
+  defp filter_settlements(settlements, params) do
+    settlement_name = Map.get(params, "name", "")
+    Enum.filter(settlements, fn (settlement) -> String.contains?(settlement.name, String.downcase(settlement_name)) end)
   end
 
   defp get_match_pattern(%{region: _region_name, region_id: region_id}) do

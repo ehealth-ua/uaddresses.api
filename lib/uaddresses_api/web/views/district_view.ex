@@ -37,7 +37,7 @@ defmodule Uaddresses.Web.DistrictView do
     }
   end
 
-  def render("list_settlements.json", %{district: district}) do
-    render_many(district.settlements, Uaddresses.Web.SettlementView, "settlement_by_district.json")
+  def render("list_settlements.json", %{settlements: settlements}) do
+    render_many(settlements, Uaddresses.Web.SettlementView, "settlement_by_district.json")
   end
 end

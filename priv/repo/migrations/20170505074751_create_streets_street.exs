@@ -11,7 +11,7 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Streets.Street do
       add :street_name, :string
       add :street_number, :string
       add :postal_code, :string
+      timestamps()
     end
-
   end
 end

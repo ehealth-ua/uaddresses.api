@@ -5,7 +5,7 @@ defmodule Uaddresses.Streets.Search do
     field :settlement_id, Ecto.UUID
     field :street_name, :string
     field :street_type, :string
-    field :street_number, :string
+    field :numbers, :string
     field :postal_code, :string
     field :region, :string
     field :district, :string

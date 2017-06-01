@@ -13,11 +13,6 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  test "lists all entries on index", %{conn: conn} do
-    conn = get conn, district_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
-  end
-
   test "creates district and renders district when data is valid", %{conn: conn} do
     %{id: region_id} = region()
     create_attrs = Map.put(@create_attrs, :region_id, region_id)
@@ -65,12 +60,20 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     district = district()
     first = settlement(%{name: "First settlement", region_id: district.region_id, district_id: district.id})
     second = settlement(%{name: "Second settlement", region_id: district.region_id, district_id: district.id})
+    third = settlement(%{name: "Third settlement", region_id: district.region_id, district_id: district.id})
 
     conn = get conn, "/details/district/#{district.id}/settlements"
     assert json_response(conn, 200)["data"] == [
         %{"id" => first.id, "settlement_name" => "First settlement"},
-        %{"id" => second.id, "settlement_name" => "Second settlement"}
+        %{"id" => second.id, "settlement_name" => "Second settlement"},
+        %{"id" => third.id, "settlement_name" => "Third settlement"}
       ]
+
+    conn = get conn, "/details/district/#{district.id}/settlements?limit=1&starting_after=#{first.id}"
+    assert json_response(conn, 200)["data"] == [%{"id" => second.id, "settlement_name" => "Second settlement"}]
+
+    get conn, "/details/district/#{district.id}/settlements?name=ond"
+    assert json_response(conn, 200)["data"] == [%{"id" => second.id, "settlement_name" => "Second settlement"}]
   end
 
   test "search", %{conn: conn} do
@@ -87,6 +90,16 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     conn = get conn, "/search/districts/?region=Київ"
     assert json_response(conn, 200)["data"] == [
       %{"id" => d_1.id, "district" => "Дарницький", "region" => "Київ"},
+      %{"id" => d_2.id, "district" => "Подільський", "region" => "Київ"}
+    ]
+
+    conn = get conn, "/search/districts/?region=Київ&limit=1"
+    assert json_response(conn, 200)["data"] == [
+      %{"id" => d_1.id, "district" => "Дарницький", "region" => "Київ"}
+    ]
+
+    conn = get conn, "/search/districts/?region=Київ&limit=1&starting_after=#{d_1.id}"
+    assert json_response(conn, 200)["data"] == [
       %{"id" => d_2.id, "district" => "Подільський", "region" => "Київ"}
     ]
 

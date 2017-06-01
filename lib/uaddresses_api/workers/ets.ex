@@ -35,7 +35,7 @@ defmodule Uaddresses.Workers.Ets do
           })
       end)
     # {street_ id, settlement_id,region_name, district_name, settlement_name, street_name, street_type,
-    # street_number, street_postal_code,
+    # numbers, street_postal_code,
     :ets.new(:streets, [:set, :public, :named_table, :duplicate_bag, read_concurrency: true])
     {:ok, []}
   end

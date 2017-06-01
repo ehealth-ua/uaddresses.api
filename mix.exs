@@ -24,7 +24,7 @@ defmodule Uaddresses.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [extra_applications: [:logger, :confex, :runtime_tools, :logger_json, :poison,
+    [extra_applications: [:logger, :logger_json, :confex, :runtime_tools, :logger_json, :poison,
                           :ecto, :postgrex, :cowboy,
                           :httpoison, :phoenix,
                           :multiverse, :eview,
@@ -63,6 +63,7 @@ defmodule Uaddresses.Mixfile do
      {:eview, ">= 0.0.0"},
      {:phoenix_ecto, "~> 3.2"},
      {:ex_csv, "~> 0.1.5"},
+     {:ecto_paging, "~> 0.6.2"},
      {:benchfella, ">= 0.3.4", only: [:dev, :test]},
      {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},

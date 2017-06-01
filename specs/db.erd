@@ -21,7 +21,7 @@ region_id | UUID | NOT NULL
 settlement_id | UUID | NOT NULL
 street_type | VARCHAR(10) | NOT NULL
 street_name | VARCHAR(150) | NOT NULL
-street_number | VARCHAR(10) | NOT NULL
+numbers | VARCHAR(10) | NOT NULL
 postal_code | VARCHAR(10) | NOT NULL
 
 [streets_aliases]

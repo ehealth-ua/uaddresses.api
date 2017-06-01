@@ -17,7 +17,7 @@ defmodule Uaddresses.Web.RegionView do
     }
   end
 
-  def render("list_districts.json", %{region: region}) do
-    render_many(region.districts, Uaddresses.Web.DistrictView, "district_by_region.json")
+  def render("list_districts.json", %{districts: districts}) do
+    render_many(districts, Uaddresses.Web.DistrictView, "district_by_region.json")
   end
 end

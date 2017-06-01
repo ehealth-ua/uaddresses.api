@@ -18,7 +18,7 @@ defmodule Uaddresses.Workers.ProcessFile do
     |> Enum.each(fn(chunk) ->
          chunk
          |> ExCsv.parse!(delimiter: ';')
-         |> ExCsv.with_headings([:region, :district, :settlement, :postal_code, :street_name, :street_numbers])
+         |> ExCsv.with_headings([:region, :district, :settlement, :postal_code, :street_name, :numberss])
          |> Enum.to_list
          |> Enum.each(&process_street/1)
        end)
@@ -27,9 +27,9 @@ defmodule Uaddresses.Workers.ProcessFile do
   defp process_street(street) do
     if street.district != "Район" do
       street
-      |> Map.put(:street_numbers, String.split(Map.get(street, :street_numbers), ","))
-      |> Map.get(:street_numbers)
-      |> Enum.each(fn street_number ->
+      |> Map.put(:numberss, String.split(Map.get(street, :numberss), ","))
+      |> Map.get(:numberss)
+      |> Enum.each(fn numbers ->
         region_id = get_region_id(street.region)
         district_id = get_district_id(street.district, region_id)
         settlement_id = get_settlement_id(street.settlement, district_id, region_id)
@@ -40,7 +40,7 @@ defmodule Uaddresses.Workers.ProcessFile do
           district_id: district_id,
           settlement_id: settlement_id,
           postal_code: street.postal_code,
-          street_number: street_number,
+          numbers: numbers,
           street_name: street_name,
           street_type: street_type
         }
@@ -146,72 +146,6 @@ defmodule Uaddresses.Workers.ProcessFile do
       String.starts_with?(name, "дорога") -> {String.trim_leading(name, "дорога "), "дорога"}
       String.starts_with?(name, "вулиця відсутня") -> {String.trim_leading(name, "вулиця відсутня "), "вулиця відсутня"}
       String.starts_with?(name, "селище") -> {String.trim_leading(name, "селище "), "селище"}
-    end
-  end
-
-  def get_street_name(name) do
-    cond do
-      String.starts_with?(name, "вул.") -> String.trim_leading(name, "вул. ")
-      String.starts_with?(name, "пров.") -> String.trim_leading(name, "пров. ")
-      String.starts_with?(name, "пл.") -> String.trim_leading(name, "пл. ")
-      String.starts_with?(name, "просп.") -> String.trim_leading(name, "просп. ")
-      String.starts_with?(name, "проїзд") -> String.trim_leading(name, "проїзд ")
-      String.starts_with?(name, "хутір") -> String.trim_leading(name, "хутір ")
-      String.starts_with?(name, "тупік") -> String.trim_leading(name, "тупік ")
-      String.starts_with?(name, "узвіз") -> String.trim_leading(name, "узвіз ")
-      String.starts_with?(name, "парк") -> String.trim_leading(name, "парк ")
-      String.starts_with?(name, "жилий масив") -> String.trim_leading(name, "жилий масив ")
-      String.starts_with?(name, "шосе") -> String.trim_leading(name, "шосе ")
-      String.starts_with?(name, "бульв.") -> String.trim_leading(name, "бульв. ")
-      String.starts_with?(name, "м-р") -> String.trim_leading(name, "м-р ")
-      String.starts_with?(name, "майдан") -> String.trim_leading(name, "майдан ")
-      String.starts_with?(name, "спуск") -> String.trim_leading(name, "спуск ")
-      String.starts_with?(name, "острів") -> String.trim_leading(name, "острів ")
-      String.starts_with?(name, "містечко") -> String.trim_leading(name, "містечко ")
-      String.starts_with?(name, "завулок") -> String.trim_leading(name, "завулок ")
-      String.starts_with?(name, "лінія") -> String.trim_leading(name, "лінія ")
-      String.starts_with?(name, "кв-л") -> String.trim_leading(name, "кв-л ")
-      String.starts_with?(name, "в’їзд") -> String.trim_leading(name, "в’їзд ")
-      String.starts_with?(name, "набережна") -> String.trim_leading(name, "набережна ")
-      String.starts_with?(name, "шлях") -> String.trim_leading(name, "шлях ")
-      String.starts_with?(name, "алея") -> String.trim_leading(name, "алея ")
-      String.starts_with?(name, "урочище") -> String.trim_leading(name, "урочище ")
-      String.starts_with?(name, "дорога") -> String.trim_leading(name, "дорога ")
-      String.starts_with?(name, "вулиця відсутня") -> String.trim_leading(name, "вулиця відсутня ")
-      String.starts_with?(name, "селище") -> String.trim_leading(name, "селище ")
-    end
-  end
-
-  def get_street_type(name) do
-    cond do
-      String.starts_with?(name, "вул.") -> "вулиця"
-      String.starts_with?(name, "пров.") -> "провулок"
-      String.starts_with?(name, "пл.") -> "площа"
-      String.starts_with?(name, "просп.") -> "проспект"
-      String.starts_with?(name, "проїзд") -> "проїзд"
-      String.starts_with?(name, "хутір") -> "хутір"
-      String.starts_with?(name, "тупік") -> "тупік"
-      String.starts_with?(name, "узвіз") -> "узвіз"
-      String.starts_with?(name, "парк") -> "парк"
-      String.starts_with?(name, "шосе") -> "шосе"
-      String.starts_with?(name, "жилий масив") -> "жилий масив"
-      String.starts_with?(name, "м-р") -> "мікрорайон"
-      String.starts_with?(name, "бульв.") -> "бульвар"
-      String.starts_with?(name, "майдан") -> "майдан"
-      String.starts_with?(name, "спуск") -> "спуск"
-      String.starts_with?(name, "острів") -> "острів"
-      String.starts_with?(name, "містечко") -> "містечко"
-      String.starts_with?(name, "завулок") -> "завулок"
-      String.starts_with?(name, "лінія") -> "лінія"
-      String.starts_with?(name, "кв-л") -> "квартал"
-      String.starts_with?(name, "в’їзд") -> "в’їзд"
-      String.starts_with?(name, "набережна") -> "набережна"
-      String.starts_with?(name, "шлях") -> "шлях"
-      String.starts_with?(name, "алея") -> "алея"
-      String.starts_with?(name, "урочище") -> "урочище"
-      String.starts_with?(name, "дорога") -> "дорога"
-      String.starts_with?(name, "вулиця відсутня") -> "вулиця відсутня"
-      String.starts_with?(name, "селище") -> "селище"
     end
   end
 end

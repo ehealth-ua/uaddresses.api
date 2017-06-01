@@ -4,6 +4,9 @@ defmodule Uaddresses.Districts do
   """
 
   import Ecto.{Query, Changeset}, warn: false
+
+  use Uaddresses.Paginate
+
   alias Uaddresses.Repo
   alias Uaddresses.Regions
 
@@ -33,13 +36,19 @@ defmodule Uaddresses.Districts do
     |> Repo.get_by(clauses)
   end
 
-  def list_by_ids(ids) do
-    District
+  def list_by_ids(ids, query_params) do
+    {data, paging} = District
     |> where([d], d.id in ^ids)
-    |> Repo.all
-    |> Repo.preload(:region)
+    |> paginate(query_params)
+
+    {Repo.preload(data, :region), paging}
   end
 
+  def get_by_region_id(region_id, query_params) do
+    District
+    |> where([s], s.region_id == ^region_id)
+    |> paginate(query_params)
+  end
   @doc """
   Gets a single district.
 

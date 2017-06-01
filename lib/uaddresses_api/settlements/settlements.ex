@@ -4,6 +4,9 @@ defmodule Uaddresses.Settlements do
   """
 
   import Ecto.{Query, Changeset}, warn: false
+
+  use Uaddresses.Paginate
+
   alias Uaddresses.Repo
   alias Uaddresses.Districts
   alias Uaddresses.Regions
@@ -29,11 +32,13 @@ defmodule Uaddresses.Settlements do
     |> Repo.preload([:region, :district])
   end
 
-  def list_by_ids(ids) do
-    Settlement
-    |> where([s], s.id in ^ids)
-    |> Repo.all
-    |> Repo.preload([:region, :district])
+  def list_by_ids(ids, query_params) do
+    {data, paging} =
+      Settlement
+      |> where([s], s.id in ^ids)
+      |> paginate(query_params)
+
+    {Repo.preload(data, [:region, :district]), paging}
   end
 
   @doc """
@@ -54,6 +59,12 @@ defmodule Uaddresses.Settlements do
 
   def get_settlement(nil), do: nil
   def get_settlement(id), do: Repo.get(Settlement, id)
+
+  def get_settlements_by_district_id(district_id, query_params) do
+    Settlement
+    |> where([s], s.district_id == ^district_id)
+    |> paginate(query_params)
+  end
 
   def get_by(clauses) do
     Settlement

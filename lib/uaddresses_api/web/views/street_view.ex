@@ -22,7 +22,7 @@ defmodule Uaddresses.Web.StreetView do
       settlement_name: street.settlement.name,
       street_type: street.street_type,
       street_name: street.street_name,
-      street_number: street.street_number,
+      numbers: street.numbers,
       postal_code: street.postal_code,
       aliases: render_many(street.aliases, StreetView, "aliases.json")
     }
@@ -35,7 +35,7 @@ defmodule Uaddresses.Web.StreetView do
       settlement_id: street.settlement_id,
       street_type: street.street_type,
       street_name: street.street_name,
-      street_number: street.street_number,
+      numbers: street.numbers,
       postal_code: street.postal_code,
       aliases: render_many(street.aliases, StreetView, "aliases.json")
      }

@@ -13,11 +13,6 @@ defmodule Uaddresses.Web.RegionControllerTest do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
-  test "lists all entries on index", %{conn: conn} do
-    conn = get conn, region_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
-  end
-
   test "creates region and renders region when data is valid", %{conn: conn} do
     conn = post conn, region_path(conn, :create), region: @create_attrs
     assert %{"id" => id, "type" => "region", "name" => "some region"} = json_response(conn, 201)["data"]
@@ -50,11 +45,23 @@ defmodule Uaddresses.Web.RegionControllerTest do
     %{id: region_id} = region()
     first_district = district(%{name: "First district", region_id: region_id})
     second_district = district(%{name: "Second district", region_id: region_id})
+    third_district = district(%{name: "Third district", region_id: region_id})
 
     conn = get conn, "/details/region/#{region_id}/districts"
     assert json_response(conn, 200)["data"] == [
       %{"id" => first_district.id, "district" => "First district"},
-      %{"id" => second_district.id, "district" => "Second district"}
+      %{"id" => second_district.id, "district" => "Second district"},
+      %{"id" => third_district.id, "district" => "Third district"}
+    ]
+
+    conn = get conn, "/details/region/#{region_id}/districts?limit=1&starting_after=#{second_district.id}"
+    assert json_response(conn, 200)["data"] == [
+      %{"id" => third_district.id, "district" => "Third district"}
+    ]
+
+    conn = get conn, "/details/region/#{region_id}/districts?name=ond"
+    assert json_response(conn, 200)["data"] == [
+      %{"id" => second_district.id, "district" => "Second district"},
     ]
   end
 

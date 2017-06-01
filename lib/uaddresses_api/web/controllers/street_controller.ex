@@ -48,26 +48,26 @@ defmodule Uaddresses.Web.StreetController do
     settlement_name = Map.get(params, "street_name", "")
 
     with changeset = %Ecto.Changeset{valid?: true} <- Streets.search_changeset(params) do
-      streets =
+      {streets, paging} =
         :streets
         |> :ets.match_object(get_match_pattern(changeset.changes))
         |> Enum.filter(fn {_, _, _, _, _, name, _, _, _} ->
           String.contains?(name, String.downcase(settlement_name)) end)
         |> List.foldl([], fn ({street_id, _, _, _, _, _, _, _, _}, acc) -> acc ++ [street_id] end)
-        |> Streets.list_by_ids()
+        |> Streets.list_by_ids(params)
 
-        render(conn, "search.json", streets: streets)
+        render(conn, "search.json", streets: streets, paging: paging)
     end
   end
 
   defp get_match_pattern(%{settlement_id: settlement_id} = changes) do
     {:"$1", settlement_id, :"$3", :"$4", :"$5", :"$6",
-      get_street_type(changes), get_street_number(changes), get_postal_code(changes)}
+      get_street_type(changes), :"$8", get_postal_code(changes)}
   end
 
   defp get_match_pattern(changes) do
     {:"$1", :"$2", get_region_name(changes), get_district_name(changes), get_settlement_name(changes), :"$6",
-    get_street_type(changes), get_street_number(changes), get_postal_code(changes)}
+    get_street_type(changes), :"$8", get_postal_code(changes)}
   end
 
   defp get_region_name(%{region_name: region_name}), do: String.downcase(region_name)
@@ -81,9 +81,6 @@ defmodule Uaddresses.Web.StreetController do
 
   defp get_street_type(%{street_type: street_type}), do: String.downcase(street_type)
   defp get_street_type(_), do: :"$7"
-
-  defp get_street_number(%{street_number: street_number}), do: String.downcase(street_number)
-  defp get_street_number(_), do: :"$8"
 
   defp get_postal_code(%{postal_code: postal_code}), do: String.downcase(postal_code)
   defp get_postal_code(_), do: :"$9"

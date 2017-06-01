@@ -29,11 +29,11 @@ defmodule Uaddresses.SimpleFactory do
   def settlement do
     %{id: region_id} = region()
     %{id: district_id} = district()
-    settlement(%{name: "some name", region_id: region_id, district_id: district_id, mountain_group: false})
+    settlement(%{name: "some name", region_id: region_id, district_id: district_id, mountain_group: "0"})
   end
 
   def settlement(params) do
-    params = Map.put_new(params, :mountain_group, false)
+    params = Map.put_new(params, :mountain_group, "0")
     {:ok, settlement} = Settlements.create_settlement(params)
     settlement
   end
@@ -48,7 +48,7 @@ defmodule Uaddresses.SimpleFactory do
       region_id: region_id,
       settlement_id: settlement_id,
       street_name: "some street_name",
-      street_number: "some street_number",
+      numbers: ["some numbers"],
       street_type: "вулиця", postal_code: "some postal_code"
       }
     )

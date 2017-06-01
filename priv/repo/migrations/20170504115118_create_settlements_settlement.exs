@@ -8,6 +8,7 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Settlements.Settlement do
       add :region_id, :uuid, null: false
       add :name, :string, null: false
       add :mountain_group, :boolean, default: false
+      timestamps()
     end
 
   end

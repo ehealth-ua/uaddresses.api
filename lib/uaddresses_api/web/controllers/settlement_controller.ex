@@ -44,14 +44,14 @@ defmodule Uaddresses.Web.SettlementController do
     settlement_name = Map.get(params, "settlement_name", "")
 
     with changeset = %Ecto.Changeset{valid?: true} <- Settlements.search_changeset(params) do
-      settlements =
+      {settlements, paging} =
         :settlements
         |> :ets.match_object(get_match_pattern(changeset.changes))
         |> Enum.filter(fn {_, _, _, _, _, name} -> String.contains?(name, String.downcase(settlement_name)) end)
         |> List.foldl([], fn ({settlement_id, _, _, _, _, _}, acc) -> acc ++ [settlement_id] end)
-        |> Settlements.list_by_ids()
+        |> Settlements.list_by_ids(params)
 
-        render(conn, "search.json", settlements: settlements)
+        render(conn, "search.json", settlements: settlements, paging: paging)
     end
   end
 

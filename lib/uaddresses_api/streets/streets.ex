@@ -5,6 +5,8 @@ defmodule Uaddresses.Streets do
 
   import Ecto.{Query, Changeset}, warn: false
 
+  use Uaddresses.Paginate
+
   alias Uaddresses.Repo
   alias Uaddresses.Districts
   alias Uaddresses.Settlements
@@ -30,11 +32,13 @@ defmodule Uaddresses.Streets do
     Repo.all(Street)
   end
 
-  def list_by_ids(ids) do
-    Street
-    |> where([s], s.id in ^ids)
-    |> Repo.all
-    |> Repo.preload([:region, :district, :settlement, :aliases])
+  def list_by_ids(ids, query_params) do
+    {data, paging} =
+      Street
+      |> where([s], s.id in ^ids)
+      |> paginate(query_params)
+
+    {Repo.preload(data, [:region, :district, :settlement, :aliases]), paging}
   end
   @doc """
   Gets a single street.
@@ -128,7 +132,7 @@ defmodule Uaddresses.Streets do
         String.downcase(settlement_name),
         String.downcase(street.street_name),
         String.downcase(street.street_type),
-        String.downcase(street.street_number),
+        street.numbers,
         String.downcase(street.postal_code),
       }
     )
@@ -175,9 +179,9 @@ defmodule Uaddresses.Streets do
   defp street_changeset(%Street{} = street, attrs) do
     street
     |> cast(attrs,
-      [:district_id, :region_id, :settlement_id, :street_type, :street_name, :street_number, :postal_code])
+      [:district_id, :region_id, :settlement_id, :street_type, :street_name, :numbers, :postal_code])
     |> validate_required([:district_id, :region_id, :settlement_id, :street_type,
-      :street_name, :street_number, :postal_code])
+      :street_name, :numbers, :postal_code])
     |> validate_inclusion(:street_type, @street_types)
     |> validate_region_exists(:region_id)
     |> validate_district_exists(:district_id)
@@ -225,9 +229,9 @@ defmodule Uaddresses.Streets do
 
   def search_changeset(attrs) do
     %Uaddresses.Streets.Search{}
-    |> cast(attrs, [:settlement_name, :settlement_id, :street_name, :street_type, :street_number, :postal_code, :region,
+    |> cast(attrs, [:settlement_name, :settlement_id, :street_name, :street_type, :numbers, :postal_code, :region,
       :district])
-    |> validate_required([:settlement_name, :street_name, :street_number])
+    |> validate_required([:settlement_name, :street_name, :numbers])
     |> validate_inclusion(:street_type, @street_types)
   end
 end

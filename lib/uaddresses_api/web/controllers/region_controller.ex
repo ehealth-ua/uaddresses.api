@@ -2,6 +2,7 @@ defmodule Uaddresses.Web.RegionController do
   use Uaddresses.Web, :controller
 
   alias Uaddresses.Regions
+  alias Uaddresses.Districts
   alias Uaddresses.Regions.Region
 
   action_fallback Uaddresses.Web.FallbackController
@@ -39,10 +40,11 @@ defmodule Uaddresses.Web.RegionController do
     end
   end
 
-  def districts(conn, %{"id" => id}) do
-    with %Uaddresses.Regions.Region{} = region = Regions.get_region!(id),
-      %Uaddresses.Regions.Region{} = region = Regions.preload_districts(region) do
-      render(conn, "list_districts.json", region: region)
+  def districts(conn, %{"id" => id} = params) do
+    with %Uaddresses.Regions.Region{} = Regions.get_region!(id),
+      {districts, paging} = Districts.get_by_region_id(id, params),
+      districts = filter_districts_by_name(districts, params) do
+      render(conn, "list_districts.json", districts: districts, paging: paging)
     end
   end
 
@@ -57,5 +59,10 @@ defmodule Uaddresses.Web.RegionController do
       |> Regions.list_by_ids()
 
     render(conn, "index.json", regions: regions)
+  end
+
+  def filter_districts_by_name(districts, params) do
+    name = Map.get(params, "name", "")
+    Enum.filter(districts, fn (district) -> String.contains?(district.name, String.downcase(name)) end)
   end
 end

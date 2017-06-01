@@ -6,8 +6,10 @@ defmodule Uaddresses.Streets.Street do
   schema "streets" do
     field :postal_code, :string
     field :street_name, :string
-    field :street_number, :string
+    field :numbers, {:array, :string}
     field :street_type, :string
+
+    timestamps()
 
     has_many :aliases, Uaddresses.Streets.Aliases
 

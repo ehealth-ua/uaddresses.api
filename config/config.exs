@@ -24,6 +24,7 @@ use Mix.Config
 #
 #     :var_name, "${ENV_VAR_NAME}"
 config :uaddresses_api,
+  namespace: Uaddresses,
   ecto_repos: [Uaddresses.Repo]
 
 # Configure your database

@@ -11,7 +11,7 @@ defmodule Uaddresses.StreetsTest do
     region_id: "7488a646-e31f-11e4-aace-600308960662",
     settlement_id: "7488a646-e31f-11e4-aace-600308960662",
     street_name: "some street_name",
-    street_number: "some street_number",
+    numbers: ["some numbers"],
     street_type: "вулиця",
     postal_code: "some postal_code"
   }
@@ -21,7 +21,7 @@ defmodule Uaddresses.StreetsTest do
     region_id: "7488a646-e31f-11e4-aace-600308960668",
     settlement_id: "7488a646-e31f-11e4-aace-600308960668",
     street_name: "some updated street_name",
-    street_number: "some updated street_number",
+    numbers: ["some updated numbers"],
     street_type: "провулок",
     postal_code: "some updated postal_code"
   }
@@ -31,7 +31,7 @@ defmodule Uaddresses.StreetsTest do
     region_id: nil,
     settlement_id: nil,
     street_name: nil,
-    street_number: nil,
+    numbers: nil,
     street_type: nil
   }
 
@@ -59,7 +59,7 @@ defmodule Uaddresses.StreetsTest do
     assert street.region_id == region_id
     assert street.settlement_id == settlement_id
     assert street.street_name == "some street_name"
-    assert street.street_number == "some street_number"
+    assert street.numbers == ["some numbers"]
     assert street.street_type == "вулиця"
     assert street.postal_code == "some postal_code"
   end
@@ -83,7 +83,7 @@ defmodule Uaddresses.StreetsTest do
     assert street.region_id == region_id
     assert street.settlement_id == settlement_id
     assert street.street_name == "some updated street_name"
-    assert street.street_number == "some updated street_number"
+    assert street.numbers == ["some updated numbers"]
     assert street.street_type == "провулок"
     assert street.postal_code == "some updated postal_code"
   end
