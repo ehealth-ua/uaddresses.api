@@ -44,8 +44,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
       "district_id" => district_id,
       "name" => "some name",
       "region_id" => region_id,
-      "mountain_group" => "0",
-      "type" => "settlement"}
+      "mountain_group" => "0"}
   end
 
   test "does not create settlement and renders errors when data is invalid", %{conn: conn} do
@@ -68,8 +67,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
       "district_id" => district_id,
       "name" => "some updated name",
       "region_id" => region_id,
-      "mountain_group" => "1",
-      "type" => "settlement"}
+      "mountain_group" => "1"}
   end
 
   test "does not update chosen settlement and renders errors when data is invalid", %{conn: conn} do

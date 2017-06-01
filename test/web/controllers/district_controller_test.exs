@@ -24,8 +24,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "name" => "some name",
-      "region_id" => region_id,
-      "type" => "district"
+      "region_id" => region_id
       }
   end
 
@@ -45,8 +44,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "name" => "some updated name",
-      "region_id" => region_id,
-      "type" => "district"
+      "region_id" => region_id
       }
   end
 

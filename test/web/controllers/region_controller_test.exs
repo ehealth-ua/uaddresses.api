@@ -15,10 +15,10 @@ defmodule Uaddresses.Web.RegionControllerTest do
 
   test "creates region and renders region when data is valid", %{conn: conn} do
     conn = post conn, region_path(conn, :create), region: @create_attrs
-    assert %{"id" => id, "type" => "region", "name" => "some region"} = json_response(conn, 201)["data"]
+    assert %{"id" => id, "name" => "some region"} = json_response(conn, 201)["data"]
 
     conn = get conn, region_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{"id" => id, "type" => "region", "name" => "some region"}
+    assert json_response(conn, 200)["data"] == %{"id" => id, "name" => "some region"}
   end
 
   test "does not create region and renders errors when data is invalid", %{conn: conn} do
@@ -29,10 +29,10 @@ defmodule Uaddresses.Web.RegionControllerTest do
   test "updates chosen region and renders region when data is valid", %{conn: conn} do
     %Region{id: id} = region = fixture(:region)
     conn = put conn, region_path(conn, :update, region), region: @update_attrs
-    assert %{"id" => ^id, "type" => "region", "name" => "some updated region"} = json_response(conn, 200)["data"]
+    assert %{"id" => ^id, "name" => "some updated region"} = json_response(conn, 200)["data"]
 
     conn = get conn, region_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{"id" => id, "type" => "region", "name" => "some updated region"}
+    assert json_response(conn, 200)["data"] == %{"id" => id, "name" => "some updated region"}
   end
 
   test "does not update chosen region and renders errors when data is invalid", %{conn: conn} do

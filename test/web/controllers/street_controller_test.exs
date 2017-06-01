@@ -58,7 +58,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "settlement_id" => settlement_id,
       "street_name" => "some street_name",
       "numbers" => ["some numbers"],
-      "street_type" => "вулиця", "type" => "street",
+      "street_type" => "вулиця",
       "aliases" => ["some street_name"]}
   end
 
@@ -87,7 +87,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
       "settlement_id" => settlement_id,
       "street_name" => "some UPDATED street_name",
       "numbers" => ["some updated numbers"],
-      "street_type" => "провулок", "type" => "street",
+      "street_type" => "провулок",
       "aliases" => ["some street_name", "some UPDATED street_name"]}
   end
 
