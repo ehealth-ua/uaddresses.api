@@ -8,4 +8,3 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Regions.Region do
     end
   end
 end
-
