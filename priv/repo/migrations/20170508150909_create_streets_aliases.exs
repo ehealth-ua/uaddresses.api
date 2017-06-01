@@ -7,6 +7,5 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Streets.Aliases do
       add :street_id, :uuid, null: false
       add :name, :string, null: false
     end
-
   end
 end

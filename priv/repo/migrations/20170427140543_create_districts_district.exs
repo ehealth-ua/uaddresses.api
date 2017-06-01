@@ -6,8 +6,6 @@ defmodule Uaddresses.Repo.Migrations.CreateUaddresses.Districts.District do
       add :id, :uuid, primary_key: true
       add :region_id, :uuid, null: false
       add :name, :string, null: false
-      timestamps()
     end
-
   end
 end

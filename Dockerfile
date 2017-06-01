@@ -8,6 +8,8 @@ ENV MIX_ENV=prod \
     APP_NAME=uaddresses_api \
     APP_PORT=4000
 
+RUN apk add --update --no-cache make g++
+
 WORKDIR ${HOME}
 
 # Install and compile project dependencies
