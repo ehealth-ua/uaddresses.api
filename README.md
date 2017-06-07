@@ -9,6 +9,10 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
 
+## Specification
+
+- [API docs](http://docs.uaddress.apiary.io/#reference/0/search-regions)
+
 ## Learn more
 
   * Official website: http://www.phoenixframework.org/
