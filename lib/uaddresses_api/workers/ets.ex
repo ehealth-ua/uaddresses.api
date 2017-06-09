@@ -30,7 +30,7 @@ defmodule Uaddresses.Workers.Ets do
         :ets.insert(:settlements,
           {settlement.id, settlement.region_id, settlement.district_id,
             String.downcase(settlement.region.name),
-            String.downcase(settlement.district.name),
+            get_district_name(settlement.district),
             String.downcase(settlement.name)
           })
       end)
@@ -39,4 +39,7 @@ defmodule Uaddresses.Workers.Ets do
     :ets.new(:streets, [:set, :public, :named_table, :duplicate_bag, read_concurrency: true])
     {:ok, []}
   end
+
+  defp get_district_name(nil), do: nil
+  defp get_district_name(district), do: String.downcase(district.name)
 end
