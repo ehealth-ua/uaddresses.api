@@ -5,8 +5,8 @@ defmodule Uaddresses.Repo.Migrations.ChangeSettlementsTable do
     alter table(:settlements) do
       add :type, :string, size: 1
       modify :name, :string, null: false
-      modify :district_id, :uuid
-      add :parent_settlement, :uuid
+      modify :district_id, :uuid, null: true
+      add :parent_settlement_id, :uuid
     end
   end
 end
