@@ -1,18 +1,23 @@
 [regions]
 id | UUID | NOT NULL
+koatuu | VARCHAR('10')
 name | VARCHAR('50') | NOT NULL
 
 [districts]
 id | UUID | NOT NULL
+koatuu | VARCHAR('10')
 region_id | UUID | NOT NULL
 name | VARCHAR('100') | NOT NULL
 
 [settlements]
 id | UUID | NOT NULL
-name | UUID | NOT NULL
-district_id | UUID | NOT NULL
+type | VARCHAR(1)
+koatuu | VARCHAR('10')
+name | VARCHAR | NOT NULL
+district_id | UUID
 region_id | UUID | NOT NULL
 mountain_group | VARCHAR(150)
+parent_settlement | UUID
 
 [streets]
 id | UUID | NOT NULL
