@@ -5,6 +5,7 @@ defmodule Uaddresses.Districts.District do
 
   schema "districts" do
     field :name, :string
+    field :koatuu, :string
 
     timestamps()
 

@@ -18,7 +18,8 @@ defmodule Uaddresses.Web.DistrictView do
     %{
       id: district.id,
       region_id: district.region_id,
-      name: district.name
+      name: district.name,
+      koatuu: district.koatuu
     }
   end
 
@@ -26,7 +27,8 @@ defmodule Uaddresses.Web.DistrictView do
     %{
       id: district.id,
       region: district.region.name,
-      district: district.name
+      district: district.name,
+      koatuu: district.koatuu
     }
   end
 

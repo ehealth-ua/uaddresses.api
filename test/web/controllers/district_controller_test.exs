@@ -5,8 +5,8 @@ defmodule Uaddresses.Web.DistrictControllerTest do
 
   alias Uaddresses.Districts.District
 
-  @create_attrs %{name: "some name", region_id: "7488a646-e31f-11e4-aace-600308960662"}
-  @update_attrs %{name: "some updated name", region_id: "7488a646-e31f-11e4-aace-600308960668"}
+  @create_attrs %{name: "some name", region_id: "7488a646-e31f-11e4-aace-600308960662", koatuu: "1"}
+  @update_attrs %{name: "some updated name", region_id: "7488a646-e31f-11e4-aace-600308960668", koatuu: "1"}
   @invalid_attrs %{name: nil, region_id: nil}
 
   setup %{conn: conn} do
@@ -24,7 +24,8 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "name" => "some name",
-      "region_id" => region_id
+      "region_id" => region_id,
+      "koatuu" => "1"
       }
   end
 
@@ -44,7 +45,8 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "id" => id,
       "name" => "some updated name",
-      "region_id" => region_id
+      "region_id" => region_id,
+      "koatuu" => "1"
       }
   end
 
@@ -77,39 +79,39 @@ defmodule Uaddresses.Web.DistrictControllerTest do
   test "search", %{conn: conn} do
     r_1 = region(%{name: "Київ"})
     r_2 = region(%{name: "Одеська"})
-    d_1 = district(%{region_id: r_1.id, name: "Дарницький"})
-    d_2 = district(%{region_id: r_1.id, name: "Подільський"})
-    d_3 = district(%{region_id: r_2.id, name: "Миколаївський"})
-    d_4 = district(%{region_id: r_2.id, name: "Комінтернівський"})
+    d_1 = district(%{region_id: r_1.id, name: "Дарницький", koatuu: "1"})
+    d_2 = district(%{region_id: r_1.id, name: "Подільський", koatuu: "1"})
+    d_3 = district(%{region_id: r_2.id, name: "Миколаївський", koatuu: "1"})
+    d_4 = district(%{region_id: r_2.id, name: "Комінтернівський", koatuu: "1"})
 
     conn = get conn, "/search/districts/"
     assert json_response(conn, 422)
 
     conn = get conn, "/search/districts/?region=Київ"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => d_1.id, "district" => "Дарницький", "region" => "Київ"},
-      %{"id" => d_2.id, "district" => "Подільський", "region" => "Київ"}
+      %{"id" => d_1.id, "district" => "Дарницький", "region" => "Київ", "koatuu" => "1"},
+      %{"id" => d_2.id, "district" => "Подільський", "region" => "Київ", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/districts/?region=Київ&limit=1"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => d_1.id, "district" => "Дарницький", "region" => "Київ"}
+      %{"id" => d_1.id, "district" => "Дарницький", "region" => "Київ", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/districts/?region=Київ&limit=1&starting_after=#{d_1.id}"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => d_2.id, "district" => "Подільський", "region" => "Київ"}
+      %{"id" => d_2.id, "district" => "Подільський", "region" => "Київ", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/districts/?region=Київ&region_id=#{r_2.id}"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => d_3.id, "district" => "Миколаївський", "region" => "Одеська"},
-      %{"id" => d_4.id, "district" => "Комінтернівський", "region" => "Одеська"}
+      %{"id" => d_3.id, "district" => "Миколаївський", "region" => "Одеська", "koatuu" => "1"},
+      %{"id" => d_4.id, "district" => "Комінтернівський", "region" => "Одеська", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/districts/?region=Одеська&district=інтерні"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => d_4.id, "district" => "Комінтернівський", "region" => "Одеська"}
+      %{"id" => d_4.id, "district" => "Комінтернівський", "region" => "Одеська", "koatuu" => "1"}
     ]
   end
 end

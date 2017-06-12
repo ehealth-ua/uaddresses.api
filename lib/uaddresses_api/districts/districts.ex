@@ -148,7 +148,7 @@ defmodule Uaddresses.Districts do
 
   defp district_changeset(%District{} = district, attrs) do
     district
-    |> cast(attrs, [:name, :region_id])
+    |> cast(attrs, [:name, :region_id, :koatuu])
     |> validate_required([:name, :region_id])
     |> validate_region_exists(:region_id)
   end

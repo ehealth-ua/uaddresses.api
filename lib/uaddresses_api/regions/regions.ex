@@ -142,7 +142,7 @@ defmodule Uaddresses.Regions do
 
   defp region_changeset(%Region{} = region, attrs) do
     region
-    |> cast(attrs, [:name])
+    |> cast(attrs, [:name, :koatuu])
     |> validate_required([:name])
   end
 end

@@ -13,7 +13,8 @@ defmodule Uaddresses.Web.RegionView do
   def render("region.json", %{region: region}) do
     %{
       id: region.id,
-      name: region.name
+      name: region.name,
+      koatuu: region.koatuu
     }
   end
 

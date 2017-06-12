@@ -17,20 +17,30 @@ defmodule Uaddresses.Web.SettlementView do
   def render("search_one.json", %{settlement: settlement}) do
     %{
       id: settlement.id,
+      type: settlement.type,
       region: settlement.region.name,
-      district: settlement.district.name,
+      district: get_name(settlement.district),
+      parent_settlement: get_name(settlement.parent_settlement),
       settlement_name: settlement.name,
-      mountain_group: settlement.mountain_group
+      mountain_group: settlement.mountain_group,
+      koatuu: settlement.koatuu
     }
   end
 
+  defp get_name(nil), do: nil
+  defp get_name(obj), do: obj.name
+
   def render("settlement.json", %{settlement: settlement}) do
-    %{id: settlement.id,
+    %{
+      id: settlement.id,
+      type: settlement.type,
       district_id: settlement.district_id,
       region_id: settlement.region_id,
+      parent_settlement_id: settlement.parent_settlement_id,
       name: settlement.name,
-      mountain_group: settlement.mountain_group
-      }
+      mountain_group: settlement.mountain_group,
+      koatuu: settlement.koatuu
+    }
   end
 
   def render("settlement_by_district.json", %{settlement: settlement}) do

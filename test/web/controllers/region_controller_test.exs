@@ -5,8 +5,8 @@ defmodule Uaddresses.Web.RegionControllerTest do
 
   alias Uaddresses.Regions.Region
 
-  @create_attrs %{name: "some region"}
-  @update_attrs %{name: "some updated region"}
+  @create_attrs %{name: "some region", koatuu: "1"}
+  @update_attrs %{name: "some updated region", koatuu: "1"}
   @invalid_attrs %{name: nil}
 
   setup %{conn: conn} do
@@ -18,7 +18,7 @@ defmodule Uaddresses.Web.RegionControllerTest do
     assert %{"id" => id, "name" => "some region"} = json_response(conn, 201)["data"]
 
     conn = get conn, region_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{"id" => id, "name" => "some region"}
+    assert json_response(conn, 200)["data"] == %{"id" => id, "name" => "some region", "koatuu" => "1"}
   end
 
   test "does not create region and renders errors when data is invalid", %{conn: conn} do
@@ -32,7 +32,7 @@ defmodule Uaddresses.Web.RegionControllerTest do
     assert %{"id" => ^id, "name" => "some updated region"} = json_response(conn, 200)["data"]
 
     conn = get conn, region_path(conn, :show, id)
-    assert json_response(conn, 200)["data"] == %{"id" => id, "name" => "some updated region"}
+    assert json_response(conn, 200)["data"] == %{"id" => id, "name" => "some updated region", "koatuu" => "1"}
   end
 
   test "does not update chosen region and renders errors when data is invalid", %{conn: conn} do
@@ -66,38 +66,38 @@ defmodule Uaddresses.Web.RegionControllerTest do
   end
 
   test "search by region name", %{conn: conn} do
-    r_1 = region(%{name: "Одеська"})
-    r_2 = region(%{name: "Дніпропетровська"})
-    r_3 = region(%{name: "Київська"})
-    r_4 = region(%{name: "Київ"})
-    r_5 = region(%{name: "Івано-Франківська"})
+    r_1 = region(%{name: "Одеська", koatuu: "1"})
+    r_2 = region(%{name: "Дніпропетровська", koatuu: "1"})
+    r_3 = region(%{name: "Київська", koatuu: "1"})
+    r_4 = region(%{name: "Київ", koatuu: "1"})
+    r_5 = region(%{name: "Івано-Франківська", koatuu: "1"})
 
     conn = get conn, "/search/regions/?region=ки"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_3.id, "name" => "Київська"},
-      %{"id" => r_4.id, "name" => "Київ"}
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
+      %{"id" => r_4.id, "name" => "Київ", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/regions/?region=-"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_5.id, "name" => "Івано-Франківська"}
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/regions/?region=ська"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_1.id, "name" => "Одеська"},
-      %{"id" => r_2.id, "name" => "Дніпропетровська"},
-      %{"id" => r_3.id, "name" => "Київська"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська"}
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/regions/"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_1.id, "name" => "Одеська"},
-      %{"id" => r_2.id, "name" => "Дніпропетровська"},
-      %{"id" => r_3.id, "name" => "Київська"},
-      %{"id" => r_4.id, "name" => "Київ"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська"}
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
+      %{"id" => r_4.id, "name" => "Київ", "koatuu" => "1"},
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "1"}
     ]
   end
 end

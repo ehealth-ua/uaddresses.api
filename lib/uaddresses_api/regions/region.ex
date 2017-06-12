@@ -5,6 +5,7 @@ defmodule Uaddresses.Regions.Region do
 
   schema "regions" do
     field :name, :string
+    field :koatuu, :string
 
     timestamps()
 
