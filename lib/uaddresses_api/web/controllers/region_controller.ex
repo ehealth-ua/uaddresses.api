@@ -63,6 +63,6 @@ defmodule Uaddresses.Web.RegionController do
 
   def filter_districts_by_name(districts, params) do
     name = Map.get(params, "name", "")
-    Enum.filter(districts, fn (district) -> String.contains?(district.name, String.downcase(name)) end)
+    Enum.filter(districts, fn (district) -> String.contains?(String.downcase(district.name), String.downcase(name)) end)
   end
 end

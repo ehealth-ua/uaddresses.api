@@ -68,7 +68,8 @@ defmodule Uaddresses.Web.DistrictController do
 
   defp filter_settlements(settlements, params) do
     settlement_name = Map.get(params, "name", "")
-    Enum.filter(settlements, fn (settlement) -> String.contains?(settlement.name, String.downcase(settlement_name)) end)
+    Enum.filter(settlements,
+      fn (settlement) -> String.contains?(String.downcase(settlement.name), String.downcase(settlement_name)) end)
   end
 
   defp get_match_pattern(%{region: _region_name, region_id: region_id}) do
