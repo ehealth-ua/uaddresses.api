@@ -159,7 +159,7 @@ defmodule Uaddresses.Settlements do
   defp settlement_changeset(%Settlement{} = settlement, attrs) do
     settlement
     |> cast(attrs, [:district_id, :region_id, :name, :mountain_group, :type, :koatuu, :parent_settlement_id])
-    |> validate_required([:district_id, :region_id, :name, :mountain_group])
+    |> validate_required([:region_id, :name, :mountain_group])
     |> validate_region_exists(:region_id)
     |> validate_district_exists(:district_id)
   end
