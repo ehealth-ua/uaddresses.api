@@ -110,7 +110,12 @@ defmodule Uaddresses.Settlements do
   end
 
   def insert_to_ets({:ok, %Settlement{} = settlement}) do
-    %{region: %{name: region_name}, district: %{name: district_name}} = Repo.preload(settlement, [:region, :district])
+    %{region: %{name: region_name}, district: district} = Repo.preload(settlement, [:region, :district])
+    district_name =
+      case district do
+        nil -> ""
+        _ -> district |> Map.get(:name) |> String.downcase()
+      end
 
     :ets.insert(:settlements,
       {
@@ -118,7 +123,7 @@ defmodule Uaddresses.Settlements do
         settlement.region_id,
         settlement.district_id,
         String.downcase(region_name),
-        String.downcase(district_name),
+        district_name,
         String.downcase(settlement.name)
       }
     )
@@ -169,7 +174,6 @@ defmodule Uaddresses.Settlements do
     |> get_field(field)
     |> Regions.get_region()
     |> result_region_exists_validation(changeset)
-
   end
 
   defp result_region_exists_validation(nil, changeset) do
@@ -180,9 +184,10 @@ defmodule Uaddresses.Settlements do
   defp validate_district_exists(changeset, field) do
     changeset
     |> get_field(field)
-    |> Districts.get_district()
-    |> result_district_exists_validation(changeset)
-
+    |> case do
+         nil -> changeset
+         field -> field |> Districts.get_district() |> result_district_exists_validation(changeset)
+       end
   end
 
   defp result_district_exists_validation(nil, changeset) do

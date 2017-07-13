@@ -5,7 +5,6 @@ defmodule Uaddresses.Web.DistrictController do
   alias Uaddresses.Districts.District
 
   alias Uaddresses.Settlements
-  alias Uaddresses.Settlements.Settlement
 
   action_fallback Uaddresses.Web.FallbackController
 

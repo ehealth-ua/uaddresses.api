@@ -58,6 +58,16 @@ defmodule Uaddresses.SettlementsTest do
     assert settlement.region_id == region_id
   end
 
+  test "update_settlement/2 with empty district_id" do
+    settlement = fixture(:settlement)
+    %{id: region_id} = region()
+    update_attrs = Map.merge(@update_attrs, %{region_id: region_id, district_id: nil})
+    assert {:ok, settlement} = Settlements.update_settlement(settlement, update_attrs)
+    assert %Settlement{} = settlement
+    assert settlement.name == "some updated name"
+    assert settlement.region_id == region_id
+  end
+
   test "update_settlement/2 with invalid data returns error changeset" do
     settlement = fixture(:settlement)
     assert {:error, %Ecto.Changeset{}} = Settlements.update_settlement(settlement, @invalid_attrs)
