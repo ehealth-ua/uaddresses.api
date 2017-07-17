@@ -77,8 +77,8 @@ defmodule Uaddresses.Web.DistrictControllerTest do
   end
 
   test "search", %{conn: conn} do
-    r_1 = region(%{name: "Київ"})
-    r_2 = region(%{name: "Одеська"})
+    r_1 = region(%{name: "Київ", koatuu: "1"})
+    r_2 = region(%{name: "Одеська", koatuu: "1"})
     d_1 = district(%{region_id: r_1.id, name: "Дарницький", koatuu: "1"})
     d_2 = district(%{region_id: r_1.id, name: "Подільський", koatuu: "1"})
     d_3 = district(%{region_id: r_2.id, name: "Миколаївський", koatuu: "1"})

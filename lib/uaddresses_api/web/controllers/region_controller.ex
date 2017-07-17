@@ -49,20 +49,17 @@ defmodule Uaddresses.Web.RegionController do
   end
 
   def search(conn, params) do
-    name = Map.get(params, "region", "")
-
-    regions =
-      :regions
-      |> :ets.match_object({:"$1", :"$2"})
-      |> Enum.filter(fn {_region_id, region_name} -> String.contains?(region_name, String.downcase(name)) end)
-      |> List.foldl([], fn ({region_id, _region_name}, acc) -> acc ++ [region_id] end)
-      |> Regions.list_by_ids()
-
-    render(conn, "index.json", regions: regions)
+    with {:ok, regions, paging} <- Regions.search(params) do
+      render(conn, "index.json", regions: regions, paging: paging)
+    end
   end
 
   def filter_districts_by_name(districts, params) do
-    name = Map.get(params, "name", "")
-    Enum.filter(districts, fn (district) -> String.contains?(String.downcase(district.name), String.downcase(name)) end)
+    name =
+      params
+      |> Map.get("name", "")
+      |> String.downcase()
+
+    Enum.filter(districts, fn (district) -> String.contains?(String.downcase(district.name), name) end)
   end
 end

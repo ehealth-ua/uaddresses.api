@@ -65,30 +65,37 @@ defmodule Uaddresses.Web.RegionControllerTest do
     ]
   end
 
-  test "search by region name", %{conn: conn} do
+  test "search", %{conn: conn} do
     r_1 = region(%{name: "Одеська", koatuu: "1"})
     r_2 = region(%{name: "Дніпропетровська", koatuu: "1"})
     r_3 = region(%{name: "Київська", koatuu: "1"})
     r_4 = region(%{name: "Київ", koatuu: "1"})
-    r_5 = region(%{name: "Івано-Франківська", koatuu: "1"})
+    r_5 = region(%{name: "Івано-Франківська", koatuu: "2"})
 
-    conn = get conn, "/search/regions/?region=ки"
+    conn = get conn, "/search/regions/?name=ки"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
       %{"id" => r_4.id, "name" => "Київ", "koatuu" => "1"}
     ]
 
-    conn = get conn, "/search/regions/?region=-"
+    conn = get conn, "/search/regions/?name=-"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "1"}
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "2"}
     ]
 
-    conn = get conn, "/search/regions/?region=ська"
+    conn = get conn, "/search/regions/?name=ська"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
       %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
       %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "1"}
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "2"}
+    ]
+
+    conn = get conn, "/search/regions/?name=ська&koatuu=1"
+    assert json_response(conn, 200)["data"] == [
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"}
     ]
 
     conn = get conn, "/search/regions/"
@@ -97,7 +104,7 @@ defmodule Uaddresses.Web.RegionControllerTest do
       %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
       %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
       %{"id" => r_4.id, "name" => "Київ", "koatuu" => "1"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "1"}
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "2"}
     ]
   end
 end

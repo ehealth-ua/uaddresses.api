@@ -6,8 +6,8 @@ defmodule Uaddresses.RegionsTest do
   alias Uaddresses.Regions
   alias Uaddresses.Regions.Region
 
-  @create_attrs %{name: "some region"}
-  @update_attrs %{name: "some updated region"}
+  @create_attrs %{name: "some region", koatuu: "1"}
+  @update_attrs %{name: "some updated region", koatuu: "2"}
   @invalid_attrs %{name: nil}
 
   test "list_regions/1 returns all regions" do

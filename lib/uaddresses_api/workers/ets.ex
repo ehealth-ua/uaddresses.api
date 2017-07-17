@@ -17,7 +17,7 @@ defmodule Uaddresses.Workers.Ets do
     # {region_id, region_name}
     :ets.new(:regions, [:set, :public, :named_table, read_concurrency: true])
     Enum.each(Regions.list_regions(), fn(region) ->
-      :ets.insert(:regions, {region.id, String.downcase(region.name)})
+      :ets.insert(:regions, {region.id, String.downcase(region.name), String.downcase(to_string(region.koatuu))})
     end)
     # {district_id, region_id, region_name, district_name}
     :ets.new(:districts, [:set, :public, :named_table, read_concurrency: true])

@@ -48,7 +48,7 @@ defmodule Uaddresses.Web.SettlementController do
         :settlements
         |> :ets.match_object(get_match_pattern(changeset.changes))
         |> Enum.filter(fn {_, _, _, _, _, name} -> String.contains?(name, String.downcase(settlement_name)) end)
-        |> List.foldl([], fn ({settlement_id, _, _, _, _, _}, acc) -> acc ++ [settlement_id] end)
+        |> Enum.map(fn ({settlement_id, _, _, _, _, _}) -> settlement_id end)
         |> Settlements.list_by_ids(params)
 
         render(conn, "search.json", settlements: settlements, paging: paging)

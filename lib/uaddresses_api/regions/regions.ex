@@ -4,9 +4,12 @@ defmodule Uaddresses.Regions do
   """
 
   import Ecto.{Query, Changeset}, warn: false
-  alias Uaddresses.Repo
 
+  use Uaddresses.Paginate
+
+  alias Uaddresses.Repo
   alias Uaddresses.Regions.Region
+  alias Uaddresses.Regions.Search
 
   @doc """
   Returns the list of regions.
@@ -21,10 +24,10 @@ defmodule Uaddresses.Regions do
     Repo.all(Region)
   end
 
-  def list_by_ids(ids) do
+  defp list_by_ids(ids, query_params) do
     Region
     |> where([r], r.id in ^ids)
-    |> Repo.all
+    |> paginate(query_params)
   end
 
   def get_by(clauses) do
@@ -105,7 +108,7 @@ defmodule Uaddresses.Regions do
   end
 
   def insert_to_ets({:ok, %Region{} = region}) do
-    :ets.insert(:regions, {region.id, String.downcase(region.name)})
+    :ets.insert(:regions, {region.id, String.downcase(region.name), String.downcase(to_string(region.koatuu))})
 
     {:ok, region}
   end
@@ -145,4 +148,38 @@ defmodule Uaddresses.Regions do
     |> cast(attrs, [:name, :koatuu])
     |> validate_required([:name])
   end
+
+  def search(params) do
+    with %Ecto.Changeset{valid?: true} <- search_changeset(params) do
+      {regions, paging} =
+        :regions
+        |> :ets.match_object({:"$1", :"$2", :"$3"})
+        |> filter_by_name(params)
+        |> filter_by_koatuu(params)
+        |> Enum.map(fn ({region_id, _, _}) -> region_id end)
+        |> list_by_ids(params)
+
+      {:ok, regions, paging}
+    end
+  end
+
+  defp filter_by_name(list, params) do
+    region_name =
+      params
+      |> Map.get("name", "")
+      |> String.downcase()
+
+    Enum.filter(list, fn {_, name, _} -> String.contains?(name, region_name) end)
+  end
+
+  defp filter_by_koatuu(list, params) do
+    region_koatuu =
+      params
+      |> Map.get("koatuu", "")
+      |> String.downcase()
+
+    Enum.filter(list, fn {_, _, koatuu} -> String.contains?(koatuu, region_koatuu) end)
+  end
+
+  defp search_changeset(attrs), do: cast(%Search{}, attrs, [:name, :koatuu])
 end

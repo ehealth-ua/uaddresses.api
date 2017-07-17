@@ -58,7 +58,7 @@ defmodule Uaddresses.Web.DistrictController do
         :districts
         |> :ets.match_object(get_match_pattern(changeset.changes))
         |> Enum.filter(fn {_, _, _, name} -> String.contains?(name, String.downcase(district_name)) end)
-        |> List.foldl([], fn ({district_id, _, _, _}, acc) -> acc ++ [district_id] end)
+        |> Enum.map(fn ({district_id, _, _, _}) -> district_id end)
         |> Districts.list_by_ids(params)
 
         render(conn, "search.json", districts: districts, paging: paging)

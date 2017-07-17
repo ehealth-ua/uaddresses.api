@@ -8,7 +8,7 @@ defmodule Uaddresses.SimpleFactory do
   def fixture(:street), do: street()
 
   def region do
-    region(%{name: "some region"})
+    region(%{name: "some region", "koatuu": "1"})
   end
 
   def region(params) do
