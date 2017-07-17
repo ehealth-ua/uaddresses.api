@@ -21,13 +21,9 @@ parent_settlement | UUID
 
 [streets]
 id | UUID | NOT NULL
-district_id | UUID | NOT NULL
-region_id | UUID | NOT NULL
 settlement_id | UUID | NOT NULL
-street_type | VARCHAR(10) | NOT NULL
-street_name | VARCHAR(150) | NOT NULL
-numbers | VARCHAR(10) | NOT NULL
-postal_code | VARCHAR(10) | NOT NULL
+type | VARCHAR(10) | NOT NULL
+name | VARCHAR(150) | NOT NULL
 
 [streets_aliases]
 id | UUID | NOT NULL

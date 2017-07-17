@@ -7,6 +7,7 @@ defmodule Uaddresses.Workers.Ets do
   alias Uaddresses.Regions
   alias Uaddresses.Districts
   alias Uaddresses.Settlements
+  alias Uaddresses.Streets
 
   def start_link do
     GenServer.start_link(__MODULE__, :ok, [name: __MODULE__])
@@ -27,16 +28,18 @@ defmodule Uaddresses.Workers.Ets do
     # {settlement_id, region_id, district_id, region_name, district_name, settlement.name}
     :ets.new(:settlements, [:set, :public, :named_table, read_concurrency: true])
     Enum.each(Settlements.list_settlements_with_regions_and_districts(), fn(settlement) ->
-        :ets.insert(:settlements,
-          {settlement.id, settlement.region_id, settlement.district_id,
-            String.downcase(settlement.region.name),
-            get_district_name(settlement.district),
-            String.downcase(settlement.name)
-          })
-      end)
-    # {street_ id, settlement_id,region_name, district_name, settlement_name, street_name, street_type,
-    # numbers, street_postal_code,
+      :ets.insert(:settlements,
+        {settlement.id, settlement.region_id, settlement.district_id,
+          String.downcase(settlement.region.name),
+          get_district_name(settlement.district),
+          String.downcase(settlement.name)
+        })
+    end)
+    # {street_id, settlement_id, name, type}
     :ets.new(:streets, [:set, :public, :named_table, :duplicate_bag, read_concurrency: true])
+    Enum.each(Streets.list_streets(), fn(street) ->
+      :ets.insert(:streets, {street.id, street.settlement_id, String.downcase(street.name), street.type})
+    end)
     {:ok, []}
   end
 

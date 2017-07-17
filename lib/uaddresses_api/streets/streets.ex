@@ -8,10 +8,9 @@ defmodule Uaddresses.Streets do
   use Uaddresses.Paginate
 
   alias Uaddresses.Repo
-  alias Uaddresses.Districts
   alias Uaddresses.Settlements
-  alias Uaddresses.Regions
   alias Uaddresses.Streets.Street
+  alias Uaddresses.Streets.Search
 
   @street_types [
     "дорога", "урочище", "шлях", "набережна", "вулиця відсутня", "лінія", "квартал", "завулок", "містечко",
@@ -32,13 +31,13 @@ defmodule Uaddresses.Streets do
     Repo.all(Street)
   end
 
-  def list_by_ids(ids, query_params) do
+  defp list_by_ids(ids, query_params) do
     {data, paging} =
       Street
       |> where([s], s.id in ^ids)
       |> paginate(query_params)
 
-    {Repo.preload(data, [:region, :district, :settlement, :aliases]), paging}
+    {Repo.preload(data, [:settlement, :aliases]), paging}
   end
   @doc """
   Gets a single street.
@@ -88,7 +87,7 @@ defmodule Uaddresses.Streets do
 
   def insert_street_aliases({:error, reason}), do: {:error, reason}
   def insert_street_aliases({:ok, %Street{} = street}) do
-    %{street_id: street.id, name: street.street_name}
+    %{street_id: street.id, name: street.name}
     |> street_aliases_changeset()
     |> Repo.insert!()
   end
@@ -120,20 +119,12 @@ defmodule Uaddresses.Streets do
   end
 
   def insert_to_ets({:ok, %Street{} = street}) do
-    %{region: %{name: region_name}, district: %{name: district_name}, settlement: %{name: settlement_name}} =
-      Repo.preload(street, [:settlement, :region, :district])
-
     :ets.insert(:streets,
       {
         street.id,
         street.settlement_id,
-        String.downcase(region_name),
-        String.downcase(district_name),
-        String.downcase(settlement_name),
-        String.downcase(street.street_name),
-        String.downcase(street.street_type),
-        street.numbers,
-        String.downcase(street.postal_code),
+        String.downcase(street.name),
+        String.downcase(street.type)
       }
     )
 
@@ -178,41 +169,11 @@ defmodule Uaddresses.Streets do
 
   defp street_changeset(%Street{} = street, attrs) do
     street
-    |> cast(attrs,
-      [:district_id, :region_id, :settlement_id, :street_type, :street_name, :numbers, :postal_code])
-    |> validate_required([:district_id, :region_id, :settlement_id, :street_type,
-      :street_name, :numbers, :postal_code])
-    |> validate_inclusion(:street_type, @street_types)
-    |> validate_region_exists(:region_id)
-    |> validate_district_exists(:district_id)
+    |> cast(attrs, [:settlement_id, :type, :name])
+    |> validate_required([:settlement_id, :type, :name])
+    |> validate_inclusion(:type, @street_types)
     |> validate_settlement_exists(:settlement_id)
   end
-
-  defp validate_region_exists(changeset, field) do
-    changeset
-    |> get_field(field)
-    |> Regions.get_region()
-    |> result_region_exists_validation(changeset)
-
-  end
-
-  defp result_region_exists_validation(nil, changeset) do
-    add_error(changeset, :region_id, "Selected region doesn't exists'")
-  end
-  defp result_region_exists_validation(%Uaddresses.Regions.Region{}, changeset), do: changeset
-
-  defp validate_district_exists(changeset, field) do
-    changeset
-    |> get_field(field)
-    |> Districts.get_district()
-    |> result_district_exists_validation(changeset)
-
-  end
-
-  defp result_district_exists_validation(nil, changeset) do
-    add_error(changeset, :district_id, "Selected district doesn't exists'")
-  end
-  defp result_district_exists_validation(%Uaddresses.Districts.District{}, changeset), do: changeset
 
   defp validate_settlement_exists(changeset, field) do
     changeset
@@ -227,11 +188,39 @@ defmodule Uaddresses.Streets do
   end
   defp result_settlement_exists_validation(%Uaddresses.Settlements.Settlement{}, changeset), do: changeset
 
-  def search_changeset(attrs) do
-    %Uaddresses.Streets.Search{}
-    |> cast(attrs, [:settlement_name, :settlement_id, :street_name, :street_type, :numbers, :postal_code, :region,
-      :district])
-    |> validate_required([:settlement_name, :street_name, :numbers])
-    |> validate_inclusion(:street_type, @street_types)
+  def search(params) do
+    with changeset = %Ecto.Changeset{valid?: true} <- search_changeset(params) do
+      {streets, paging} =
+        :streets
+        |> :ets.match_object(get_match_pattern(changeset.changes))
+        |> filter_by_name(params)
+        |> Enum.map(fn ({street_id, _, _, _}) -> street_id end)
+        |> list_by_ids(params)
+
+      {:ok, streets, paging}
+    end
+  end
+
+  defp get_match_pattern(changes) do
+    {:"$1", :"$2", :"$3", get_street_type(changes)}
+  end
+
+  defp get_street_type(%{type: type}), do: String.downcase(type)
+  defp get_street_type(_), do: :"$4"
+
+  defp filter_by_name(list, params) do
+    street_name =
+      params
+      |> Map.get("name", "")
+      |> String.downcase()
+
+    Enum.filter(list, fn {_, _, name, _} -> String.contains?(name, street_name) end)
+  end
+
+  defp search_changeset(attrs) do
+    %Search{}
+    |> cast(attrs, [:settlement_id, :name, :type])
+    |> validate_required([:settlement_id])
+    |> validate_inclusion(:type, @street_types)
   end
 end

@@ -10,38 +10,17 @@ defmodule Uaddresses.Web.StreetView do
     render_one(street, StreetView, "street.json")
   end
 
-  def render("search.json", %{streets: streets}) do
-    render_many(streets, StreetView, "search_one.json")
-  end
-
-  def render("search_one.json", %{street: street}) do
+  def render("street.json", %{street: street}) do
     %{
       id: street.id,
-      region: street.region.name,
-      district: street.district.name,
-      settlement_name: street.settlement.name,
-      street_type: street.street_type,
-      street_name: street.street_name,
-      numbers: street.numbers,
-      postal_code: street.postal_code,
-      aliases: render_many(street.aliases, StreetView, "aliases.json")
-    }
-  end
-
-  def render("street.json", %{street: street}) do
-    %{id: street.id,
-      district_id: street.district_id,
-      region_id: street.region_id,
       settlement_id: street.settlement_id,
-      street_type: street.street_type,
-      street_name: street.street_name,
-      numbers: street.numbers,
-      postal_code: street.postal_code,
+      type: street.type,
+      name: street.name,
       aliases: render_many(street.aliases, StreetView, "aliases.json")
      }
   end
 
-  def render("aliases.json", %{street: aliasModel}) do
-    aliasModel.name
+  def render("aliases.json", %{street: alias_model}) do
+    alias_model.name
   end
 end

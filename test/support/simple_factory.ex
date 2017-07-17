@@ -39,17 +39,13 @@ defmodule Uaddresses.SimpleFactory do
   end
 
   def street do
-    %{id: region_id} = region()
-    %{id: district_id} = district()
     %{id: settlement_id} = settlement()
 
-    street(%{
-      district_id: district_id,
-      region_id: region_id,
-      settlement_id: settlement_id,
-      street_name: "some street_name",
-      numbers: ["some numbers"],
-      street_type: "вулиця", postal_code: "some postal_code"
+    street(
+      %{
+        settlement_id: settlement_id,
+        name: "some street_name",
+        type: "вулиця"
       }
     )
   end

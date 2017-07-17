@@ -7,32 +7,21 @@ defmodule Uaddresses.StreetsTest do
   alias Uaddresses.Streets.Street
 
   @create_attrs %{
-    district_id: "7488a646-e31f-11e4-aace-600308960662",
-    region_id: "7488a646-e31f-11e4-aace-600308960662",
     settlement_id: "7488a646-e31f-11e4-aace-600308960662",
-    street_name: "some street_name",
-    numbers: ["some numbers"],
-    street_type: "вулиця",
-    postal_code: "some postal_code"
+    name: "some street_name",
+    type: "вулиця"
   }
 
   @update_attrs %{
-    district_id: "7488a646-e31f-11e4-aace-600308960668",
-    region_id: "7488a646-e31f-11e4-aace-600308960668",
     settlement_id: "7488a646-e31f-11e4-aace-600308960668",
-    street_name: "some updated street_name",
-    numbers: ["some updated numbers"],
-    street_type: "провулок",
-    postal_code: "some updated postal_code"
+    name: "some updated street_name",
+    type: "провулок"
   }
 
   @invalid_attrs %{
-    district_id: nil,
-    region_id: nil,
     settlement_id: nil,
-    street_name: nil,
-    numbers: nil,
-    street_type: nil
+    name: nil,
+    type: nil
   }
 
   test "list_streets/1 returns all streets" do
@@ -46,22 +35,16 @@ defmodule Uaddresses.StreetsTest do
   end
 
   test "create_street/1 with valid data creates a street" do
-    %{id: region_id} = region()
-    %{id: district_id} = district()
     %{id: settlement_id} = settlement()
 
     assert {:ok, %Street{} = street} =
       @create_attrs
-      |> Map.merge(%{region_id: region_id, district_id: district_id, settlement_id: settlement_id})
+      |> Map.put(:settlement_id, settlement_id)
       |> Streets.create_street()
 
-    assert street.district_id == district_id
-    assert street.region_id == region_id
     assert street.settlement_id == settlement_id
-    assert street.street_name == "some street_name"
-    assert street.numbers == ["some numbers"]
-    assert street.street_type == "вулиця"
-    assert street.postal_code == "some postal_code"
+    assert street.name == "some street_name"
+    assert street.type == "вулиця"
   end
 
   test "create_street/1 with invalid data returns error changeset" do
@@ -70,22 +53,15 @@ defmodule Uaddresses.StreetsTest do
 
   test "update_street/2 with valid data updates the street" do
     street = fixture(:street)
-    %{id: region_id} = region()
-    %{id: district_id} = district()
     %{id: settlement_id} = settlement()
 
-    update_attrs =
-      Map.merge(@update_attrs, %{region_id: region_id, district_id: district_id, settlement_id: settlement_id})
+    update_attrs = Map.put(@update_attrs, :settlement_id, settlement_id)
 
     assert {:ok, street} = Streets.update_street(street, update_attrs)
     assert %Street{} = street
-    assert street.district_id == district_id
-    assert street.region_id == region_id
     assert street.settlement_id == settlement_id
-    assert street.street_name == "some updated street_name"
-    assert street.numbers == ["some updated numbers"]
-    assert street.street_type == "провулок"
-    assert street.postal_code == "some updated postal_code"
+    assert street.name == "some updated street_name"
+    assert street.type == "провулок"
   end
 
   test "update_street/2 with invalid data returns error changeset" do
