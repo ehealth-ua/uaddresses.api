@@ -202,7 +202,7 @@ defmodule Uaddresses.Streets do
   end
 
   defp get_match_pattern(changes) do
-    {:"$1", :"$2", :"$3", get_street_type(changes)}
+    {:"$1", changes.settlement_id, :"$3", get_street_type(changes)}
   end
 
   defp get_street_type(%{type: type}), do: String.downcase(type)
@@ -221,6 +221,5 @@ defmodule Uaddresses.Streets do
     %Search{}
     |> cast(attrs, [:settlement_id, :name, :type])
     |> validate_required([:settlement_id])
-    |> validate_inclusion(:type, @street_types)
   end
 end
