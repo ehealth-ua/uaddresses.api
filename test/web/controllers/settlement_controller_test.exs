@@ -46,12 +46,16 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "type" => "1",
       "id" => id,
+      "district" => "some name",
       "district_id" => district_id,
       "name" => "some name",
+      "region" => "some region",
       "region_id" => region_id,
       "mountain_group" => "0",
       "koatuu" => "1",
-      "parent_settlement_id" => nil}
+      "parent_settlement" => nil,
+      "parent_settlement_id" => nil
+    }
   end
 
   test "does not create settlement and renders errors when data is invalid", %{conn: conn} do
@@ -72,12 +76,16 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     assert json_response(conn, 200)["data"] == %{
       "type" => "1",
       "id" => id,
+      "district" => "some name",
       "district_id" => district_id,
       "name" => "some updated name",
+      "region" => "some region",
       "region_id" => region_id,
       "mountain_group" => "1",
       "koatuu" => "1",
-      "parent_settlement_id" => nil}
+      "parent_settlement" => nil,
+      "parent_settlement_id" => nil
+    }
   end
 
   test "does not update chosen settlement and renders errors when data is invalid", %{conn: conn} do
@@ -94,50 +102,117 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     d_3 = district(%{region_id: r_2.id, name: "Миколаївський"})
     d_4 = district(%{region_id: r_2.id, name: "Комінтернівський"})
 
-    settlement(%{region_id: r_1.id, district_id: d_2.id, name: "Рокитне", type: "1", koatuu: "1"})
-    s_2 = settlement(%{region_id: r_1.id, district_id: d_2.id, name: "Бакумівка", type: "1", koatuu: "1"})
+    s_1 = settlement(%{region_id: r_1.id, district_id: d_2.id, name: "Рокитне", type: "1", koatuu: "11"})
+    s_2 = settlement(%{region_id: r_1.id, district_id: d_2.id, name: "Бакумівка", type: "2", koatuu: "12"})
 
-    s_3 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Володарка", type: "1", koatuu: "1"})
-    s_4 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Біла Церква", type: "1", koatuu: "1"})
+    s_3 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Володарка", type: "3", koatuu: "13"})
+    s_4 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Біла Церква", type: "4", koatuu: "14"})
 
-    settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Миколаївка", type: "1", koatuu: "1"})
-    s_6 = settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Якесь село", type: "1", koatuu: "1"})
+    s_5 = settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Миколаївка", type: "5", koatuu: "15"})
+    s_6 = settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Якесь село", type: "6", koatuu: "16"})
 
-    s_7 = settlement(%{region_id: r_2.id, district_id: d_4.id, name: "Комінтерне", type: "1", koatuu: "1"})
-    s_8 = settlement(%{region_id: r_2.id, district_id: d_4.id, name: "Новосілки 2", type: "1", koatuu: "1"})
+    s_7 = settlement(%{region_id: r_2.id, district_id: d_4.id, name: "Комінтерне", type: "7", koatuu: "17"})
+    s_8 = settlement(%{region_id: r_2.id, district_id: d_4.id, name: "Новосілки 2", type: "8", koatuu: "18"})
 
     conn = get conn, "/search/settlements/"
-    assert json_response(conn, 422)
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_1.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Рокитне", "mountain_group" => "0",
+        "type" => "1", "koatuu" => "11", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_2.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Бакумівка", "mountain_group" => "0",
+        "type" => "2", "koatuu" => "12", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Білоцерківський", "district_id" => d_1.id, "id" => s_3.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Володарка", "mountain_group" => "0",
+        "type" => "3", "koatuu" => "13", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Білоцерківський", "region_id" => r_1.id, "district_id" => d_1.id, "id" => s_4.id,
+        "region" => "Київська", "name" => "Біла Церква", "mountain_group" => "0",
+        "type" => "4", "koatuu" => "14", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_5.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Миколаївка", "mountain_group" => "0",
+        "type" => "5", "koatuu" => "15", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_6.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Якесь село", "mountain_group" => "0",
+        "type" => "6", "koatuu" => "16", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_7.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Комінтерне", "mountain_group" => "0",
+        "type" => "7", "koatuu" => "17", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_8.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => "0",
+        "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
+    ]
 
-    conn = get conn, "/search/settlements/?region=Київська&settlement_name=а"
+    conn = get conn, "/search/settlements/?region=Київська&name=а"
 
     assert json_response(conn, 200)["data"] == [
-      %{"district" => "Рокитнянський", "id" => s_2.id,
-        "region" => "Київська", "settlement_name" => "Бакумівка", "mountain_group" => "0",
-        "type" => "1", "koatuu" => "1", "parent_settlement" => nil},
-      %{"district" => "Білоцерківський", "id" => s_3.id,
-        "region" => "Київська", "settlement_name" => "Володарка", "mountain_group" => "0",
-        "type" => "1", "koatuu" => "1", "parent_settlement" => nil},
-      %{"district" => "Білоцерківський", "id" => s_4.id,
-        "region" => "Київська", "settlement_name" => "Біла Церква", "mountain_group" => "0",
-        "type" => "1", "koatuu" => "1", "parent_settlement" => nil}
+      %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_2.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Бакумівка", "mountain_group" => "0",
+        "type" => "2", "koatuu" => "12", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Білоцерківський", "district_id" => d_1.id, "id" => s_3.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Володарка", "mountain_group" => "0",
+        "type" => "3", "koatuu" => "13", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Білоцерківський", "region_id" => r_1.id, "district_id" => d_1.id, "id" => s_4.id,
+        "region" => "Київська", "name" => "Біла Церква", "mountain_group" => "0",
+        "type" => "4", "koatuu" => "14", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
 
     conn = get conn, "/search/settlements/?region=Одеська&district=Комінтернівський"
     assert json_response(conn, 200)["data"] == [
-      %{"district" => "Комінтернівський", "id" => s_7.id,
-        "region" => "Одеська", "settlement_name" => "Комінтерне", "mountain_group" => "0",
-        "type" => "1", "koatuu" => "1", "parent_settlement" => nil},
-      %{"district" => "Комінтернівський", "id" => s_8.id,
-        "region" => "Одеська", "settlement_name" => "Новосілки 2", "mountain_group" => "0",
-        "type" => "1", "koatuu" => "1", "parent_settlement" => nil},
+      %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_7.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Комінтерне", "mountain_group" => "0",
+        "type" => "7", "koatuu" => "17", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_8.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => "0",
+        "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
 
-    conn = get conn, "/search/settlements/?region=Одеська&settlement_name=Якесь село"
+    conn = get conn, "/search/settlements/?region=Одеська&name=Якесь село"
     assert json_response(conn, 200)["data"] == [
-      %{"district" => "Миколаївський", "id" => s_6.id,
-        "region" => "Одеська", "settlement_name" => "Якесь село", "mountain_group" => "0",
-        "type" => "1", "koatuu" => "1", "parent_settlement" => nil},
+      %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_6.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Якесь село", "mountain_group" => "0",
+        "type" => "6", "koatuu" => "16", "parent_settlement" => nil, "parent_settlement_id" => nil}
+    ]
+
+    conn = get conn, "/search/settlements/?type=4"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Білоцерківський", "region_id" => r_1.id, "district_id" => d_1.id, "id" => s_4.id,
+        "region" => "Київська", "name" => "Біла Церква", "mountain_group" => "0",
+        "type" => "4", "koatuu" => "14", "parent_settlement" => nil, "parent_settlement_id" => nil}
+    ]
+
+    conn = get conn, "/search/settlements/?koatuu=1"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_1.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Рокитне", "mountain_group" => "0",
+        "type" => "1", "koatuu" => "11", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_2.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Бакумівка", "mountain_group" => "0",
+        "type" => "2", "koatuu" => "12", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Білоцерківський", "district_id" => d_1.id, "id" => s_3.id,
+        "region" => "Київська", "region_id" => r_1.id, "name" => "Володарка", "mountain_group" => "0",
+        "type" => "3", "koatuu" => "13", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Білоцерківський", "region_id" => r_1.id, "district_id" => d_1.id, "id" => s_4.id,
+        "region" => "Київська", "name" => "Біла Церква", "mountain_group" => "0",
+        "type" => "4", "koatuu" => "14", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_5.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Миколаївка", "mountain_group" => "0",
+        "type" => "5", "koatuu" => "15", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_6.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Якесь село", "mountain_group" => "0",
+        "type" => "6", "koatuu" => "16", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_7.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Комінтерне", "mountain_group" => "0",
+        "type" => "7", "koatuu" => "17", "parent_settlement" => nil, "parent_settlement_id" => nil},
+      %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_8.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => "0",
+        "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
+    ]
+
+    conn = get conn, "/search/settlements/?koatuu=5"
+    assert json_response(conn, 200)["data"] == [
+      %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_5.id,
+        "region" => "Одеська", "region_id" => r_2.id, "name" => "Миколаївка", "mountain_group" => "0",
+        "type" => "5", "koatuu" => "15", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
   end
 end

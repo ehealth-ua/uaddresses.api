@@ -26,17 +26,22 @@ defmodule Uaddresses.Workers.Ets do
         {district.id, district.region_id, String.downcase(district.region.name), String.downcase(district.name),
           String.downcase(to_string(district.koatuu))})
     end)
-    # {settlement_id, region_id, district_id, region_name, district_name, settlement.name}
+    # {settlement_id, region_name, district_name, settlement_name, type, mountain_group, koatuu}
     :ets.new(:settlements, [:set, :public, :named_table, read_concurrency: true])
-    Enum.each(Settlements.list_settlements_with_regions_and_districts(), fn(settlement) ->
+    Enum.each(Settlements.list_settlements(), fn(settlement) ->
       :ets.insert(:settlements,
-        {settlement.id, settlement.region_id, settlement.district_id,
+        {
+          settlement.id,
           String.downcase(settlement.region.name),
           get_district_name(settlement.district),
-          String.downcase(settlement.name)
-        })
+          String.downcase(settlement.name),
+          String.downcase(to_string(settlement.type)),
+          String.downcase(to_string(settlement.mountain_group)),
+          String.downcase(to_string(settlement.koatuu))
+        }
+      )
     end)
-    # {street_id, settlement_id, name, type}
+    # {street_id, settlement_id, street_name, type}
     :ets.new(:streets, [:set, :public, :named_table, :duplicate_bag, read_concurrency: true])
     Enum.each(Streets.list_streets(), fn(street) ->
       :ets.insert(:streets, {street.id, street.settlement_id, String.downcase(street.name), street.type})

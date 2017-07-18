@@ -102,7 +102,7 @@ defmodule Uaddresses.Districts do
   end
 
   def insert_to_ets({:ok, %District{} = district}) do
-    %{region: %{name: region_name}} = Repo.preload(district, :region)
+    %{region: %{name: region_name}} = district
 
     :ets.insert(:districts,
       {district.id, district.region_id, String.downcase(region_name), String.downcase(district.name),
