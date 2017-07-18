@@ -6,8 +6,8 @@ defmodule Uaddresses.SettlementsTest do
   alias Uaddresses.Settlements
   alias Uaddresses.Settlements.Settlement
 
-  @create_attrs %{name: "some name", mountain_group: "0"}
-  @update_attrs %{name: "some updated name", mountain_group: "0"}
+  @create_attrs %{name: "some name", mountain_group: false}
+  @update_attrs %{name: "some updated name", mountain_group: true}
   @invalid_attrs %{district_id: nil, name: nil, region_id: nil}
 
   test "list_settlements/1 returns all settlements" do

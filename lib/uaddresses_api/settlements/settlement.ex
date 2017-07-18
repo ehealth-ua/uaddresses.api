@@ -5,7 +5,7 @@ defmodule Uaddresses.Settlements.Settlement do
   schema "settlements" do
     field :type, :string
     field :name, :string
-    field :mountain_group, :string
+    field :mountain_group, :boolean
     field :koatuu, :string
 
     timestamps()
