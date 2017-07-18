@@ -31,14 +31,6 @@ defmodule Uaddresses.Streets do
     Repo.all(Street)
   end
 
-  defp list_by_ids(ids, query_params) do
-    {data, paging} =
-      Street
-      |> where([s], s.id in ^ids)
-      |> paginate(query_params)
-
-    {Repo.preload(data, [:settlement, :aliases]), paging}
-  end
   @doc """
   Gets a single street.
 
@@ -215,6 +207,15 @@ defmodule Uaddresses.Streets do
       |> String.downcase()
 
     Enum.filter(list, fn {_, _, name, _} -> String.contains?(name, street_name) end)
+  end
+
+  defp list_by_ids(ids, query_params) do
+    {data, paging} =
+      Street
+      |> where([s], s.id in ^ids)
+      |> paginate(query_params)
+
+    {Repo.preload(data, [:settlement, :aliases]), paging}
   end
 
   defp search_changeset(attrs) do

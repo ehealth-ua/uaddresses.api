@@ -66,45 +66,51 @@ defmodule Uaddresses.Web.RegionControllerTest do
   end
 
   test "search", %{conn: conn} do
-    r_1 = region(%{name: "Одеська", koatuu: "1"})
-    r_2 = region(%{name: "Дніпропетровська", koatuu: "1"})
-    r_3 = region(%{name: "Київська", koatuu: "1"})
-    r_4 = region(%{name: "Київ", koatuu: "1"})
-    r_5 = region(%{name: "Івано-Франківська", koatuu: "2"})
+    r_1 = region(%{name: "Одеська", koatuu: "11"})
+    r_2 = region(%{name: "Дніпропетровська", koatuu: "12"})
+    r_3 = region(%{name: "Київська", koatuu: "13"})
+    r_4 = region(%{name: "Київ", koatuu: "14"})
+    r_5 = region(%{name: "Івано-Франківська", koatuu: "15"})
 
     conn = get conn, "/search/regions/?name=ки"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
-      %{"id" => r_4.id, "name" => "Київ", "koatuu" => "1"}
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
+      %{"id" => r_4.id, "name" => "Київ", "koatuu" => "14"}
     ]
 
     conn = get conn, "/search/regions/?name=-"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "2"}
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
     ]
 
     conn = get conn, "/search/regions/?name=ська"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
-      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
-      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "2"}
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
     ]
 
     conn = get conn, "/search/regions/?name=ська&koatuu=1"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
-      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
-      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"}
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
+    ]
+
+    conn = get conn, "/search/regions/?name=ська&koatuu=3"
+    assert json_response(conn, 200)["data"] == [
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"}
     ]
 
     conn = get conn, "/search/regions/"
     assert json_response(conn, 200)["data"] == [
-      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "1"},
-      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "1"},
-      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "1"},
-      %{"id" => r_4.id, "name" => "Київ", "koatuu" => "1"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "2"}
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
+      %{"id" => r_4.id, "name" => "Київ", "koatuu" => "14"},
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
     ]
   end
 end

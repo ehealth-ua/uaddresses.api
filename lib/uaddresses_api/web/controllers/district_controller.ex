@@ -51,17 +51,8 @@ defmodule Uaddresses.Web.DistrictController do
   end
 
   def search(conn, params) do
-    district_name = Map.get(params, "district", "")
-
-    with changeset = %Ecto.Changeset{valid?: true} <- Districts.search_changeset(params) do
-      {districts, paging} =
-        :districts
-        |> :ets.match_object(get_match_pattern(changeset.changes))
-        |> Enum.filter(fn {_, _, _, name} -> String.contains?(name, String.downcase(district_name)) end)
-        |> Enum.map(fn ({district_id, _, _, _}) -> district_id end)
-        |> Districts.list_by_ids(params)
-
-        render(conn, "search.json", districts: districts, paging: paging)
+    with {:ok, districts, paging} <- Districts.search(params) do
+      render(conn, "index.json", districts: districts, paging: paging)
     end
   end
 
@@ -69,12 +60,5 @@ defmodule Uaddresses.Web.DistrictController do
     settlement_name = Map.get(params, "name", "")
     Enum.filter(settlements,
       fn (settlement) -> String.contains?(String.downcase(settlement.name), String.downcase(settlement_name)) end)
-  end
-
-  defp get_match_pattern(%{region: _region_name, region_id: region_id}) do
-    {:"$1", region_id, :"$3", :"$4"}
-  end
-  defp get_match_pattern(%{region: region_name}) do
-    {:"$1", :"$2", String.downcase(region_name), :"$4"}
   end
 end

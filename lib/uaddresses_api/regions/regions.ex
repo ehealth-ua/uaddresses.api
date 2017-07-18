@@ -24,12 +24,6 @@ defmodule Uaddresses.Regions do
     Repo.all(Region)
   end
 
-  defp list_by_ids(ids, query_params) do
-    Region
-    |> where([r], r.id in ^ids)
-    |> paginate(query_params)
-  end
-
   def get_by(clauses) do
     Region
     |> Repo.get_by(clauses)
@@ -179,6 +173,12 @@ defmodule Uaddresses.Regions do
       |> String.downcase()
 
     Enum.filter(list, fn {_, _, koatuu} -> String.contains?(koatuu, region_koatuu) end)
+  end
+
+  defp list_by_ids(ids, query_params) do
+    Region
+    |> where([r], r.id in ^ids)
+    |> paginate(query_params)
   end
 
   defp search_changeset(attrs), do: cast(%Search{}, attrs, [:name, :koatuu])

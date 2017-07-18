@@ -14,16 +14,17 @@ defmodule Uaddresses.Workers.Ets do
   end
 
   def init(_) do
-    # {region_id, region_name}
+    # {region_id, region_name, koatuu}
     :ets.new(:regions, [:set, :public, :named_table, read_concurrency: true])
     Enum.each(Regions.list_regions(), fn(region) ->
       :ets.insert(:regions, {region.id, String.downcase(region.name), String.downcase(to_string(region.koatuu))})
     end)
-    # {district_id, region_id, region_name, district_name}
+    # {district_id, region_id, region_name, district_name, koatuu}
     :ets.new(:districts, [:set, :public, :named_table, read_concurrency: true])
-    Enum.each(Districts.list_districts_with_regions(), fn(district) ->
+    Enum.each(Districts.list_districts(), fn(district) ->
       :ets.insert(:districts,
-        {district.id, district.region_id, String.downcase(district.region.name), String.downcase(district.name)})
+        {district.id, district.region_id, String.downcase(district.region.name), String.downcase(district.name),
+          String.downcase(to_string(district.koatuu))})
     end)
     # {settlement_id, region_id, district_id, region_name, district_name, settlement.name}
     :ets.new(:settlements, [:set, :public, :named_table, read_concurrency: true])
