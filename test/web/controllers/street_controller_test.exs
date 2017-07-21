@@ -92,10 +92,10 @@ defmodule Uaddresses.Web.StreetControllerTest do
 
     conn = put conn, street_path(conn, :update, str_1), street: %{name: "Нове ім'я"}
 
-    conn = get conn, "/search/streets/"
+    conn = get conn, "/streets/"
     assert json_response(conn, 422)
 
-    conn = get conn, "/search/streets/?settlement_id=#{set_1.id}"
+    conn = get conn, "/streets/?settlement_id=#{set_1.id}"
 
     assert json_response(conn, 200)["data"] == [
       %{"id" => str_2.id, "settlement_id" => set_1.id, "name" => "Тараса Шевченка", "type" => "бульвар",
@@ -106,7 +106,7 @@ defmodule Uaddresses.Web.StreetControllerTest do
         "aliases" => ["Богдана Хмельницького"]}
     ]
 
-    conn = get conn, "/search/streets/?settlement_id=#{set_1.id}&name=Шевченка"
+    conn = get conn, "/streets/?settlement_id=#{set_1.id}&name=Шевченка"
 
     assert json_response(conn, 200)["data"] == [
       %{"id" => str_2.id, "settlement_id" => set_1.id, "name" => "Тараса Шевченка", "type" => "бульвар",
@@ -115,14 +115,14 @@ defmodule Uaddresses.Web.StreetControllerTest do
         "aliases" => ["Тараса Шевченка"]}
     ]
 
-    conn = get conn, "/search/streets/?settlement_id=#{set_1.id}&name=Шевченка&type=вулиця"
+    conn = get conn, "/streets/?settlement_id=#{set_1.id}&name=Шевченка&type=вулиця"
 
     assert json_response(conn, 200)["data"] == [
       %{"id" => str_3.id, "settlement_id" => set_1.id, "name" => "Тараса Шевченка", "type" => "вулиця",
         "aliases" => ["Тараса Шевченка"]}
     ]
 
-    conn = get conn, "/search/streets/?settlement_id=#{set_2.id}&name=Солом&type=вулиця"
+    conn = get conn, "/streets/?settlement_id=#{set_2.id}&name=Нове&type=вулиця"
 
     assert json_response(conn, 200)["data"] == [
       %{"id" => str_1.id, "settlement_id" => set_2.id, "name" => "Нове ім'я", "type" => "вулиця",

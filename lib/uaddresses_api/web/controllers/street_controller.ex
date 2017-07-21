@@ -6,9 +6,10 @@ defmodule Uaddresses.Web.StreetController do
 
   action_fallback Uaddresses.Web.FallbackController
 
-  def index(conn, _params) do
-    streets = Streets.list_streets()
-    render(conn, "index.json", streets: streets)
+  def index(conn, params) do
+    with {streets, %Ecto.Paging{} = paging} <- Streets.list_streets(params) do
+      render(conn, "index.json", streets: streets, paging: paging)
+    end
   end
 
   def create(conn, %{"street" => street_params}) do
@@ -41,12 +42,6 @@ defmodule Uaddresses.Web.StreetController do
     street = Streets.get_street!(id)
     with {:ok, %Street{}} <- Streets.delete_street(street) do
       send_resp(conn, :no_content, "")
-    end
-  end
-
-  def search(conn, params) do
-    with {:ok, streets, paging} <- Streets.search(params) do
-      render(conn, "index.json", streets: streets, paging: paging)
     end
   end
 end

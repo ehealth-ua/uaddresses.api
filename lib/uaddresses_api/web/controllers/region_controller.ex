@@ -7,9 +7,10 @@ defmodule Uaddresses.Web.RegionController do
 
   action_fallback Uaddresses.Web.FallbackController
 
-  def index(conn, _params) do
-    regions = Regions.list_regions()
-    render(conn, "index.json", regions: regions)
+  def index(conn, params) do
+    with {regions, %Ecto.Paging{} = paging} <- Regions.list_regions(params) do
+      render(conn, "index.json", regions: regions, paging: paging)
+    end
   end
 
   def create(conn, %{"region" => region_params}) do
@@ -41,25 +42,14 @@ defmodule Uaddresses.Web.RegionController do
   end
 
   def districts(conn, %{"id" => id} = params) do
-    with %Uaddresses.Regions.Region{} = Regions.get_region!(id),
-      {districts, paging} = Districts.get_by_region_id(id, params),
-      districts = filter_districts_by_name(districts, params) do
-      render(conn, "list_districts.json", districts: districts, paging: paging)
-    end
-  end
-
-  def search(conn, params) do
-    with {:ok, regions, paging} <- Regions.search(params) do
-      render(conn, "index.json", regions: regions, paging: paging)
-    end
-  end
-
-  def filter_districts_by_name(districts, params) do
-    name =
+    search_params =
       params
-      |> Map.get("name", "")
-      |> String.downcase()
+      |> Map.delete("id")
+      |> Map.put("region_id", id)
 
-    Enum.filter(districts, fn (district) -> String.contains?(String.downcase(district.name), name) end)
+    with %Uaddresses.Regions.Region{} = Regions.get_region!(id),
+      {districts, paging} = Districts.list_districts(search_params) do
+        render(conn, "list_districts.json", districts: districts, paging: paging)
+    end
   end
 end

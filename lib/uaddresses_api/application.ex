@@ -15,7 +15,6 @@ defmodule Uaddresses do
     children = [
       # Start the Ecto repository
       supervisor(Uaddresses.Repo, []),
-      worker(Uaddresses.Workers.Ets, []),
       # Start the endpoint when the application starts
       supervisor(Uaddresses.Web.Endpoint, []),
     ]

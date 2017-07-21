@@ -24,18 +24,12 @@ defmodule Uaddresses.Web.Router do
   scope "/", Uaddresses.Web do
     pipe_through :api
 
-    resources "/regions", RegionController, except: [:new, :edit, :delete, :index]
-    resources "/districts", DistrictController, except: [:new, :edit, :delete, :index]
-    resources "/settlements", SettlementController, except: [:new, :edit, :delete, :index]
-    resources "/streets", StreetController, except: [:new, :edit, :delete, :index]
+    resources "/regions", RegionController, except: [:new, :edit, :delete]
+    resources "/districts", DistrictController, except: [:new, :edit, :delete]
+    resources "/settlements", SettlementController, except: [:new, :edit, :delete]
+    resources "/streets", StreetController, except: [:new, :edit, :delete]
 
     get "/details/region/:id/districts", RegionController, :districts
     get "/details/district/:id/settlements", DistrictController, :settlements
-
-    get "/search/regions/", RegionController, :search
-    get "/search/districts/", DistrictController, :search
-    get "/search/settlements/", SettlementController, :search
-    get "/search/streets/", StreetController, :search
-
   end
 end

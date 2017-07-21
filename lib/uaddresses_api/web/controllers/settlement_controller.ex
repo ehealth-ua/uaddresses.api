@@ -6,9 +6,10 @@ defmodule Uaddresses.Web.SettlementController do
 
   action_fallback Uaddresses.Web.FallbackController
 
-  def index(conn, _params) do
-    settlements = Settlements.list_settlements()
-    render(conn, "index.json", settlements: settlements)
+  def index(conn, params) do
+    with {settlements, %Ecto.Paging{} = paging} <- Settlements.list_settlements(params) do
+      render(conn, "index.json", settlements: settlements, paging: paging)
+    end
   end
 
   def create(conn, %{"settlement" => settlement_params}) do
@@ -37,12 +38,6 @@ defmodule Uaddresses.Web.SettlementController do
     settlement = Settlements.get_settlement!(id)
     with {:ok, %Settlement{}} <- Settlements.delete_settlement(settlement) do
       send_resp(conn, :no_content, "")
-    end
-  end
-
-  def search(conn, params) do
-    with {:ok, settlements, paging} <- Settlements.search(params) do
-      render(conn, "index.json", settlements: settlements, paging: paging)
     end
   end
 end

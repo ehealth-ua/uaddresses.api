@@ -5,11 +5,12 @@ defmodule Uaddresses.Settlements do
 
   import Ecto.{Query, Changeset}, warn: false
 
-  use Uaddresses.Paginate
+  use Uaddresses.Search
 
   alias Uaddresses.Repo
   alias Uaddresses.Districts
   alias Uaddresses.Regions
+  alias Uaddresses.Regions.Region
   alias Uaddresses.Districts.District
   alias Uaddresses.Settlements.Settlement
   alias Uaddresses.Settlements.Search
@@ -23,10 +24,10 @@ defmodule Uaddresses.Settlements do
       [%Settlement{}, ...]
 
   """
-  def list_settlements do
-    Settlement
-    |> Repo.all()
-    |> Repo.preload([:region, :district, :parent_settlement])
+  def list_settlements(params) do
+    params
+    |> search_changeset()
+    |> search(params, Settlement, 10)
   end
 
   @doc """
@@ -45,26 +46,15 @@ defmodule Uaddresses.Settlements do
   """
   def get_settlement!(id) do
     Settlement
+    |> preload([:region, :district, :parent_settlement])
     |> Repo.get!(id)
-    |> Repo.preload([:region, :district, :parent_settlement])
   end
 
   def get_settlement(nil), do: nil
   def get_settlement(id) do
     Settlement
+    |> preload([:region, :district, :parent_settlement])
     |> Repo.get(id)
-    |> Repo.preload([:region, :district, :parent_settlement])
-  end
-
-  def get_settlements_by_district_id(district_id, query_params) do
-    Settlement
-    |> where([s], s.district_id == ^district_id)
-    |> paginate(query_params)
-  end
-
-  def get_by(clauses) do
-    Settlement
-    |> Repo.get_by(clauses)
   end
 
   @doc """
@@ -84,7 +74,6 @@ defmodule Uaddresses.Settlements do
     |> settlement_changeset(attrs)
     |> Repo.insert()
     |> preload_embed()
-    |> insert_to_ets()
   end
 
   @doc """
@@ -104,35 +93,10 @@ defmodule Uaddresses.Settlements do
     |> settlement_changeset(attrs)
     |> Repo.update()
     |> preload_embed()
-    |> insert_to_ets()
   end
 
   defp preload_embed({:ok, settlement}), do: {:ok, Repo.preload(settlement, [:region, :district, :parent_settlement])}
   defp preload_embed({:error, reason}), do: {:error, reason}
-
-  def insert_to_ets({:ok, %Settlement{} = settlement}) do
-    %{region: %{name: region_name}, district: district} = settlement
-    district_name =
-      case district do
-        nil -> ""
-        _ -> district |> Map.get(:name) |> String.downcase()
-      end
-
-    :ets.insert(:settlements,
-      {
-        settlement.id,
-        String.downcase(region_name),
-        district_name,
-        String.downcase(settlement.name),
-        String.downcase(to_string(settlement.type)),
-        String.downcase(to_string(settlement.mountain_group)),
-        String.downcase(to_string(settlement.koatuu))
-      }
-    )
-
-    {:ok, settlement}
-  end
-  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Deletes a Settlement.
@@ -181,7 +145,7 @@ defmodule Uaddresses.Settlements do
   defp result_region_exists_validation(nil, changeset) do
     add_error(changeset, :region_id, "Selected region doesn't exists'")
   end
-  defp result_region_exists_validation(%Uaddresses.Regions.Region{}, changeset), do: changeset
+  defp result_region_exists_validation(%Region{}, changeset), do: changeset
 
   defp validate_district_exists(changeset, field) do
     changeset
@@ -197,62 +161,39 @@ defmodule Uaddresses.Settlements do
   end
   defp result_district_exists_validation(%District{}, changeset), do: changeset
 
-  def search(params) do
-    with changeset = %Ecto.Changeset{valid?: true} <- search_changeset(params) do
-      {settlements, paging} =
-        :settlements
-        |> :ets.match_object(get_match_pattern(changeset.changes))
-        |> filter_by_name(params)
-        |> filter_by_koatuu(params)
-        |> Enum.map(fn ({settlement_id, _, _, _, _, _, _}) -> settlement_id end)
-        |> list_by_ids(params)
+  def get_search_query(entity, changes)  when map_size(changes) > 0 do
+    direct_changes =
+      changes
+      |> Enum.filter(fn({key, _value}) -> !(key in [:region, :district]) end)
+      |> Enum.into(%{})
 
-      {:ok, settlements, paging}
+    query =
+      entity
+      |> super(direct_changes)
+      |> join(:left, [s], r in assoc(s, :region))
+      |> join(:left, [s], d in assoc(s, :district))
+      |> preload([:region, :district, :parent_settlement])
+
+    query = case Map.has_key?(changes, :region) do
+      true -> where(query, [s, r, d], r.name == ^Map.get(changes, :region))
+      _ -> query
+    end
+
+    case Map.has_key?(changes, :district) do
+      true -> where(query, [s, r, d], d.name == ^Map.get(changes, :district))
+      _ -> query
     end
   end
 
-  defp get_match_pattern(changes) do
-    {:"$1", get_region(changes), get_district(changes), :"$4", get_type(changes), get_mountain_group(changes), :"$7"}
+  def get_search_query(entity, changes) do
+    entity
+    |> super(changes)
+    |> preload([:region, :district, :parent_settlement])
   end
 
-  defp get_region(%{region: region}), do: String.downcase(region)
-  defp get_region(_), do: :"$2"
-
-  defp get_district(%{district: district}), do: String.downcase(district)
-  defp get_district(_), do: :"$3"
-
-  defp get_type(%{type: type}), do: String.downcase(type)
-  defp get_type(_), do: :"$5"
-
-  defp get_mountain_group(%{mountain_group: mountain_group}), do: String.downcase(mountain_group)
-  defp get_mountain_group(_), do: :"$6"
-
-  defp filter_by_name(list, params) do
-    settlement_name =
-      params
-      |> Map.get("name", "")
-      |> String.downcase()
-
-    Enum.filter(list, fn {_, _, _, name, _, _, _} -> String.contains?(name, settlement_name) end)
+  defp search_changeset(attrs) do
+    %Search{}
+    |> cast(attrs, [:name, :district, :region, :type, :koatuu, :mountain_group])
+    |> set_like_attributes([:name, :koatuu])
   end
-
-  defp filter_by_koatuu(list, params) do
-    settlement_koatuu =
-      params
-      |> Map.get("koatuu", "")
-      |> String.downcase()
-
-    Enum.filter(list, fn {_, _, _, _, _, _, koatuu} -> String.contains?(koatuu, settlement_koatuu) end)
-  end
-
-  defp list_by_ids(ids, query_params) do
-    {data, paging} =
-      Settlement
-      |> where([s], s.id in ^ids)
-      |> paginate(query_params)
-
-    {Repo.preload(data, [:region, :district, :parent_settlement]), paging}
-  end
-
-  defp search_changeset(attrs), do: cast(%Search{}, attrs, [:name, :district, :region, :type, :koatuu, :mountain_group])
 end

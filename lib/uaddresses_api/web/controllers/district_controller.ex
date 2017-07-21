@@ -8,9 +8,10 @@ defmodule Uaddresses.Web.DistrictController do
 
   action_fallback Uaddresses.Web.FallbackController
 
-  def index(conn, _params) do
-    districts = Districts.list_districts()
-    render(conn, "index.json", districts: districts)
+  def index(conn, params) do
+    with {districts, paging} <- Districts.list_districts(params) do
+      render(conn, "index.json", districts: districts, paging: paging)
+    end
   end
 
   def create(conn, %{"district" => district_params}) do
@@ -43,22 +44,14 @@ defmodule Uaddresses.Web.DistrictController do
   end
 
   def settlements(conn, %{"id" => id} = params) do
+    search_params =
+      params
+      |> Map.delete("id")
+      |> Map.put("district_id", id)
+
     with %District{} = district = Districts.get_district!(id),
-      {settlements, paging} = Settlements.get_settlements_by_district_id(id, params),
-      settlements = filter_settlements(settlements, params) do
-      render(conn, "list_settlements.json", district: district, paging: paging, settlements: settlements)
+      {settlements, paging} = Settlements.list_settlements(search_params) do
+        render(conn, "list_settlements.json", district: district, paging: paging, settlements: settlements)
     end
-  end
-
-  def search(conn, params) do
-    with {:ok, districts, paging} <- Districts.search(params) do
-      render(conn, "index.json", districts: districts, paging: paging)
-    end
-  end
-
-  defp filter_settlements(settlements, params) do
-    settlement_name = Map.get(params, "name", "")
-    Enum.filter(settlements,
-      fn (settlement) -> String.contains?(String.downcase(settlement.name), String.downcase(settlement_name)) end)
   end
 end

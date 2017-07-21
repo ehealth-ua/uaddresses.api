@@ -10,11 +10,6 @@ defmodule Uaddresses.SettlementsTest do
   @update_attrs %{name: "some updated name", mountain_group: true}
   @invalid_attrs %{district_id: nil, name: nil, region_id: nil}
 
-  test "list_settlements/1 returns all settlements" do
-    settlement = fixture(:settlement)
-    assert Settlements.list_settlements() == [settlement]
-  end
-
   test "get_settlement! returns the settlement with given id" do
     settlement = fixture(:settlement)
     assert Settlements.get_settlement!(settlement.id) == settlement

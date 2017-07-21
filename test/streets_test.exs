@@ -24,11 +24,6 @@ defmodule Uaddresses.StreetsTest do
     type: nil
   }
 
-  test "list_streets/1 returns all streets" do
-    street = fixture(:street)
-    assert Streets.list_streets() == [street]
-  end
-
   test "get_street! returns the street with given id" do
     street = fixture(:street)
     assert Streets.get_street!(street.id) == street

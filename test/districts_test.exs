@@ -10,11 +10,6 @@ defmodule Uaddresses.DistrictsTest do
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil, region_id: nil}
 
-  test "list_districts/1 returns all districts" do
-    district = fixture(:district)
-    assert Districts.list_districts() == [district]
-  end
-
   test "get_district! returns the district with given id" do
     district = fixture(:district)
     assert Districts.get_district!(district.id) == district

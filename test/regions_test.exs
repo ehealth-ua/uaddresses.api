@@ -10,11 +10,6 @@ defmodule Uaddresses.RegionsTest do
   @update_attrs %{name: "some updated region", koatuu: "2"}
   @invalid_attrs %{name: nil}
 
-  test "list_regions/1 returns all regions" do
-    region = fixture(:region)
-    assert Regions.list_regions() == [region]
-  end
-
   test "get_region! returns the region with given id" do
     region = fixture(:region)
     assert Regions.get_region!(region.id) == region

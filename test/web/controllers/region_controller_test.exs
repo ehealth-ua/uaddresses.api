@@ -72,26 +72,18 @@ defmodule Uaddresses.Web.RegionControllerTest do
     r_4 = region(%{name: "Київ", koatuu: "14"})
     r_5 = region(%{name: "Івано-Франківська", koatuu: "15"})
 
-    conn = get conn, "/search/regions/?name=ки"
+    conn = get conn, "/regions/?name=ки"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
       %{"id" => r_4.id, "name" => "Київ", "koatuu" => "14"}
     ]
 
-    conn = get conn, "/search/regions/?name=-"
+    conn = get conn, "/regions/?name=-"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
     ]
 
-    conn = get conn, "/search/regions/?name=ська"
-    assert json_response(conn, 200)["data"] == [
-      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
-      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},
-      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
-      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
-    ]
-
-    conn = get conn, "/search/regions/?name=ська&koatuu=1"
+    conn = get conn, "/regions/?name=ська"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
       %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},
@@ -99,12 +91,20 @@ defmodule Uaddresses.Web.RegionControllerTest do
       %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
     ]
 
-    conn = get conn, "/search/regions/?name=ська&koatuu=3"
+    conn = get conn, "/regions/?name=ська&koatuu=1"
+    assert json_response(conn, 200)["data"] == [
+      %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
+      %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},
+      %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"},
+      %{"id" => r_5.id, "name" => "Івано-Франківська", "koatuu" => "15"}
+    ]
+
+    conn = get conn, "/regions/?name=ська&koatuu=3"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_3.id, "name" => "Київська", "koatuu" => "13"}
     ]
 
-    conn = get conn, "/search/regions/"
+    conn = get conn, "/regions/"
     assert json_response(conn, 200)["data"] == [
       %{"id" => r_1.id, "name" => "Одеська", "koatuu" => "11"},
       %{"id" => r_2.id, "name" => "Дніпропетровська", "koatuu" => "12"},

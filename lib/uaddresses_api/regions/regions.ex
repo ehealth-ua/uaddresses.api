@@ -5,7 +5,7 @@ defmodule Uaddresses.Regions do
 
   import Ecto.{Query, Changeset}, warn: false
 
-  use Uaddresses.Paginate
+  use Uaddresses.Search
 
   alias Uaddresses.Repo
   alias Uaddresses.Regions.Region
@@ -20,13 +20,10 @@ defmodule Uaddresses.Regions do
       [%Region{}, ...]
 
   """
-  def list_regions do
-    Repo.all(Region)
-  end
-
-  def get_by(clauses) do
-    Region
-    |> Repo.get_by(clauses)
+  def list_regions(params) do
+    params
+    |> search_changeset()
+    |> search(params, Region, 10)
   end
 
   @doc """
@@ -79,7 +76,6 @@ defmodule Uaddresses.Regions do
     %Region{}
     |> region_changeset(attrs)
     |> Repo.insert()
-    |> insert_to_ets()
   end
 
   @doc """
@@ -98,15 +94,7 @@ defmodule Uaddresses.Regions do
     region
     |> region_changeset(attrs)
     |> Repo.update()
-    |> insert_to_ets()
   end
-
-  def insert_to_ets({:ok, %Region{} = region}) do
-    :ets.insert(:regions, {region.id, String.downcase(region.name), String.downcase(to_string(region.koatuu))})
-
-    {:ok, region}
-  end
-  def insert_to_ets({:error, reason}), do: {:error, reason}
 
   @doc """
   Deletes a Region.
@@ -143,43 +131,9 @@ defmodule Uaddresses.Regions do
     |> validate_required([:name])
   end
 
-  def search(params) do
-    with %Ecto.Changeset{valid?: true} <- search_changeset(params) do
-      {regions, paging} =
-        :regions
-        |> :ets.match_object({:"$1", :"$2", :"$3"})
-        |> filter_by_name(params)
-        |> filter_by_koatuu(params)
-        |> Enum.map(fn ({region_id, _, _}) -> region_id end)
-        |> list_by_ids(params)
-
-      {:ok, regions, paging}
-    end
+  defp search_changeset(attrs) do
+    %Search{}
+    |> cast(attrs, [:name, :koatuu])
+    |> set_like_attributes([:name, :koatuu])
   end
-
-  defp filter_by_name(list, params) do
-    region_name =
-      params
-      |> Map.get("name", "")
-      |> String.downcase()
-
-    Enum.filter(list, fn {_, name, _} -> String.contains?(name, region_name) end)
-  end
-
-  defp filter_by_koatuu(list, params) do
-    region_koatuu =
-      params
-      |> Map.get("koatuu", "")
-      |> String.downcase()
-
-    Enum.filter(list, fn {_, _, koatuu} -> String.contains?(koatuu, region_koatuu) end)
-  end
-
-  defp list_by_ids(ids, query_params) do
-    Region
-    |> where([r], r.id in ^ids)
-    |> paginate(query_params)
-  end
-
-  defp search_changeset(attrs), do: cast(%Search{}, attrs, [:name, :koatuu])
 end
