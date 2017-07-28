@@ -1,80 +1,220 @@
 FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
-# uaddressesapi
+# UAddress
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Simple API for searching Ukraine Addresses
 
-## Questions Collection [/questions]
+## Search Streets [/streets]
 
-### List All Questions [GET]
+### List of Streets by Search Params [GET /streets{?settlement_id,name,type}]
+
++ Parameters
+    + settlement_id: `eea333b5-e26d-4e3e-92e2-2ab37b131502` (string, required) - Settlement identifier
+    + name: `Незалежності` (string, optional) - Street name
+    + type: STREET (string, optional) - Street type (Dictionary STREET_TYPE)
 
 + Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (array[`Response_Street`])
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+## Search Settlements [/settlements]
 
-### Create a New Question [POST]
+### List Of Cities By Search Params [GET /settlements{?settlement_name,region,district}]
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
++ Parameters
+    + settlement_name: Новосілки (string, optional) - Name of searching settlement
+    + region: Київ (string, required) - Province name
+    + district: `Києво-Святошинський` (string, optional) - Administrative district of province
+
++ Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (array[`Response_Settlement`])
+
+## Search Regions [/regions]
+
+### List Of Regions By Search Params [GET /regions{?region}]
++ Parameters
+    + region: Київ (string, optional) - Province name
+
++ Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (array[`Response_Region`])
+
+## Search Districts [/districts]
+
+### List Of Districts By Search Params [GET /districts{?region,region_id,district}]
++ Parameters
+    + region: Київ (string) - Province name
+    + district: `Києво-Святошинський` (string, optional) - Administrative district of province
+    + region_id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string, optional) - if this parameter exists, 
+        [settlement_name, region, district] will be ignored
+
++ Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (array[`Response_District`])
+
+### Districts by Region [GET /regions/290f1ee-6c54-4b01-90e6-d701748f0851/districts{?district}]
+
++ Parameters
+    + district: `Києво-Святошинський` (string, optional) - Filter by district name
+
++ Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (array[`Response_District_Short`])
+
+### Settlements by district [GET /districts/290f1ee-6c54-4b01-90e6-d701748f0851/settlements{?settlement_name}]
+
+Get list of cities by district
+
++ Parameters
+    + settlement_name: `Київ` (string, optional) - Filter by settlement name
+
++ Response 200 (application/json)
+    + Attributes (Response_Collection)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (array[`Response_Settlement_Short`])
+
+## Private API [/]
+
+### Add new street [POST /api/street/]
 
 + Request (application/json)
+    + Attributes (`Create_Street`)
 
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + meta (Response_Meta)
+            + code: 201 (number)
+        + data (`Response_Street`)
 
-+ Response 201 (application/json)
+### Change street name [PUT /api/street/d290f1ee-6c54-4b01-90e6-d701748f0851/change]
 
-    + Headers
+Changing street name.
+NOTE: Street will be searchable by old name too
 
-            Location: /questions/2
++ Request (application/json)
+    + Attributes (object)
+        + street_name: `Єрмоленка Володимира` (string)
 
-    + Body
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (`Response_Street`)
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
+### Add different street name [PUT /api/street/d290f1ee-6c54-4b01-90e6-d701748f0851/add]
+
+Adding different street name. 
+Example: In Kiev we have Artema street, but some people search it as Sichovuh Striltciv
+NOTE: Street will be searchable by both names
+
++ Request (application/json)
+    + Attributes (object)
+        + street_name: `Єрмоленка Володимира` (string)
+    
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + meta (Response_Meta)
+            + code: 200 (number)
+        + data (`Response_Street`)
+
+### Add new city [POST /api/settlement/]
+
++ Request (application/json)
+    + Attributes (`Create_Settlement`)
+
++ Response 200 (application/json)
+    + Attributes (Response_OK)
+        + meta (Response_Meta)
+            + code: 201 (number)
+        + data (`Response_Settlement`)
+
+# Data Structures
+## Responses
+### `Response_Collection`
++ meta (Response_Meta, fixed-type)
++ data (array[], fixed-type)
++ paging (Response_Pagination, fixed-type)
+
+### `Response_OK`
++ meta (Response_Meta, fixed-type)
++ data (object, fixed-type)
+
+### `Response_Meta`
++ code: 200 (number) - HTTP response code.
++ url: http://example.com/resource (string) - URL to requested resource.
++ type (enum) - Type of data that is located in `data` attribute.
+    - object (string) - `data` attribute is a JSON object.
+    - list (string) - `data` attribute is a list.
++ code: 200 (number) - HTTP response code.
++ `idempotency_key`: `idemp-ssjssdjoa8308u0us0` (string, optional) - [Idempotency key](http://docs.apimanifest.apiary.io/#introduction/optional-features/idempotent-requests). Send it trough `X-Idempotency-Key` header.
++ `request_id`: `req-adasdoijasdojsda` (string) - [Request ID](http://docs.apimanifest.apiary.io/#introduction/interacting-with-api/request-id). Send it with `X-Request-ID` header.
+
+### `Response_Street`
++ id: `d290f1ee-6c54-4b01-90e6-d701748f0851` (string) - Address ID
++ settlement_name: Новосілки (string) - City name
++ street_type: вул (string) - Type of street
++ street_name: `Єрмоленка Володимира` (string) - Street name
+
+### `Response_Settlement_Short`
++ id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string) - Settlement ID
++ settlement_name: Новосілки (string) - City name
+
+### `Response_Settlement`
++ id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string) - Settlement ID
++ region: Київ (string) -  Region name
++ district: `Києво-Святошинський` (string) - District name
++ settlement_name: Новосілки (string) - City name
++ mountain_group: 0 (string) - Mountain group
++ type: `С` (string, optional) - Settlement type
++ koatuu: 3520380802 (string, optional) - KOATUU code
++ parent_settlement: Берегово (string, optional) - Parent settlement name
+
+### `Response_Region`
++ id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string) - Region ID
++ region: Київ (string) -  Region name
++ koatuu: 3520380802 (string, optional) - KOATUU code
+
+### `Response_District_Short`
++ id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string) - District ID
++ district: `Києво-Святошинський` (string) - District name
+
+### `Response_District`
++ id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string) - District ID
++ region: Київ (string) -  Region name
++ district: `Києво-Святошинський` (string) - District name
++ koatuu: 3520380802 (string, optional) - KOATUU code
+
+### `Create_Settlement`
++ region: Київ (string, required) -  Region name
++ district: `Києво-Святошинський` (string, required) - District name
++ settlement_name: Новосілки (string, required) - City name
+
+### `Create_Street`
++ region: Київ (string, required) -  Region name
++ district: `Києво-Святошинський` (string, required) - District name
++ settlement_name: Новосілки (string, required) - City name
++ street_type: вул (string, required) - Type of street
++ street_name: `Єрмоленка Володимира` (string, required) - Street name
++ street_number: 67 (string, required) - Number of building
++ postal_code: 02140 (string, required) - Postal code
+
+### `Response_Pagination`
++ limit: 20 (number) - A limit on the number of objects to be returned, between 1 and 100. Default: 50.
++ cursors (object)
+    + `starting_after`: 56c31536a60ad644060041af (string) - A cursor for use in pagination. An object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with `obj_foo`, your subsequent call can include `starting_after=obj_foo` in order to fetch the next page of the list.
+    + `ending_before`: 56c31536a60ad644060041aa (string) - A cursor for use in pagination. An object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with `obj_bar`, your subsequent call can include `ending_before=obj_bar` in order to fetch the previous page of the list.
++ size: 1000 (number) - Total number of objects in collection.
++ has_more: false (boolean) - Is this collection have more data to load in the same style as last request loaded it.
