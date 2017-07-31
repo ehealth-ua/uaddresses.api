@@ -29,14 +29,13 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     region_id: nil
   }
 
-
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
   test "creates settlement and renders settlement when data is valid", %{conn: conn} do
     %{id: region_id} = region()
-    %{id: district_id} = district()
+    %{id: district_id} = district(%{region_id: region_id, name: "some name"})
     create_attrs = Map.merge(@create_attrs, %{region_id: region_id, district_id: district_id})
 
     conn = post conn, settlement_path(conn, :create), settlement: create_attrs
@@ -65,8 +64,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
   test "updates chosen settlement and renders settlement when data is valid", %{conn: conn} do
     %Settlement{id: id} = settlement = fixture(:settlement)
-    %{id: region_id} = region()
-    %{id: district_id} = district()
+    region_id = settlement.region.id
+    district_id = settlement.district.id
     update_attrs = Map.merge(@update_attrs, %{region_id: region_id, district_id: district_id})
 
     conn = put conn, settlement_path(conn, :update, settlement), settlement: update_attrs
@@ -123,7 +122,9 @@ defmodule Uaddresses.Web.SettlementControllerTest do
       mountain_group: true})
 
     conn = get conn, "/settlements/"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 8 == Enum.count(response)
+    assert [
       %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_1.id,
         "region" => "Київська", "region_id" => r_1.id, "name" => "Рокитне", "mountain_group" => false,
         "type" => "1", "koatuu" => "11", "parent_settlement" => nil, "parent_settlement_id" => nil},
@@ -149,10 +150,14 @@ defmodule Uaddresses.Web.SettlementControllerTest do
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => true,
         "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?region=Київська&name=а"
 
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 3 == Enum.count(response)
+    assert [
       %{"district" => "Білоцерківський", "region_id" => r_1.id, "district_id" => d_1.id, "id" => s_4.id,
         "region" => "Київська", "name" => "Біла Церква", "mountain_group" => false,
         "type" => "4", "koatuu" => "14", "parent_settlement" => nil, "parent_settlement_id" => nil},
@@ -163,9 +168,13 @@ defmodule Uaddresses.Web.SettlementControllerTest do
         "region" => "Київська", "region_id" => r_1.id, "name" => "Бакумівка", "mountain_group" => true,
         "type" => "2", "koatuu" => "12", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?region=Одеська&district=Комінтернівський"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 2 == Enum.count(response)
+    assert [
       %{"district" => "Комінтернівський", "district_id" => d_4.id, "id" => s_7.id,
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Комінтерне", "mountain_group" => false,
         "type" => "7", "koatuu" => "17", "parent_settlement" => nil, "parent_settlement_id" => nil},
@@ -173,23 +182,35 @@ defmodule Uaddresses.Web.SettlementControllerTest do
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => true,
         "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?region=Одеська&name=Якесь село"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 1 == Enum.count(response)
+    [
       %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_6.id,
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Якесь село", "mountain_group" => false,
         "type" => "6", "koatuu" => "16", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?type=4"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 1 == Enum.count(response)
+    assert [
       %{"district" => "Білоцерківський", "region_id" => r_1.id, "district_id" => d_1.id, "id" => s_4.id,
         "region" => "Київська", "name" => "Біла Церква", "mountain_group" => false,
         "type" => "4", "koatuu" => "14", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?koatuu=1"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 8 == Enum.count(response)
+    assert [
       %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_1.id,
         "region" => "Київська", "region_id" => r_1.id, "name" => "Рокитне", "mountain_group" => false,
         "type" => "1", "koatuu" => "11", "parent_settlement" => nil, "parent_settlement_id" => nil},
@@ -215,16 +236,24 @@ defmodule Uaddresses.Web.SettlementControllerTest do
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => true,
         "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?koatuu=5"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 1 == Enum.count(response)
+    assert [
       %{"district" => "Миколаївський", "district_id" => d_3.id, "id" => s_5.id,
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Миколаївка", "mountain_group" => false,
         "type" => "5", "koatuu" => "15", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?mountain_group=true"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 2 == Enum.count(response)
+    assert [
       %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_2.id,
         "region" => "Київська", "region_id" => r_1.id, "name" => "Бакумівка", "mountain_group" => true,
         "type" => "2", "koatuu" => "12", "parent_settlement" => nil, "parent_settlement_id" => nil},
@@ -232,9 +261,13 @@ defmodule Uaddresses.Web.SettlementControllerTest do
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Новосілки 2", "mountain_group" => true,
         "type" => "8", "koatuu" => "18", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
 
     conn = get conn, "/settlements/?mountain_group=false"
-    assert json_response(conn, 200)["data"] == [
+    assert response = json_response(conn, 200)["data"]
+    assert 6 == Enum.count(response)
+    assert [
       %{"district" => "Рокитнянський", "district_id" => d_2.id, "id" => s_1.id,
         "region" => "Київська", "region_id" => r_1.id, "name" => "Рокитне", "mountain_group" => false,
         "type" => "1", "koatuu" => "11", "parent_settlement" => nil, "parent_settlement_id" => nil},
@@ -254,5 +287,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
         "region" => "Одеська", "region_id" => r_2.id, "name" => "Комінтерне", "mountain_group" => false,
         "type" => "7", "koatuu" => "17", "parent_settlement" => nil, "parent_settlement_id" => nil}
     ]
+    |> Enum.map(&(Enum.member?(response, &1)))
+    |> Enum.all?
   end
 end

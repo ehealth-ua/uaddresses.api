@@ -16,8 +16,8 @@ defmodule Uaddresses.SettlementsTest do
   end
 
   test "create_settlement/1 with valid data creates a settlement" do
-    %{id: region_id} = region()
-    %{id: district_id} = district()
+    %{id: district_id} = district = district()
+    region_id = district.region.id
     assert {:ok, %Settlement{} = settlement} =
       @create_attrs
       |> Map.merge(%{region_id: region_id, district_id: district_id})
@@ -33,8 +33,8 @@ defmodule Uaddresses.SettlementsTest do
 
   test "update_settlement/2 with valid data updates the settlement" do
     settlement = fixture(:settlement)
-    %{id: region_id} = region()
-    %{id: district_id} = district()
+    region_id = settlement.region.id
+    district_id = settlement.district.id
     update_attrs = Map.merge(@update_attrs, %{region_id: region_id, district_id: district_id})
     assert {:ok, settlement} = Settlements.update_settlement(settlement, update_attrs)
     assert %Settlement{} = settlement
@@ -45,7 +45,7 @@ defmodule Uaddresses.SettlementsTest do
 
   test "update_settlement/2 without district_id" do
     settlement = fixture(:settlement)
-    %{id: region_id} = region()
+    region_id = settlement.region.id
     update_attrs = Map.merge(@update_attrs, %{region_id: region_id})
     assert {:ok, settlement} = Settlements.update_settlement(settlement, update_attrs)
     assert %Settlement{} = settlement
@@ -55,7 +55,7 @@ defmodule Uaddresses.SettlementsTest do
 
   test "update_settlement/2 with empty district_id" do
     settlement = fixture(:settlement)
-    %{id: region_id} = region()
+    region_id = settlement.region.id
     update_attrs = Map.merge(@update_attrs, %{region_id: region_id, district_id: nil})
     assert {:ok, settlement} = Settlements.update_settlement(settlement, update_attrs)
     assert %Settlement{} = settlement

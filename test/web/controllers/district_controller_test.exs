@@ -37,7 +37,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
 
   test "updates chosen district and renders district when data is valid", %{conn: conn} do
     %District{id: id} = district = fixture(:district)
-    %{id: region_id} = region()
+    region_id = district.region.id
     update_attrs = Map.put(@update_attrs, :region_id, region_id)
     conn = put conn, district_path(conn, :update, district), district: update_attrs
     assert %{"id" => ^id} = json_response(conn, 200)["data"]

@@ -47,8 +47,8 @@ defmodule Uaddresses.StreetsTest do
   end
 
   test "update_street/2 with valid data updates the street" do
-    street = fixture(:street)
-    %{id: settlement_id} = settlement()
+    street = Repo.preload(fixture(:street), :settlement)
+    settlement_id = street.settlement.id
 
     update_attrs = Map.put(@update_attrs, :settlement_id, settlement_id)
 

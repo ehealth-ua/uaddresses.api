@@ -28,7 +28,7 @@ defmodule Uaddresses.SimpleFactory do
 
   def settlement do
     %{id: region_id} = region()
-    %{id: district_id} = district()
+    %{id: district_id} = district(%{region_id: region_id, name: "some name"})
     settlement(%{name: "some name", region_id: region_id, district_id: district_id, mountain_group: false})
   end
 

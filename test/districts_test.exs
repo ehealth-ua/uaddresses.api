@@ -32,7 +32,7 @@ defmodule Uaddresses.DistrictsTest do
 
   test "update_district/2 with valid data updates the district" do
     district = fixture(:district)
-    %{id: region_id} = region()
+    region_id = district.region.id
     updated_params = Map.put(@update_attrs, :region_id, region_id)
     assert {:ok, district} =Districts.update_district(district, updated_params)
     assert %District{} = district

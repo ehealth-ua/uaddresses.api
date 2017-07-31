@@ -129,6 +129,7 @@ defmodule Uaddresses.Regions do
     region
     |> cast(attrs, [:name, :koatuu])
     |> validate_required([:name])
+    |> unique_constraint(:name, name: "regions_unique_name_index")
   end
 
   defp search_changeset(attrs) do

@@ -28,9 +28,9 @@ defmodule Uaddresses.Web.StreetControllerTest do
   end
 
   test "creates street and renders street when data is valid", %{conn: conn} do
-    %{id: region_id} = region()
-    %{id: district_id} = district()
-    %{id: settlement_id} = settlement()
+    %{id: settlement_id} = settlement = settlement()
+    district_id = settlement.district.id
+    region_id = settlement.region.id
     create_attrs =
       Map.merge(@create_attrs, %{region_id: region_id, district_id: district_id, settlement_id: settlement_id})
 
@@ -52,8 +52,8 @@ defmodule Uaddresses.Web.StreetControllerTest do
   end
 
   test "updates chosen street and renders street when data is valid", %{conn: conn} do
-    %Street{id: id} = street = fixture(:street)
-    %{id: settlement_id} = settlement()
+    %Street{id: id} = street = Repo.preload(fixture(:street), :settlement)
+    settlement_id = street.settlement.id
     update_attrs = Map.put(@update_attrs, :settlement_id, settlement_id)
 
     conn = put conn, street_path(conn, :update, street), street: update_attrs
