@@ -135,6 +135,6 @@ defmodule Uaddresses.Regions do
   defp search_changeset(attrs) do
     %Search{}
     |> cast(attrs, [:name, :koatuu])
-    |> set_like_attributes([:name, :koatuu])
+    |> set_attributes_option([:name, :koatuu], :like)
   end
 end

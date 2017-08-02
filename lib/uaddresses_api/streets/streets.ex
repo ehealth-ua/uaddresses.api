@@ -163,6 +163,7 @@ defmodule Uaddresses.Streets do
     %Search{}
     |> cast(attrs, [:settlement_id, :name, :type])
     |> validate_required([:settlement_id])
-    |> set_like_attributes([:name])
+    |> set_attributes_option([:name], :like)
+    |> set_attributes_option([:type], :ignore_case)
   end
 end

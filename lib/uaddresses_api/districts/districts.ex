@@ -164,7 +164,7 @@ defmodule Uaddresses.Districts do
     |> super(changes)
     |> join(:left, [d], r in assoc(d, :region))
     |> preload(:region)
-    |> where([d, r], r.name == ^region)
+    |> where([d, r], fragment("lower(?)", r.name) == ^String.downcase(region))
   end
 
   def get_search_query(entity, changes) do
@@ -176,6 +176,6 @@ defmodule Uaddresses.Districts do
   defp search_changeset(attrs) do
     %Search{}
     |> cast(attrs, [:region_id, :region, :name, :koatuu])
-    |> set_like_attributes([:name, :koatuu])
+    |> set_attributes_option([:name, :koatuu], :like)
   end
 end

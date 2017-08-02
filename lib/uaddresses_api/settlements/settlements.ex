@@ -175,12 +175,12 @@ defmodule Uaddresses.Settlements do
       |> preload([:region, :district, :parent_settlement])
 
     query = case Map.has_key?(changes, :region) do
-      true -> where(query, [s, r, d], r.name == ^Map.get(changes, :region))
+      true -> where(query, [s, r, d], fragment("lower(?)", r.name) == ^String.downcase(Map.get(changes, :region)))
       _ -> query
     end
 
     case Map.has_key?(changes, :district) do
-      true -> where(query, [s, r, d], d.name == ^Map.get(changes, :district))
+      true -> where(query, [s, r, d], fragment("lower(?)", d.name) == ^String.downcase(Map.get(changes, :district)))
       _ -> query
     end
   end
@@ -194,6 +194,7 @@ defmodule Uaddresses.Settlements do
   defp search_changeset(attrs) do
     %Search{}
     |> cast(attrs, [:name, :district, :region, :type, :koatuu, :mountain_group])
-    |> set_like_attributes([:name, :koatuu])
+    |> set_attributes_option([:name, :koatuu], :like)
+    |> set_attributes_option([:type], :ignore_case)
   end
 end

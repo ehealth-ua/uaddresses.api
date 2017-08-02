@@ -10,11 +10,11 @@ defmodule Uaddresses.Search do
       alias Uaddresses.Paging
       alias Uaddresses.Repo
 
-      def set_like_attributes(%Ecto.Changeset{valid?: false} = changeset, _like_fields), do: changeset
-      def set_like_attributes(%Ecto.Changeset{valid?: true, changes: changes} = changeset, like_fields) do
+      def set_attributes_option(%Ecto.Changeset{valid?: false} = changeset, _fields, _option), do: changeset
+      def set_attributes_option(%Ecto.Changeset{valid?: true, changes: changes} = changeset, fields, option) do
         Enum.reduce(changes, changeset, fn({key, value}, changeset) ->
-          case key in like_fields do
-            true -> put_change(changeset, key, {value, :like})
+          case key in fields do
+            true -> put_change(changeset, key, {value, option})
             _ -> changeset
           end
         end)
@@ -38,8 +38,10 @@ defmodule Uaddresses.Search do
 
         Enum.reduce(changes, q, fn({key, val}, query) ->
           case val do
-            {value, :like} -> where(query, [r], ilike(field(r, ^key), ^("%" <> value <> "%")))
+            {value, :like} -> where(query, [r], ilike(fragment("lower(?)", field(r, ^key)),
+              ^("%" <> String.downcase(value) <> "%")))
             {value, :intersect} -> where(query, [r], fragment("string_to_array(?, ' ') && ?", field(r, ^key), ^value))
+            {value, :ignore_case} -> where(query, [r], fragment("lower(?)", field(r, ^key)) == ^String.downcase(value))
             _ -> query
           end
         end)

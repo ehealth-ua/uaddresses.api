@@ -153,7 +153,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     |> Enum.map(&(Enum.member?(response, &1)))
     |> Enum.all?
 
-    conn = get conn, "/settlements/?region=Київська&name=а"
+    conn = get conn, "/settlements/?region=київська&name=а"
 
     assert response = json_response(conn, 200)["data"]
     assert 3 == Enum.count(response)
@@ -171,7 +171,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     |> Enum.map(&(Enum.member?(response, &1)))
     |> Enum.all?
 
-    conn = get conn, "/settlements/?region=Одеська&district=Комінтернівський"
+    conn = get conn, "/settlements/?region=одеська&district=комінтернівський"
     assert response = json_response(conn, 200)["data"]
     assert 2 == Enum.count(response)
     assert [
@@ -185,7 +185,7 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     |> Enum.map(&(Enum.member?(response, &1)))
     |> Enum.all?
 
-    conn = get conn, "/settlements/?region=Одеська&name=Якесь село"
+    conn = get conn, "/settlements/?region=одеська&name=Якесь село"
     assert response = json_response(conn, 200)["data"]
     assert 1 == Enum.count(response)
     [
