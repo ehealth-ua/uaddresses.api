@@ -22,12 +22,13 @@ Simple API for searching Ukraine Addresses
 
 ## Search Settlements [/settlements]
 
-### List Of Cities By Search Params [GET /settlements{?settlement_name,region,district}]
+### List Of Cities By Search Params [GET /settlements{?name,region,district,koatuu}]
 
 + Parameters
-    + settlement_name: Новосілки (string, optional) - Name of searching settlement
+    + name: Новосілки (string, optional) - Name of searching settlement
     + region: Київ (string, required) - Province name
     + district: `Києво-Святошинський` (string, optional) - Administrative district of province
+    + koatuu: `2625286301` (string, optional) - koatuu classifier id
 
 + Response 200 (application/json)
     + Attributes (Response_Collection)
@@ -37,9 +38,10 @@ Simple API for searching Ukraine Addresses
 
 ## Search Regions [/regions]
 
-### List Of Regions By Search Params [GET /regions{?region}]
+### List Of Regions By Search Params [GET /regions{?name,koatuu}]
 + Parameters
-    + region: Київ (string, optional) - Province name
+    + name: Київ (string, optional) - Province name
+    + koatuu: `2625286301` (string, optional) - koatuu classifier id
 
 + Response 200 (application/json)
     + Attributes (Response_Collection)
@@ -49,12 +51,11 @@ Simple API for searching Ukraine Addresses
 
 ## Search Districts [/districts]
 
-### List Of Districts By Search Params [GET /districts{?region,region_id,district}]
+### List Of Districts By Search Params [GET /districts{?region,name,koatuu}]
 + Parameters
     + region: Київ (string) - Province name
-    + district: `Києво-Святошинський` (string, optional) - Administrative district of province
-    + region_id: `b075f148-7f93-4fc2-b2ec-2d81b19a9b7b` (string, optional) - if this parameter exists, 
-        [settlement_name, region, district] will be ignored
+    + name: `Києво-Святошинський` (string, optional) - Administrative district of province
+    + koatuu: `2625286301` (string, optional) - koatuu classifier id
 
 + Response 200 (application/json)
     + Attributes (Response_Collection)
@@ -62,10 +63,11 @@ Simple API for searching Ukraine Addresses
             + code: 200 (number)
         + data (array[`Response_District`])
 
-### Districts by Region [GET /regions/290f1ee-6c54-4b01-90e6-d701748f0851/districts{?district}]
+### Districts by Region [GET /regions/290f1ee-6c54-4b01-90e6-d701748f0851/districts{?name,koatuu}]
 
 + Parameters
-    + district: `Києво-Святошинський` (string, optional) - Filter by district name
+    + name: `Києво-Святошинський` (string, optional) - Filter by district name
+    + koatuu: `2625286301` (string, optional) - koatuu classifier id
 
 + Response 200 (application/json)
     + Attributes (Response_Collection)
@@ -73,12 +75,13 @@ Simple API for searching Ukraine Addresses
             + code: 200 (number)
         + data (array[`Response_District_Short`])
 
-### Settlements by district [GET /districts/290f1ee-6c54-4b01-90e6-d701748f0851/settlements{?settlement_name}]
+### Settlements by district [GET /districts/290f1ee-6c54-4b01-90e6-d701748f0851/settlements{?name,koatuu}]
 
 Get list of cities by district
 
 + Parameters
-    + settlement_name: `Київ` (string, optional) - Filter by settlement name
+    + name: `Київ` (string, optional) - Filter by settlement name
+    + koatuu: `2625286301` (string, optional) - koatuu classifier id
 
 + Response 200 (application/json)
     + Attributes (Response_Collection)
