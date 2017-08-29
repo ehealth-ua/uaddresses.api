@@ -12,8 +12,14 @@ elixir:
   - 1.4.2
 otp_release:
   - 19.3
+notifications:
+  slack: 
+    rooms:
+      - secure: "cWJ7sOlCgi0ohKOW/72dC8m56S8RMlIWg80+GE0tSjTKqNleCLlqQkk2v2SaVqzXj62cOy26WF3XCCPOnZP/yh3KYE7TJiwaKI95wPjVWpZfMIMWW+TgP09tPei2UrJ9On3wIkJlDTh9OkPXzSEfrT3y18XTYJfxvtaDbnfaVgVPRSkaKNNKF6lj1TfZFsHvwmSIwJWYjJyuCW0AMDAyqdU8ZyCLwSOP6QuE0OMCe/DKHgYtScY4EP+X6kymhUgjeraS7LrColQFh9atKOnFOmUa1pMNCGhfd+lu/PwwCI9IOH+gDqBMntpWqgDcbE0KgxX5JZYlC0swxwKiJ5NVN5GusMyc6WgQu4aoHXEZKOl0ZQNQk8h1G+Xw97E2CxSog9Eudn2wtJ1LyLeIByxONaTU+//thlZd3R+2s+MAZtzwVc0YJ6v6j6cN8jrxGHfv1xExe97pYGR8J5W9asnou/jQdaMb+MYZwkXwQHLU7A4d3IOPPhc57JdgoAriK6agsKNIEVOivHHP2rRg0dN8dm4PAhAal0wwT7uXkpClC08zWUX+5DXYUfU6fGisdVI3J3zRIgfTaXgRzTxO22FmnKcePw+IAJ1MFaUfm5RqqGrLsihD3zodQ3IMZBaj2pbE2s+/4QMEWa4ZGb8REaKW1T0+oTL+N0M8yBxFytqzt0o="
+    on_success: always
 env:
   global:
+    - Chart=uaddresses
     - MIX_ENV=test
     - DOCKER_HUB_ACCOUNT=edenlabllc
     - MAIN_BRANCHES="master develop staging" # Branches on which you want version to be incremented
@@ -27,6 +33,7 @@ branches:
     - /[0-9]*\.[0-9]*\.[0-9]*/
 before_install:
   # Expose MQ and DB to Docker container
+  - openssl aes-256-cbc -K $encrypted_211db23d4aac_key -iv $encrypted_211db23d4aac_iv -in eHealth-eef414faa06b.json.enc -out eHealth-eef414faa06b.json -d
   - sudo ./bin/ci/init-db.sh
 script:
   # Increment version in mix.exs
@@ -43,23 +50,14 @@ script:
   # Check code style
   - mix dogma
   # Build Docker container
-  - ./bin/build.sh
+  - ./bin/build.sh || travis_terminate 1
   # Initialize DB for Docker container
   - MIX_ENV=dev mix ecto.setup
   # Run Docker container
-  - sudo ./bin/start.sh
-  - sleep 5
-  - docker ps
-  - RUNNING_CONTAINERS=`docker ps | wc -l`;
-    if [ "${RUNNING_CONTAINERS//[[:space:]]/}" == "1" ]; then
-      echo "[E] Container is not started\!";
-      docker logs uaddresses_api --details --since 5h;
-      exit 1;
-    fi;
+  - sudo ./bin/start.sh || travis_terminate 1
   # Run acceptance tests on Docker container
   - "CONTAINER_HTTP_HOST=localhost CONTAINER_HTTP_PORT=4000 mix test test/acceptance"
-after_failure:
-  - docker logs uaddresses_api --details --since 5h
-after_success:
   # Submit Docker container to Docker Hub and create GitHub Release by pushing tag with changelog
-  - ./bin/ci/push.sh
+  - ./bin/ci/push.sh || travis_terminate 1
+  # CD to Dev
+  - sudo ./bin/deploy.sh || travis_terminate 1
