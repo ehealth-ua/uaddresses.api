@@ -9,11 +9,11 @@ services:
 addons:
   postgresql: "9.5"
 elixir:
-  - 1.4.2
+  - 1.5.1
 otp_release:
-  - 19.3
+  - 20.0.4
 notifications:
-  slack: 
+  slack:
     rooms:
       - secure: "cWJ7sOlCgi0ohKOW/72dC8m56S8RMlIWg80+GE0tSjTKqNleCLlqQkk2v2SaVqzXj62cOy26WF3XCCPOnZP/yh3KYE7TJiwaKI95wPjVWpZfMIMWW+TgP09tPei2UrJ9On3wIkJlDTh9OkPXzSEfrT3y18XTYJfxvtaDbnfaVgVPRSkaKNNKF6lj1TfZFsHvwmSIwJWYjJyuCW0AMDAyqdU8ZyCLwSOP6QuE0OMCe/DKHgYtScY4EP+X6kymhUgjeraS7LrColQFh9atKOnFOmUa1pMNCGhfd+lu/PwwCI9IOH+gDqBMntpWqgDcbE0KgxX5JZYlC0swxwKiJ5NVN5GusMyc6WgQu4aoHXEZKOl0ZQNQk8h1G+Xw97E2CxSog9Eudn2wtJ1LyLeIByxONaTU+//thlZd3R+2s+MAZtzwVc0YJ6v6j6cN8jrxGHfv1xExe97pYGR8J5W9asnou/jQdaMb+MYZwkXwQHLU7A4d3IOPPhc57JdgoAriK6agsKNIEVOivHHP2rRg0dN8dm4PAhAal0wwT7uXkpClC08zWUX+5DXYUfU6fGisdVI3J3zRIgfTaXgRzTxO22FmnKcePw+IAJ1MFaUfm5RqqGrLsihD3zodQ3IMZBaj2pbE2s+/4QMEWa4ZGb8REaKW1T0+oTL+N0M8yBxFytqzt0o="
     on_success: always
