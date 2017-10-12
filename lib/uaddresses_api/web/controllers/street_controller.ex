@@ -3,12 +3,13 @@ defmodule Uaddresses.Web.StreetController do
 
   alias Uaddresses.Streets
   alias Uaddresses.Streets.Street
+  alias Scrivener.Page
 
   action_fallback Uaddresses.Web.FallbackController
 
   def index(conn, params) do
-    with {streets, %Ecto.Paging{} = paging} <- Streets.list_streets(params) do
-      render(conn, "index.json", streets: streets, paging: paging)
+    with %Page{} = paging <- Streets.list_streets(params) do
+      render(conn, "index.json", streets: paging.entries, paging: paging)
     end
   end
 

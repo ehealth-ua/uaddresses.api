@@ -54,7 +54,7 @@ defmodule Uaddresses.Web.RegionControllerTest do
       %{"id" => third_district.id, "district" => "Third district"}
     ]
 
-    conn = get conn, "/details/region/#{region_id}/districts?limit=1&starting_after=#{second_district.id}"
+    conn = get conn, "/details/region/#{region_id}/districts?page_size=1&page=3"
     assert json_response(conn, 200)["data"] == [
       %{"id" => third_district.id, "district" => "Third district"}
     ]

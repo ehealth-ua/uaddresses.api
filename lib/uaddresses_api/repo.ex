@@ -5,7 +5,7 @@ defmodule Uaddresses.Repo do
   More info: https://hexdocs.pm/ecto/Ecto.Repo.html
   """
   use Ecto.Repo, otp_app: :uaddresses_api
-  use Ecto.Paging.Repo # This string adds `paginate/2` and `page/3` methods.
+  use Scrivener, page_size: 10
 
   @doc """
   Dynamically loads the repository configuration from the environment variables.

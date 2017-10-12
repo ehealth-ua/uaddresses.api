@@ -7,7 +7,6 @@ defmodule Uaddresses.Search do
     quote  do
       import Ecto.{Query, Changeset}, warn: false
 
-      alias Uaddresses.Paging
       alias Uaddresses.Repo
 
       def set_attributes_option(%Ecto.Changeset{valid?: false} = changeset, _fields, _option), do: changeset
@@ -20,13 +19,13 @@ defmodule Uaddresses.Search do
         end)
       end
 
-      def search(%Ecto.Changeset{valid?: true, changes: changes}, search_params, entity, default_limit) do
+      def search(%Ecto.Changeset{valid?: true, changes: changes}, search_params, entity) do
         entity
         |> get_search_query(changes)
-        |> Repo.page(Paging.get_paging(search_params, default_limit))
+        |> Repo.paginate(search_params)
       end
 
-      def search(%Ecto.Changeset{valid?: false} = changeset, _search_params, _entity, _default_limit) do
+      def search(%Ecto.Changeset{valid?: false} = changeset, _search_params, _entity) do
         {:error, changeset}
       end
 

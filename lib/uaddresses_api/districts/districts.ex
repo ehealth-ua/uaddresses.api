@@ -25,7 +25,7 @@ defmodule Uaddresses.Districts do
   def list_districts(params) do
     params
     |> search_changeset()
-    |> search(params, District, 10)
+    |> search(params, District)
   end
 
   @doc """

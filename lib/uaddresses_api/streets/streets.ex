@@ -11,6 +11,7 @@ defmodule Uaddresses.Streets do
   alias Uaddresses.Settlements
   alias Uaddresses.Streets.Street
   alias Uaddresses.Streets.Search
+  alias Scrivener.Page
 
   @doc """
   Returns the list of streets.
@@ -24,7 +25,7 @@ defmodule Uaddresses.Streets do
   def list_streets(params) do
     params
     |> search_changeset()
-    |> search(params, Street, 10)
+    |> search(params, Street)
     |> preload_aliases()
   end
 
@@ -46,7 +47,7 @@ defmodule Uaddresses.Streets do
 
   def preload_aliases(%Street{} = street), do: Repo.preload(street, :aliases)
   def preload_aliases({:error, reason}), do: {:error, reason}
-  def preload_aliases({streets, paging}), do: {Repo.preload(streets, :aliases), paging}
+  def preload_aliases(%Page{entries: streets} = paging), do: %{paging | entries: Repo.preload(streets, :aliases)}
 
   @doc """
   Creates a street.

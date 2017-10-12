@@ -3,14 +3,14 @@ defmodule Uaddresses.Web.DistrictController do
 
   alias Uaddresses.Districts
   alias Uaddresses.Districts.District
-
   alias Uaddresses.Settlements
+  alias Scrivener.Page
 
   action_fallback Uaddresses.Web.FallbackController
 
   def index(conn, params) do
-    with {districts, paging} <- Districts.list_districts(params) do
-      render(conn, "index.json", districts: districts, paging: paging)
+    with %Page{} = paging <- Districts.list_districts(params) do
+      render(conn, "index.json", districts: paging.entries, paging: paging)
     end
   end
 
@@ -49,9 +49,10 @@ defmodule Uaddresses.Web.DistrictController do
       |> Map.delete("id")
       |> Map.put("district_id", id)
 
-    with %District{} = district = Districts.get_district!(id),
-      {settlements, paging} = Settlements.list_settlements(search_params) do
-        render(conn, "list_settlements.json", district: district, paging: paging, settlements: settlements)
+    with %District{} = district <- Districts.get_district!(id),
+         %Page{} = paging <- Settlements.list_settlements(search_params)
+    do
+      render(conn, "list_settlements.json", district: district, paging: paging, settlements: paging.entries)
     end
   end
 end

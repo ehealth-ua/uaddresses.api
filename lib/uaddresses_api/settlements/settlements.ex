@@ -27,7 +27,7 @@ defmodule Uaddresses.Settlements do
   def list_settlements(params) do
     params
     |> search_changeset()
-    |> search(params, Settlement, 10)
+    |> search(params, Settlement)
   end
 
   @doc """

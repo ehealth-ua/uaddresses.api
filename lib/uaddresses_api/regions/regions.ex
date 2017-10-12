@@ -23,7 +23,7 @@ defmodule Uaddresses.Regions do
   def list_regions(params) do
     params
     |> search_changeset()
-    |> search(params, Region, 10)
+    |> search(params, Region)
   end
 
   @doc """

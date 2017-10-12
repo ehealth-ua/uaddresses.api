@@ -4,12 +4,13 @@ defmodule Uaddresses.Web.RegionController do
   alias Uaddresses.Regions
   alias Uaddresses.Districts
   alias Uaddresses.Regions.Region
+  alias Scrivener.Page
 
   action_fallback Uaddresses.Web.FallbackController
 
   def index(conn, params) do
-    with {regions, %Ecto.Paging{} = paging} <- Regions.list_regions(params) do
-      render(conn, "index.json", regions: regions, paging: paging)
+    with %Page{} = paging <- Regions.list_regions(params) do
+      render(conn, "index.json", regions: paging.entries, paging: paging)
     end
   end
 
@@ -47,9 +48,10 @@ defmodule Uaddresses.Web.RegionController do
       |> Map.delete("id")
       |> Map.put("region_id", id)
 
-    with %Uaddresses.Regions.Region{} = Regions.get_region!(id),
-      {districts, paging} = Districts.list_districts(search_params) do
-        render(conn, "list_districts.json", districts: districts, paging: paging)
+    with %Uaddresses.Regions.Region{} <- Regions.get_region!(id),
+         %Page{} = paging <- Districts.list_districts(search_params)
+    do
+      render(conn, "list_districts.json", districts: paging.entries, paging: paging)
     end
   end
 end

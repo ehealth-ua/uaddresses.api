@@ -3,12 +3,13 @@ defmodule Uaddresses.Web.SettlementController do
 
   alias Uaddresses.Settlements
   alias Uaddresses.Settlements.Settlement
+  alias Scrivener.Page
 
   action_fallback Uaddresses.Web.FallbackController
 
   def index(conn, params) do
-    with {settlements, %Ecto.Paging{} = paging} <- Settlements.list_settlements(params) do
-      render(conn, "index.json", settlements: settlements, paging: paging)
+    with %Page{} = paging <- Settlements.list_settlements(params) do
+      render(conn, "index.json", settlements: paging.entries, paging: paging)
     end
   end
 
