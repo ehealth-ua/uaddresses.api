@@ -22,6 +22,12 @@ defmodule Uaddresses.Web.FallbackController do
     |> render(EView.Views.Error, :"404")
   end
 
+  def call(conn, {:error, {:"422", message}}) do
+    conn
+    |> put_status(422)
+    |> render(EView.Views.Error, :"400", %{message: message})
+  end
+
   def call(conn, %Ecto.Changeset{valid?: false, data: %Uaddresses.Districts.Search{}} = changeset) do
       conn
       |> put_status(:unprocessable_entity)

@@ -13,12 +13,17 @@ defmodule Uaddresses.Web.SettlementController do
     end
   end
 
-  def create(conn, %{"settlement" => settlement_params}) do
-    with {:ok, %Settlement{} = settlement} <- Settlements.create_settlement(settlement_params) do
+  def create(conn, params) do
+    with {:ok, settlement_params} <- Map.fetch(params, "settlement"),
+         {:ok, %Settlement{} = settlement} <- Settlements.create_settlement(settlement_params)
+    do
       conn
       |> put_status(:created)
       |> put_resp_header("location", settlement_path(conn, :show, settlement))
       |> render("show.json", settlement: settlement)
+    else
+      :error -> {:error, {:"422", "required property settlement was not present"}}
+      err -> err
     end
   end
 
@@ -27,11 +32,16 @@ defmodule Uaddresses.Web.SettlementController do
     render(conn, "show.json", settlement: settlement)
   end
 
-  def update(conn, %{"id" => id, "settlement" => settlement_params}) do
+  def update(conn, %{"id" => id} = params) do
     settlement = Settlements.get_settlement!(id)
 
-    with {:ok, %Settlement{} = settlement} <- Settlements.update_settlement(settlement, settlement_params) do
+    with {:ok, settlement_params} <- Map.fetch(params, "settlement"),
+         {:ok, %Settlement{} = settlement} <- Settlements.update_settlement(settlement, settlement_params)
+    do
       render(conn, "show.json", settlement: settlement)
+    else
+      :error -> {:error, {:"422", "required property settlement was not present"}}
+      err -> err
     end
   end
 

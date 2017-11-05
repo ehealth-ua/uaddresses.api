@@ -62,6 +62,11 @@ defmodule Uaddresses.Web.SettlementControllerTest do
     assert json_response(conn, 422)["errors"] != %{}
   end
 
+  test "does not create settlement and renders errors when data without settlement field", %{conn: conn} do
+    conn = post conn, settlement_path(conn, :create), @create_attrs
+    assert json_response(conn, 422)["errors"] != %{}
+  end
+
   test "updates chosen settlement and renders settlement when data is valid", %{conn: conn} do
     %Settlement{id: id} = settlement = fixture(:settlement)
     region_id = settlement.region.id
@@ -90,6 +95,12 @@ defmodule Uaddresses.Web.SettlementControllerTest do
   test "does not update chosen settlement and renders errors when data is invalid", %{conn: conn} do
     settlement = fixture(:settlement)
     conn = put conn, settlement_path(conn, :update, settlement), settlement: @invalid_attrs
+    assert json_response(conn, 422)["errors"] != %{}
+  end
+
+  test "does not update chosen settlement and renders errors when data without settlement field", %{conn: conn} do
+    settlement = fixture(:settlement)
+    conn = put conn, settlement_path(conn, :update, settlement), @update_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end
 
