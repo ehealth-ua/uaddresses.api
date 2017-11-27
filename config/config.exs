@@ -47,7 +47,10 @@ config :uaddresses_api, Uaddresses.Web.Endpoint,
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
 
 # Configures Elixir's Logger
-config :logger, :console, format: "$message\n"
+config :logger, :console,
+  format: "$message\n",
+  handle_otp_reports: true,
+  level: :info
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
