@@ -8,7 +8,7 @@ defmodule Uaddresses.Mixfile do
      description: "Add description to your package.",
      package: package(),
      version: @version,
-     elixir: "~> 1.4",
+     elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -27,7 +27,7 @@ defmodule Uaddresses.Mixfile do
     [extra_applications: [:logger, :confex, :runtime_tools, :poison,
                           :ecto, :postgrex, :cowboy,
                           :httpoison, :phoenix,
-                          :multiverse, :eview,
+                          :eview,
                           :phoenix_ecto],
      mod: {Uaddresses, []}]
   end
@@ -50,7 +50,7 @@ defmodule Uaddresses.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:distillery, "~> 1.2"},
+    [{:distillery, "~> 1.4.0"},
      {:confex, "~> 2.0"},
      {:poison, "~> 3.1"},
      {:ecto, "~> 2.1"},
@@ -58,15 +58,12 @@ defmodule Uaddresses.Mixfile do
      {:cowboy, "~> 1.1"},
      {:httpoison, "~> 0.11.1"},
      {:phoenix, "~> 1.3.0-rc"},
-     {:multiverse, "~> 0.4.3"},
      {:eview, ">= 0.0.0"},
      {:phoenix_ecto, "~> 3.2"},
      {:ex_csv, "~> 0.1.5"},
      {:scrivener_ecto, "~> 1.2"},
      {:plug_logger_json, "~> 0.5"},
      {:ecto_logger_json, "~> 0.1"},
-     {:benchfella, ">= 0.3.4", only: [:dev, :test]},
-     {:ex_doc, ">= 0.15.0", only: [:dev, :test]},
      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
      {:dogma, ">= 0.1.12", only: [:dev, :test]},
      {:credo, ">= 0.5.1", only: [:dev, :test]}]

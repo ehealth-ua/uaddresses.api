@@ -17,11 +17,6 @@ defmodule Uaddresses.Web.Router do
     plug :accepts, ["json"]
     plug :put_secure_browser_headers
 
-    # Uncomment to enable versioning of your API
-    # plug Multiverse, gates: [
-    #   "2016-07-31": Uaddresses.Web.InitialGate
-    # ]
-
     # You can allow JSONP requests by uncommenting this line:
     # plug :allow_jsonp
   end
