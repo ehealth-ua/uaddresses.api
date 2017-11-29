@@ -13,7 +13,7 @@ defmodule :uaddresses_api_tasks do
 
   def migrate! do
     # Migrate
-    migrations_dir = Path.join([@priv_dir, "repo", "migrations"])
+    Application.app_dir(:uaddresses_api, "priv/repo/migrations")
 
     # Run migrations
     @repo
