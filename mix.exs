@@ -1,7 +1,7 @@
 defmodule Uaddresses.Mixfile do
   use Mix.Project
 
-  @version "0.1.44"
+  @version "0.1.45"
 
   def project do
     [app: :uaddresses_api,
