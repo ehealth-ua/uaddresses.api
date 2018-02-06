@@ -18,10 +18,12 @@ defmodule Uaddresses.SettlementsTest do
   test "create_settlement/1 with valid data creates a settlement" do
     %{id: district_id} = district = district()
     region_id = district.region.id
+
     assert {:ok, %Settlement{} = settlement} =
-      @create_attrs
-      |> Map.merge(%{region_id: region_id, district_id: district_id})
-      |> Settlements.create_settlement()
+             @create_attrs
+             |> Map.merge(%{region_id: region_id, district_id: district_id})
+             |> Settlements.create_settlement()
+
     assert settlement.district_id == district_id
     assert settlement.name == "some name"
     assert settlement.region_id == region_id

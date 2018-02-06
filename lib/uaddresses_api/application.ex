@@ -16,7 +16,7 @@ defmodule Uaddresses do
       # Start the Ecto repository
       supervisor(Uaddresses.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Uaddresses.Web.Endpoint, []),
+      supervisor(Uaddresses.Web.Endpoint, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

@@ -17,7 +17,7 @@ defmodule Uaddresses.Web.StreetView do
       type: street.type,
       name: street.name,
       aliases: render_many(street.aliases, StreetView, "aliases.json")
-     }
+    }
   end
 
   def render("aliases.json", %{street: alias_model}) do

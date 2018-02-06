@@ -45,18 +45,18 @@ defmodule Uaddresses.Regions do
   def preload_districts(%Region{} = region), do: Repo.preload(region, :districts)
 
   @doc """
-    Gets a single region.
+  Gets a single region.
 
-    Raises `Ecto.NoResultsError` if the Region does not exist.
+  Raises `Ecto.NoResultsError` if the Region does not exist.
 
-    ## Examples
+  ## Examples
 
-        iex> get_region(123)
-        %Region{}
+      iex> get_region(123)
+      %Region{}
 
-        iex> get_region(456)
-        nil
-    """
+      iex> get_region(456)
+      nil
+  """
   def get_region(nil), do: nil
   def get_region(id), do: Repo.get(Region, id)
 

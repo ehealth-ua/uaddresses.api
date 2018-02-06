@@ -14,28 +14,28 @@ defmodule Uaddresses.Web.Router do
   require Logger
 
   pipeline :api do
-    plug :accepts, ["json"]
-    plug :put_secure_browser_headers
+    plug(:accepts, ["json"])
+    plug(:put_secure_browser_headers)
 
     # You can allow JSONP requests by uncommenting this line:
     # plug :allow_jsonp
   end
 
   scope "/", Uaddresses.Web do
-    pipe_through :api
+    pipe_through(:api)
 
-    resources "/regions", RegionController, except: [:new, :edit, :delete]
-    resources "/districts", DistrictController, except: [:new, :edit, :delete]
-    resources "/settlements", SettlementController, except: [:new, :edit, :delete]
-    resources "/streets", StreetController, except: [:new, :edit, :delete]
+    resources("/regions", RegionController, except: [:new, :edit, :delete])
+    resources("/districts", DistrictController, except: [:new, :edit, :delete])
+    resources("/settlements", SettlementController, except: [:new, :edit, :delete])
+    resources("/streets", StreetController, except: [:new, :edit, :delete])
 
-    get "/details/region/:id/districts", RegionController, :districts
-    get "/details/district/:id/settlements", DistrictController, :settlements
+    get("/details/region/:id/districts", RegionController, :districts)
+    get("/details/district/:id/settlements", DistrictController, :settlements)
 
-    get "/search/regions/", RegionController, :index
-    get "/search/districts/", DistrictController, :index
-    get "/search/settlements/", SettlementController, :index
-    get "/search/streets/", StreetController, :index
+    get("/search/regions/", RegionController, :index)
+    get("/search/districts/", DistrictController, :index)
+    get("/search/settlements/", SettlementController, :index)
+    get("/search/streets/", StreetController, :index)
   end
 
   defp handle_errors(%Plug.Conn{status: 500} = conn, %{kind: kind, reason: reason, stack: stacktrace}) do

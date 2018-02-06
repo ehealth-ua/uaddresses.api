@@ -5,7 +5,7 @@ defmodule Uaddresses.Web.SettlementController do
   alias Uaddresses.Settlements.Settlement
   alias Scrivener.Page
 
-  action_fallback Uaddresses.Web.FallbackController
+  action_fallback(Uaddresses.Web.FallbackController)
 
   def index(conn, params) do
     with %Page{} = paging <- Settlements.list_settlements(params) do
@@ -15,8 +15,7 @@ defmodule Uaddresses.Web.SettlementController do
 
   def create(conn, params) do
     with {:ok, settlement_params} <- Map.fetch(params, "settlement"),
-         {:ok, %Settlement{} = settlement} <- Settlements.create_settlement(settlement_params)
-    do
+         {:ok, %Settlement{} = settlement} <- Settlements.create_settlement(settlement_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", settlement_path(conn, :show, settlement))
@@ -36,8 +35,7 @@ defmodule Uaddresses.Web.SettlementController do
     settlement = Settlements.get_settlement!(id)
 
     with {:ok, settlement_params} <- Map.fetch(params, "settlement"),
-         {:ok, %Settlement{} = settlement} <- Settlements.update_settlement(settlement, settlement_params)
-    do
+         {:ok, %Settlement{} = settlement} <- Settlements.update_settlement(settlement, settlement_params) do
       render(conn, "show.json", settlement: settlement)
     else
       :error -> {:error, {:"422", "required property settlement was not present"}}
@@ -47,6 +45,7 @@ defmodule Uaddresses.Web.SettlementController do
 
   def delete(conn, %{"id" => id}) do
     settlement = Settlements.get_settlement!(id)
+
     with {:ok, %Settlement{}} <- Settlements.delete_settlement(settlement) do
       send_resp(conn, :no_content, "")
     end

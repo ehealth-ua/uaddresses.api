@@ -6,24 +6,26 @@ defmodule Uaddresses.Web.Endpoint do
 
   # Allow acceptance tests to run in concurrent mode
   if Application.get_env(:uaddresses_api, :sql_sandbox) do
-    plug Phoenix.Ecto.SQL.Sandbox
+    plug(Phoenix.Ecto.SQL.Sandbox)
   end
 
-  plug Plug.RequestId
-  plug EView.Plugs.Idempotency
-  plug Plug.LoggerJSON, level: Logger.level
+  plug(Plug.RequestId)
+  plug(EView.Plugs.Idempotency)
+  plug(Plug.LoggerJSON, level: Logger.level())
 
-  plug EView
+  plug(EView)
 
-  plug Plug.Parsers,
+  plug(
+    Plug.Parsers,
     parsers: [:json],
     pass: ["application/json"],
     json_decoder: Poison
+  )
 
-  plug Plug.MethodOverride
-  plug Plug.Head
+  plug(Plug.MethodOverride)
+  plug(Plug.Head)
 
-  plug Uaddresses.Web.Router
+  plug(Uaddresses.Web.Router)
 
   @doc """
   Dynamically loads configuration from the system environment

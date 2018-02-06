@@ -49,6 +49,7 @@ defmodule Uaddresses.Districts do
   end
 
   def get_district(nil), do: nil
+
   def get_district(id) do
     District
     |> preload(:region)
@@ -57,6 +58,7 @@ defmodule Uaddresses.Districts do
 
   defp preload_regions({:ok, district}), do: {:ok, Repo.preload(district, :region)}
   defp preload_regions({:error, reason}), do: {:error, reason}
+
   @doc """
   Creates a district.
 
@@ -141,12 +143,13 @@ defmodule Uaddresses.Districts do
   defp result_region_exists_validation(nil, changeset) do
     add_error(changeset, :region_id, "Selected region doesn't exists'")
   end
+
   defp result_region_exists_validation(%Region{}, changeset), do: changeset
 
   def get_search_query(entity, %{region_id: _} = changes) do
     changes =
       changes
-      |> Enum.filter(fn({key, _value}) -> key != :region end)
+      |> Enum.filter(fn {key, _value} -> key != :region end)
       |> Enum.into(%{})
 
     entity
@@ -157,7 +160,7 @@ defmodule Uaddresses.Districts do
   def get_search_query(entity, %{region: region} = changes) do
     changes =
       changes
-      |> Enum.filter(fn({key, _value}) -> key != :region end)
+      |> Enum.filter(fn {key, _value} -> key != :region end)
       |> Enum.into(%{})
 
     entity

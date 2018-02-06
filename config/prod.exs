@@ -28,9 +28,9 @@ config :uaddresses_api, Uaddresses.Repo,
 config :uaddresses_api, Uaddresses.Web.Endpoint,
   on_init: {Uaddresses.Web.Endpoint, :load_from_system_env, []},
   http: [port: {:system, "PORT", "80"}],
-  url:  [
+  url: [
     host: {:system, "HOST", "localhost"},
-    port: {:system, "PORT", "80"},
+    port: {:system, "PORT", "80"}
   ],
   secret_key_base: {:system, "SECRET_KEY"},
   debug_errors: false,

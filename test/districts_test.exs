@@ -19,9 +19,10 @@ defmodule Uaddresses.DistrictsTest do
     %{id: region_id} = region()
 
     assert {:ok, %District{} = district} =
-      @create_attrs
-      |> Map.put(:region_id, region_id)
-      |> Districts.create_district()
+             @create_attrs
+             |> Map.put(:region_id, region_id)
+             |> Districts.create_district()
+
     assert district.name == "some name"
     assert district.region_id == region_id
   end
@@ -34,7 +35,7 @@ defmodule Uaddresses.DistrictsTest do
     district = fixture(:district)
     region_id = district.region.id
     updated_params = Map.put(@update_attrs, :region_id, region_id)
-    assert {:ok, district} =Districts.update_district(district, updated_params)
+    assert {:ok, district} = Districts.update_district(district, updated_params)
     assert %District{} = district
     assert district.name == "some updated name"
     assert district.region_id == region_id

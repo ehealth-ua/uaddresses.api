@@ -33,9 +33,9 @@ defmodule Uaddresses.StreetsTest do
     %{id: settlement_id} = settlement()
 
     assert {:ok, %Street{} = street} =
-      @create_attrs
-      |> Map.put(:settlement_id, settlement_id)
-      |> Streets.create_street()
+             @create_attrs
+             |> Map.put(:settlement_id, settlement_id)
+             |> Streets.create_street()
 
     assert street.settlement_id == settlement_id
     assert street.name == "some street_name"

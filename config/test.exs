@@ -3,7 +3,6 @@ use Mix.Config
 # Configuration for test environment
 config :ex_unit, capture_log: true
 
-
 # Configure your database
 config :uaddresses_api, Uaddresses.Repo,
   pool: Ecto.Adapters.SQL.Sandbox,

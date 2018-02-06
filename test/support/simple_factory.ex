@@ -8,7 +8,7 @@ defmodule Uaddresses.SimpleFactory do
   def fixture(:street), do: street()
 
   def region do
-    region(%{name: "some region", "koatuu": "1"})
+    region(%{name: "some region", koatuu: "1"})
   end
 
   def region(params) do
@@ -40,13 +40,11 @@ defmodule Uaddresses.SimpleFactory do
   def street do
     %{id: settlement_id} = settlement()
 
-    street(
-      %{
-        settlement_id: settlement_id,
-        name: "some street_name",
-        type: "вулиця"
-      }
-    )
+    street(%{
+      settlement_id: settlement_id,
+      name: "some street_name",
+      type: "вулиця"
+    })
   end
 
   def street(params) do

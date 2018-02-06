@@ -29,9 +29,9 @@ defmodule Uaddresses.Web.FallbackController do
   end
 
   def call(conn, %Ecto.Changeset{valid?: false, data: %Uaddresses.Districts.Search{}} = changeset) do
-      conn
-      |> put_status(:unprocessable_entity)
-      |> render(EView.Views.ValidationError, :"422.query", changeset)
+    conn
+    |> put_status(:unprocessable_entity)
+    |> render(EView.Views.ValidationError, :"422.query", changeset)
   end
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do

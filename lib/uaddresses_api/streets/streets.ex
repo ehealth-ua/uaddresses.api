@@ -63,6 +63,7 @@ defmodule Uaddresses.Streets do
   """
   def create_street(attrs \\ %{}) do
     street_changeset = street_changeset(%Street{}, attrs)
+
     transaction =
       Repo.transaction(fn ->
         insert_street_result = Repo.insert(street_changeset)
@@ -76,6 +77,7 @@ defmodule Uaddresses.Streets do
   def build_result({:ok, transaction_result}), do: transaction_result
 
   def insert_street_aliases({:error, reason}), do: {:error, reason}
+
   def insert_street_aliases({:ok, %Street{} = street}) do
     %{street_id: street.id, name: street.name}
     |> street_aliases_changeset()
@@ -96,6 +98,7 @@ defmodule Uaddresses.Streets do
   """
   def update_street(%Street{} = street, attrs) do
     street_changeset = street_changeset(street, attrs)
+
     transaction =
       Repo.transaction(fn ->
         update_street_result = Repo.update(street_changeset)
@@ -158,6 +161,7 @@ defmodule Uaddresses.Streets do
   defp result_settlement_exists_validation(nil, changeset) do
     add_error(changeset, :settlement_id, "Selected settlement doesn't exists'")
   end
+
   defp result_settlement_exists_validation(%Uaddresses.Settlements.Settlement{}, changeset), do: changeset
 
   defp search_changeset(attrs) do

@@ -6,7 +6,7 @@ defmodule Uaddresses.Web.RegionController do
   alias Uaddresses.Regions.Region
   alias Scrivener.Page
 
-  action_fallback Uaddresses.Web.FallbackController
+  action_fallback(Uaddresses.Web.FallbackController)
 
   def index(conn, params) do
     with %Page{} = paging <- Regions.list_regions(params) do
@@ -30,13 +30,14 @@ defmodule Uaddresses.Web.RegionController do
 
   def update(conn, %{"id" => id, "region" => region_params}) do
     with %Uaddresses.Regions.Region{} = region = Regions.get_region!(id),
-      {:ok, %Region{} = region} <- Regions.update_region(region, region_params) do
+         {:ok, %Region{} = region} <- Regions.update_region(region, region_params) do
       render(conn, "show.json", region: region)
     end
   end
 
   def delete(conn, %{"id" => id}) do
     region = Regions.get_region!(id)
+
     with {:ok, %Region{}} <- Regions.delete_region(region) do
       send_resp(conn, :no_content, "")
     end
@@ -49,8 +50,7 @@ defmodule Uaddresses.Web.RegionController do
       |> Map.put("region_id", id)
 
     with %Uaddresses.Regions.Region{} <- Regions.get_region!(id),
-         %Page{} = paging <- Districts.list_districts(search_params)
-    do
+         %Page{} = paging <- Districts.list_districts(search_params) do
       render(conn, "list_districts.json", districts: paging.entries, paging: paging)
     end
   end

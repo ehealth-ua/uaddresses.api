@@ -4,11 +4,11 @@ defmodule Uaddresses.Regions.Region do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "regions" do
-    field :name, :string
-    field :koatuu, :string
+    field(:name, :string)
+    field(:koatuu, :string)
 
     timestamps()
 
-    has_many :districts, Uaddresses.Districts.District
+    has_many(:districts, Uaddresses.Districts.District)
   end
 end
