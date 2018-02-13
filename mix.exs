@@ -26,22 +26,7 @@ defmodule Uaddresses.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [
-      extra_applications: [
-        :logger,
-        :confex,
-        :runtime_tools,
-        :poison,
-        :ecto,
-        :postgrex,
-        :cowboy,
-        :httpoison,
-        :phoenix,
-        :eview,
-        :phoenix_ecto
-      ],
-      mod: {Uaddresses, []}
-    ]
+    [extra_applications: [:logger, :runtime_tools], mod: {Uaddresses, []}]
   end
 
   # Specifies which paths to compile per environment.
@@ -63,14 +48,14 @@ defmodule Uaddresses.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:distillery, "~> 1.4.0"},
-      {:confex, "~> 2.0"},
+      {:distillery, "~> 1.4.1"},
+      {:confex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
       {:postgrex, "~> 0.13.2"},
       {:cowboy, "~> 1.1"},
-      {:httpoison, "~> 0.11.1"},
-      {:phoenix, "~> 1.3.0-rc"},
+      {:httpoison, ">= 0.0.0"},
+      {:phoenix, "~> 1.3.0"},
       {:eview, ">= 0.0.0"},
       {:phoenix_ecto, "~> 3.2"},
       {:ex_csv, "~> 0.1.5"},
@@ -78,7 +63,6 @@ defmodule Uaddresses.Mixfile do
       {:plug_logger_json, "~> 0.5"},
       {:ecto_logger_json, "~> 0.1"},
       {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
-      {:dogma, ">= 0.1.12", only: [:dev, :test]},
       {:credo, ">= 0.5.1", only: [:dev, :test]}
     ]
   end

@@ -15,6 +15,13 @@ config :uaddresses_api, Uaddresses.Web.Endpoint,
   check_origin: false,
   watchers: []
 
+config :uaddresses_api, Uaddresses.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "uaddresses_dev",
+  hostname: "localhost"
+
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20

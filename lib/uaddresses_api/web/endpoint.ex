@@ -3,6 +3,7 @@ defmodule Uaddresses.Web.Endpoint do
   Phoenix Endpoint for uaddresses application.
   """
   use Phoenix.Endpoint, otp_app: :uaddresses_api
+  alias Confex.Resolver
 
   # Allow acceptance tests to run in concurrent mode
   if Application.get_env(:uaddresses_api, :sql_sandbox) do
@@ -34,8 +35,8 @@ defmodule Uaddresses.Web.Endpoint do
   It receives the endpoint configuration from the config files
   and must return the updated configuration.
   """
-  def load_from_system_env(config) do
-    config = Confex.process_env(config)
+  def init(_key, config) do
+    config = Resolver.resolve!(config)
 
     unless config[:secret_key_base] do
       raise "Set SECRET_KEY environment variable!"

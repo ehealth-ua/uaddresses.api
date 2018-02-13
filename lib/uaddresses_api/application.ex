@@ -5,6 +5,7 @@ defmodule Uaddresses do
 
   use Application
   alias Uaddresses.Web.Endpoint
+  alias Confex.Resolver
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -35,7 +36,7 @@ defmodule Uaddresses do
 
   # Loads configuration in `:on_init` callbacks and replaces `{:system, ..}` tuples via Confex
   @doc false
-  def load_from_system_env(config) do
-    {:ok, Confex.process_env(config)}
+  def init(_key, config) do
+    Resolver.resolve(config)
   end
 end
