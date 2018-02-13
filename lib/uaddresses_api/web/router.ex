@@ -29,12 +29,12 @@ defmodule Uaddresses.Web.Router do
     resources("/settlements", SettlementController, except: [:new, :edit, :delete])
     resources("/streets", StreetController, except: [:new, :edit, :delete])
 
-    get("/details/region/:id/districts", RegionController, :districts)
-    get("/details/district/:id/settlements", DistrictController, :settlements)
+    get("/regions/:id/districts", RegionController, :districts)
+    get("/districts/:id/settlements", DistrictController, :settlements)
 
     # legacy endpoints for backward compatibility
-    get("/region/:id/districts", RegionController, :districts)
-    get("/district/:id/settlements", DistrictController, :settlements)
+    get("/details/region/:id/districts", RegionController, :districts)
+    get("/details/district/:id/settlements", DistrictController, :settlements)
 
     get("/search/regions/", RegionController, :index)
     get("/search/districts/", DistrictController, :index)

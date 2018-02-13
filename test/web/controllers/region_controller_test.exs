@@ -41,31 +41,58 @@ defmodule Uaddresses.Web.RegionControllerTest do
     assert json_response(conn, 422)["errors"] != %{}
   end
 
-  test "list districts", %{conn: conn} do
-    %{id: region_id} = region()
-    first_district = district(%{name: "First district", region_id: region_id})
-    second_district = district(%{name: "Second district", region_id: region_id})
-    third_district = district(%{name: "Third district", region_id: region_id})
+  describe "list districts" do
+    setup %{conn: conn} do
+      %{id: region_id} = region()
+      district_1 = district(%{name: "First district", region_id: region_id})
+      district_2 = district(%{name: "Second district", region_id: region_id})
+      district_3 = district(%{name: "Third district", region_id: region_id})
+      %{conn: conn, region_id: region_id, districts: {district_1, district_2, district_3}}
+    end
 
-    conn = get(conn, "/details/region/#{region_id}/districts")
+    test "list", %{conn: conn, region_id: region_id, districts: {district_1, district_2, district_3}} do
+      conn = get(conn, "/regions/#{region_id}/districts")
 
-    assert json_response(conn, 200)["data"] == [
-             %{"id" => first_district.id, "district" => "First district"},
-             %{"id" => second_district.id, "district" => "Second district"},
-             %{"id" => third_district.id, "district" => "Third district"}
-           ]
+      assert json_response(conn, 200)["data"] == [
+               %{"id" => district_1.id, "district" => "First district"},
+               %{"id" => district_2.id, "district" => "Second district"},
+               %{"id" => district_3.id, "district" => "Third district"}
+             ]
 
-    conn = get(conn, "/details/region/#{region_id}/districts?page_size=1&page=3")
+      conn = get(conn, "/regions/#{region_id}/districts?page_size=1&page=3")
 
-    assert json_response(conn, 200)["data"] == [
-             %{"id" => third_district.id, "district" => "Third district"}
-           ]
+      assert json_response(conn, 200)["data"] == [
+               %{"id" => district_3.id, "district" => "Third district"}
+             ]
 
-    conn = get(conn, "/details/region/#{region_id}/districts?name=ond")
+      conn = get(conn, "/regions/#{region_id}/districts?name=ond")
 
-    assert json_response(conn, 200)["data"] == [
-             %{"id" => second_district.id, "district" => "Second district"}
-           ]
+      assert json_response(conn, 200)["data"] == [
+               %{"id" => district_2.id, "district" => "Second district"}
+             ]
+    end
+
+    test "legacy", %{conn: conn, region_id: region_id, districts: {district_1, district_2, district_3}} do
+      conn = get(conn, "/details/region/#{region_id}/districts")
+
+      assert json_response(conn, 200)["data"] == [
+               %{"id" => district_1.id, "district" => "First district"},
+               %{"id" => district_2.id, "district" => "Second district"},
+               %{"id" => district_3.id, "district" => "Third district"}
+             ]
+
+      conn = get(conn, "/details/region/#{region_id}/districts?page_size=1&page=3")
+
+      assert json_response(conn, 200)["data"] == [
+               %{"id" => district_3.id, "district" => "Third district"}
+             ]
+
+      conn = get(conn, "/details/region/#{region_id}/districts?name=ond")
+
+      assert json_response(conn, 200)["data"] == [
+               %{"id" => district_2.id, "district" => "Second district"}
+             ]
+    end
   end
 
   test "search", %{conn: conn} do

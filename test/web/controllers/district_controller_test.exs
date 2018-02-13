@@ -66,7 +66,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     second = settlement(%{name: "Second settlement", region_id: district.region_id, district_id: district.id})
     third = settlement(%{name: "Third settlement", region_id: district.region_id, district_id: district.id})
 
-    conn = get(conn, "/district/#{district.id}/settlements")
+    conn = get(conn, "/districts/#{district.id}/settlements")
 
     assert json_response(conn, 200)["data"] == [
              %{"id" => first.id, "settlement_name" => "First settlement"},
