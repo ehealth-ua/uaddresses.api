@@ -32,6 +32,10 @@ defmodule Uaddresses.Web.Router do
     get("/details/region/:id/districts", RegionController, :districts)
     get("/details/district/:id/settlements", DistrictController, :settlements)
 
+    # legacy endpoints for backward compatibility
+    get("/region/:id/districts", RegionController, :districts)
+    get("/district/:id/settlements", DistrictController, :settlements)
+
     get("/search/regions/", RegionController, :index)
     get("/search/districts/", DistrictController, :index)
     get("/search/settlements/", SettlementController, :index)
