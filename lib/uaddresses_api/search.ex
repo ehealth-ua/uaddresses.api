@@ -25,8 +25,6 @@ defmodule Uaddresses.Search do
       end
 
       def search(%Ecto.Changeset{valid?: true, changes: changes}, search_params, entity) do
-        # IO.inspect(Ecto.Adapters.SQL.to_sql(:all, Uaddresses.Repo, q))
-        # System.halt()
         q =
           entity
           |> get_search_query(changes)

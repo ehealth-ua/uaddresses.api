@@ -3,9 +3,8 @@ defmodule Uaddresses.Settlements do
   The boundary for the Settlements system.
   """
 
-  import Ecto.{Query, Changeset}, warn: false
-
   use Uaddresses.Search
+  import Ecto.{Query, Changeset}, warn: false
 
   alias Uaddresses.Repo
   alias Uaddresses.Districts
@@ -220,7 +219,7 @@ defmodule Uaddresses.Settlements do
 
   defp search_changeset(attrs) do
     %Search{}
-    |> cast(attrs, [:name, :district, :region, :type, :koatuu, :mountain_group])
+    |> cast(attrs, [:name, :district, :district_id, :region, :type, :koatuu, :mountain_group])
     |> set_attributes_option([:name], :full_text)
     |> set_attributes_option([:koatuu], :like)
     |> set_attributes_option([:type], :ignore_case)

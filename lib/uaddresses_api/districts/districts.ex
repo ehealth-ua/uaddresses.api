@@ -3,9 +3,8 @@ defmodule Uaddresses.Districts do
   The boundary for the Districts system.
   """
 
-  import Ecto.{Query, Changeset}, warn: false
-
   use Uaddresses.Search
+  import Ecto.{Query, Changeset}, warn: false
 
   alias Uaddresses.Repo
   alias Uaddresses.Regions
