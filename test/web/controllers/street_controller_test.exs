@@ -101,48 +101,51 @@ defmodule Uaddresses.Web.StreetControllerTest do
 
     conn = get(conn, "/streets/?settlement_id=#{set_1.id}")
 
-    assert json_response(conn, 200)["data"] == [
-             %{
-               "id" => str_2.id,
-               "settlement_id" => set_1.id,
-               "name" => "Тараса Шевченка",
-               "type" => "бульвар",
-               "aliases" => ["Тараса Шевченка"]
-             },
-             %{
-               "id" => str_3.id,
-               "settlement_id" => set_1.id,
-               "name" => "Тараса Шевченка",
-               "type" => "вулиця",
-               "aliases" => ["Тараса Шевченка"]
-             },
-             %{
-               "id" => str_4.id,
-               "settlement_id" => set_1.id,
-               "name" => "Богдана Хмельницького",
-               "type" => "вулиця",
-               "aliases" => ["Богдана Хмельницького"]
-             }
-           ]
+    data = json_response(conn, 200)["data"]
+
+    assert %{
+             "id" => str_2.id,
+             "settlement_id" => set_1.id,
+             "name" => "Тараса Шевченка",
+             "type" => "бульвар",
+             "aliases" => ["Тараса Шевченка"]
+           } in data
+
+    assert %{
+             "id" => str_3.id,
+             "settlement_id" => set_1.id,
+             "name" => "Тараса Шевченка",
+             "type" => "вулиця",
+             "aliases" => ["Тараса Шевченка"]
+           } in data
+
+    assert %{
+             "id" => str_4.id,
+             "settlement_id" => set_1.id,
+             "name" => "Богдана Хмельницького",
+             "type" => "вулиця",
+             "aliases" => ["Богдана Хмельницького"]
+           } in data
 
     conn = get(conn, "/streets/?settlement_id=#{set_1.id}&name=шевченка")
 
-    assert json_response(conn, 200)["data"] == [
-             %{
-               "id" => str_2.id,
-               "settlement_id" => set_1.id,
-               "name" => "Тараса Шевченка",
-               "type" => "бульвар",
-               "aliases" => ["Тараса Шевченка"]
-             },
-             %{
-               "id" => str_3.id,
-               "settlement_id" => set_1.id,
-               "name" => "Тараса Шевченка",
-               "type" => "вулиця",
-               "aliases" => ["Тараса Шевченка"]
-             }
-           ]
+    data = json_response(conn, 200)["data"]
+
+    assert %{
+             "id" => str_2.id,
+             "settlement_id" => set_1.id,
+             "name" => "Тараса Шевченка",
+             "type" => "бульвар",
+             "aliases" => ["Тараса Шевченка"]
+           } in data
+
+    assert %{
+             "id" => str_3.id,
+             "settlement_id" => set_1.id,
+             "name" => "Тараса Шевченка",
+             "type" => "вулиця",
+             "aliases" => ["Тараса Шевченка"]
+           } in data
 
     conn = get(conn, "/streets/?settlement_id=#{set_1.id}&name=шевченка&type=вулиця")
 
