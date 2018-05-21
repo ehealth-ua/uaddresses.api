@@ -7,10 +7,9 @@ defmodule Uaddresses.Streets.Street do
     field(:name, :string)
     field(:type, :string)
 
-    timestamps()
-
     has_many(:aliases, Uaddresses.Streets.Aliases)
-
     belongs_to(:settlement, Uaddresses.Settlements.Settlement, type: Ecto.UUID)
+
+    timestamps()
   end
 end

@@ -29,6 +29,8 @@ defmodule Uaddresses.Web.Router do
     resources("/settlements", SettlementController, except: [:new, :edit, :delete])
     resources("/streets", StreetController, except: [:new, :edit, :delete])
 
+    post("/validate_address", AddressController, :validate)
+
     get("/regions/:id/districts", RegionController, :districts)
     get("/districts/:id/settlements", DistrictController, :settlements)
 

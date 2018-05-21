@@ -6,9 +6,8 @@ defmodule Uaddresses.Regions.Region do
   schema "regions" do
     field(:name, :string)
     field(:koatuu, :string)
+    has_many(:districts, Uaddresses.Districts.District)
 
     timestamps()
-
-    has_many(:districts, Uaddresses.Districts.District)
   end
 end

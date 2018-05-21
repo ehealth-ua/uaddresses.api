@@ -7,10 +7,9 @@ defmodule Uaddresses.Districts.District do
     field(:name, :string)
     field(:koatuu, :string)
 
-    timestamps()
-
     belongs_to(:region, Uaddresses.Regions.Region, type: Ecto.UUID)
-
     has_many(:settlements, Uaddresses.Settlements.Settlement)
+
+    timestamps()
   end
 end
