@@ -1,7 +1,7 @@
 defmodule Uaddresses.Mixfile do
   use Mix.Project
 
-  @version "1.49.0"
+  @version "1.50.0"
 
   def project do
     [
