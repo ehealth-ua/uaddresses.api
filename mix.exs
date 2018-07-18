@@ -1,15 +1,13 @@
 defmodule Uaddresses.Mixfile do
   use Mix.Project
 
-  @version "1.52.0"
-
   def project do
     [
       app: :uaddresses_api,
       description: "Add description to your package.",
       package: package(),
-      version: @version,
-      elixir: "~> 1.5",
+      version: "0.1.0",
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,
