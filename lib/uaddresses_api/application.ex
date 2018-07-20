@@ -4,8 +4,8 @@ defmodule Uaddresses do
   """
 
   use Application
-  alias Uaddresses.Web.Endpoint
   alias Confex.Resolver
+  alias Uaddresses.Web.Endpoint
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications

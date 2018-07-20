@@ -46,7 +46,7 @@ defmodule Uaddresses.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:distillery, "~> 1.4.1"},
+      {:distillery, "~> 1.4.1", runtime: false},
       {:confex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
@@ -61,8 +61,8 @@ defmodule Uaddresses.Mixfile do
       {:plug_logger_json, "~> 0.5"},
       {:ecto_logger_json, "~> 0.1"},
       {:ex_machina, "~> 2.2", only: [:dev, :test]},
-      {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
-      {:credo, ">= 0.5.1", only: [:dev, :test]}
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:credo, "~> 0.9.3", only: [:dev, :test]}
     ]
   end
 

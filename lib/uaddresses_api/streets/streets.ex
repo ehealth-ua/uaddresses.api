@@ -7,11 +7,11 @@ defmodule Uaddresses.Streets do
 
   use Uaddresses.Search
 
+  alias Scrivener.Page
   alias Uaddresses.Repo
   alias Uaddresses.Settlements
-  alias Uaddresses.Streets.Street
   alias Uaddresses.Streets.Search
-  alias Scrivener.Page
+  alias Uaddresses.Streets.Street
 
   @doc """
   Returns the list of streets.

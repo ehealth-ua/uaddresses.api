@@ -1,9 +1,9 @@
 defmodule Uaddresses.Web.StreetController do
   use Uaddresses.Web, :controller
 
+  alias Scrivener.Page
   alias Uaddresses.Streets
   alias Uaddresses.Streets.Street
-  alias Scrivener.Page
 
   action_fallback(Uaddresses.Web.FallbackController)
 

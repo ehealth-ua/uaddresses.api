@@ -1,9 +1,9 @@
 defmodule Uaddresses.Web.SettlementController do
   use Uaddresses.Web, :controller
 
+  alias Scrivener.Page
   alias Uaddresses.Settlements
   alias Uaddresses.Settlements.Settlement
-  alias Scrivener.Page
 
   action_fallback(Uaddresses.Web.FallbackController)
 

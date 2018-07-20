@@ -7,9 +7,9 @@ defmodule Uaddresses.Regions do
 
   use Uaddresses.Search
 
-  alias Uaddresses.Repo
   alias Uaddresses.Regions.Region
   alias Uaddresses.Regions.Search
+  alias Uaddresses.Repo
 
   @doc """
   Returns the list of regions.
