@@ -6,11 +6,11 @@ defmodule Uaddresses.Districts do
   use Uaddresses.Search
   import Ecto.{Query, Changeset}, warn: false
 
-  alias Uaddresses.Repo
+  alias Uaddresses.Districts.District
+  alias Uaddresses.Districts.Search
   alias Uaddresses.Regions
   alias Uaddresses.Regions.Region
-  alias Uaddresses.Districts.Search
-  alias Uaddresses.Districts.District
+  alias Uaddresses.Repo
 
   @doc """
   Returns the list of districts.

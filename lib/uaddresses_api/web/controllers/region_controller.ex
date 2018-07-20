@@ -1,10 +1,10 @@
 defmodule Uaddresses.Web.RegionController do
   use Uaddresses.Web, :controller
 
-  alias Uaddresses.Regions
-  alias Uaddresses.Districts
-  alias Uaddresses.Regions.Region
   alias Scrivener.Page
+  alias Uaddresses.Districts
+  alias Uaddresses.Regions
+  alias Uaddresses.Regions.Region
 
   action_fallback(Uaddresses.Web.FallbackController)
 

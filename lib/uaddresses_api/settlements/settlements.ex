@@ -6,13 +6,13 @@ defmodule Uaddresses.Settlements do
   use Uaddresses.Search
   import Ecto.{Query, Changeset}, warn: false
 
-  alias Uaddresses.Repo
   alias Uaddresses.Districts
+  alias Uaddresses.Districts.District
   alias Uaddresses.Regions
   alias Uaddresses.Regions.Region
-  alias Uaddresses.Districts.District
-  alias Uaddresses.Settlements.Settlement
+  alias Uaddresses.Repo
   alias Uaddresses.Settlements.Search
+  alias Uaddresses.Settlements.Settlement
 
   @doc """
   Returns the list of settlements.
