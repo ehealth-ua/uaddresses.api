@@ -17,7 +17,6 @@ defmodule Uaddresses.Addresses.Address do
     settlement
     settlement_type
     settlement_id
-    building
   )a
 
   @fields_optional ~w(
@@ -26,6 +25,7 @@ defmodule Uaddresses.Addresses.Address do
     apartment
     zip
     region
+    building
   )a
 
   embedded_schema do
