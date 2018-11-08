@@ -5,7 +5,6 @@ defmodule Uaddresses.Mixfile do
     [
       app: :uaddresses_api,
       description: "Add description to your package.",
-      package: package(),
       version: "0.1.0",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -31,29 +30,17 @@ defmodule Uaddresses.Mixfile do
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # To depend on another app inside the umbrella:
-  #
-  #   {:myapp, in_umbrella: true}
-  #
-  # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:distillery, "~> 1.4.1", runtime: false},
+      {:distillery, "~> 2.0"},
+      {:grpc, "~> 0.3.0-alpha.2"},
       {:confex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
       {:postgrex, "~> 0.13.2"},
-      {:cowboy, "~> 1.1"},
+      {:phoenix, "~> 1.4.0-rc.3"},
+      {:plug_cowboy, "~> 2.0"},
       {:httpoison, ">= 0.0.0"},
-      {:phoenix, "~> 1.3.0"},
       {:eview, "~> 0.12.2"},
       {:phoenix_ecto, "~> 3.2"},
       {:ex_csv, "~> 0.1.5"},
@@ -62,18 +49,7 @@ defmodule Uaddresses.Mixfile do
       {:ecto_logger_json, "~> 0.1"},
       {:ex_machina, "~> 2.2", only: [:dev, :test]},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:credo, "~> 0.9.3", only: [:dev, :test]}
-    ]
-  end
-
-  # Settings for publishing in Hex package manager:
-  defp package do
-    [
-      contributors: ["Nebo #15"],
-      maintainers: ["Nebo #15"],
-      licenses: ["LISENSE.md"],
-      links: %{github: "https://github.com/Nebo15/uaddresses.api"},
-      files: ~w(lib LICENSE.md mix.exs README.md)
+      {:credo, "~> 0.10.2", only: [:dev, :test]}
     ]
   end
 

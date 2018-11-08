@@ -4,7 +4,8 @@ use Mix.Config
 
 config :uaddresses_api,
   namespace: Uaddresses,
-  ecto_repos: [Uaddresses.Repo]
+  ecto_repos: [Uaddresses.Repo],
+  grpc_port: {:system, :integer, "GRPC_PORT", 50_051}
 
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
@@ -22,10 +23,6 @@ config :logger, :console,
   handle_otp_reports: true,
   level: :info
 
-# It is also possible to import configuration files, relative to this
-# directory. For example, you can emulate configuration per environment
-# by uncommenting the line below and defining dev.exs, test.exs and such.
-# Configuration from the imported file will override the ones defined
-# here (which is why it is important to import them last).
-#
+config :grpc, start_server: true
+
 import_config "#{Mix.env()}.exs"
