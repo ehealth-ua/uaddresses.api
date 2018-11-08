@@ -17,7 +17,12 @@ defmodule Uaddresses do
       # Start the Ecto repository
       supervisor(Uaddresses.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Uaddresses.Web.Endpoint, [])
+      supervisor(Uaddresses.Web.Endpoint, []),
+      %{
+        id: GRPC.Server.Supervisor,
+        start:
+          {GRPC.Server.Supervisor, :start_link, [{Uaddresses.Grpc.Server, Confex.get_env(:uaddresses_api, :grpc_port)}]}
+      }
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
