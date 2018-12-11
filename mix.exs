@@ -6,7 +6,7 @@ defmodule Uaddresses.Mixfile do
       app: :uaddresses_api,
       description: "Add description to your package.",
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix] ++ Mix.compilers(),
       build_embedded: Mix.env() == :prod,
@@ -33,7 +33,6 @@ defmodule Uaddresses.Mixfile do
   defp deps do
     [
       {:distillery, "~> 2.0"},
-      {:grpc, "~> 0.3.0-alpha.2"},
       {:confex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
