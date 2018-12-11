@@ -14,20 +14,22 @@ defmodule Uaddresses.RpcTest do
       settlement_id = UUID.generate()
       error_message = "settlement with id = #{settlement_id} does not exist"
 
-      assert %Ecto.Changeset{
-               changes: %{
-                 addresses: [
-                   %Ecto.Changeset{
-                     errors: [
-                       settlement_id: {^error_message, []}
-                     ],
-                     valid?: false
-                   }
-                 ]
-               },
-               errors: [],
-               valid?: false
-             } =
+      assert {:error,
+              %{
+                invalid: [
+                  %{
+                    entry: "$.addresses[0].settlement_id",
+                    entry_type: "query_parameter",
+                    rules: [
+                      %{
+                        description: ^error_message,
+                        params: [],
+                        rule: nil
+                      }
+                    ]
+                  }
+                ]
+              }} =
                Rpc.validate(%{
                  "addresses" => [
                    %{
