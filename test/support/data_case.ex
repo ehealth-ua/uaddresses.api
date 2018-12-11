@@ -22,6 +22,7 @@ defmodule Uaddresses.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Uaddresses.DataCase
+      import Uaddresses.Factories
     end
   end
 

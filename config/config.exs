@@ -4,8 +4,7 @@ use Mix.Config
 
 config :uaddresses_api,
   namespace: Uaddresses,
-  ecto_repos: [Uaddresses.Repo],
-  grpc_port: {:system, :integer, "GRPC_PORT", 50_051}
+  ecto_repos: [Uaddresses.Repo]
 
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
@@ -22,7 +21,5 @@ config :logger, :console,
   format: "$message\n",
   handle_otp_reports: true,
   level: :info
-
-config :grpc, start_server: true
 
 import_config "#{Mix.env()}.exs"
