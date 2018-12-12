@@ -30,24 +30,22 @@ defmodule Uaddresses.RpcTest do
                   }
                 ]
               }} =
-               Rpc.validate(%{
-                 "addresses" => [
-                   %{
-                     "type" => "RESIDENCE",
-                     "country" => "UA",
-                     "area" => "Житомирська",
-                     "region" => "Бердичівський",
-                     "settlement" => "Київ",
-                     "settlement_type" => "CITY",
-                     "settlement_id" => settlement_id,
-                     "street_type" => "STREET",
-                     "street" => "вул. Ніжинська",
-                     "building" => "15",
-                     "apartment" => "23",
-                     "zip" => "02090"
-                   }
-                 ]
-               })
+               Rpc.validate([
+                 %{
+                   "type" => "RESIDENCE",
+                   "country" => "UA",
+                   "area" => "Житомирська",
+                   "region" => "Бердичівський",
+                   "settlement" => "Київ",
+                   "settlement_type" => "CITY",
+                   "settlement_id" => settlement_id,
+                   "street_type" => "STREET",
+                   "street" => "вул. Ніжинська",
+                   "building" => "15",
+                   "apartment" => "23",
+                   "zip" => "02090"
+                 }
+               ])
     end
 
     test "validation sucess" do
@@ -56,24 +54,22 @@ defmodule Uaddresses.RpcTest do
       settlement = insert(:settlement, region: region, district: district)
 
       assert :ok =
-               Rpc.validate(%{
-                 "addresses" => [
-                   %{
-                     "type" => "RESIDENCE",
-                     "country" => "UA",
-                     "area" => region.name,
-                     "region" => district.name,
-                     "settlement" => settlement.name,
-                     "settlement_type" => "CITY",
-                     "settlement_id" => settlement.id,
-                     "street_type" => "STREET",
-                     "street" => "вул. Ніжинська",
-                     "building" => "15",
-                     "apartment" => "23",
-                     "zip" => "02090"
-                   }
-                 ]
-               })
+               Rpc.validate([
+                 %{
+                   "type" => "RESIDENCE",
+                   "country" => "UA",
+                   "area" => region.name,
+                   "region" => district.name,
+                   "settlement" => settlement.name,
+                   "settlement_type" => "CITY",
+                   "settlement_id" => settlement.id,
+                   "street_type" => "STREET",
+                   "street" => "вул. Ніжинська",
+                   "building" => "15",
+                   "apartment" => "23",
+                   "zip" => "02090"
+                 }
+               ])
     end
   end
 end
