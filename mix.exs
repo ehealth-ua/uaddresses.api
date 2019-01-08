@@ -32,6 +32,7 @@ defmodule Uaddresses.Mixfile do
 
   defp deps do
     [
+      {:kube_rpc, git: "https://github.com/edenlabllc/kube_rpc.git"},
       {:distillery, "~> 2.0"},
       {:confex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
