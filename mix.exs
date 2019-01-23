@@ -1,8 +1,10 @@
 defmodule Uaddresses.Mixfile do
   use Mix.Project
 
+  @version "1.52.1"
   def project do
     [
+      version: @version,
       app: :uaddresses_api,
       description: "Add description to your package.",
       version: "0.1.0",
@@ -49,7 +51,8 @@ defmodule Uaddresses.Mixfile do
       {:ecto_logger_json, "~> 0.1"},
       {:ex_machina, "~> 2.2", only: [:dev, :test]},
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:credo, "~> 0.10.2", only: [:dev, :test]}
+      {:credo, "~> 0.10.2", only: [:dev, :test]},
+      {:git_ops, "~> 0.6.0", only: [:dev]}
     ]
   end
 
