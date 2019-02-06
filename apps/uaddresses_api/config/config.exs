@@ -16,7 +16,6 @@ config :uaddresses_api, Uaddresses.Web.Endpoint,
   secret_key_base: "kCj2tpqzsnxcsciNm5JLDnUgJChdtFCO5RMyIlnUfSw1bhxxgYGvM/OX3v2mosnU",
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
 
-# Configures Elixir's Logger
 config :logger, :console,
   format: "$message\n",
   handle_otp_reports: true,
