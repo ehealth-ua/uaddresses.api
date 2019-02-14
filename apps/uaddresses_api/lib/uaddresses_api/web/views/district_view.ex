@@ -1,23 +1,28 @@
 defmodule Uaddresses.Web.DistrictView do
   use Uaddresses.Web, :view
-  alias Uaddresses.Web.DistrictView
+
+  @fields ~w(id region_id name koatuu)a
 
   def render("index.json", %{districts: districts}) do
-    render_many(districts, DistrictView, "district.json")
+    render_many(districts, __MODULE__, "district.json")
+  end
+
+  def render("index.rpc.json", %{districts: districts}) do
+    render_many(districts, __MODULE__, "district.rpc.json")
   end
 
   def render("show.json", %{district: district}) do
-    render_one(district, DistrictView, "district.json")
+    render_one(district, __MODULE__, "district.json")
   end
 
   def render("district.json", %{district: district}) do
-    %{
-      id: district.id,
-      region_id: district.region_id,
-      region: district.region.name,
-      name: district.name,
-      koatuu: district.koatuu
-    }
+    district
+    |> Map.take(@fields)
+    |> Map.put(:region, district.region.name)
+  end
+
+  def render("district.rpc.json", %{district: district}) do
+    Map.take(district, @fields)
   end
 
   def render("district_by_region.json", %{district: district}) do
