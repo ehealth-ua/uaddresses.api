@@ -6,6 +6,7 @@ defmodule Uaddresses.Search do
   defmacro __using__(_) do
     quote do
       import Ecto.{Query, Changeset}, warn: false
+      import Uaddresses.Filters.Base, only: [filter: 2]
 
       alias Uaddresses.Repo
 
@@ -34,6 +35,20 @@ defmodule Uaddresses.Search do
       def search(%Ecto.Changeset{valid?: false} = changeset, _search_params, _entity) do
         {:error, changeset}
       end
+
+      def search(entity_schema, [_ | _] = filter, order_by \\ [], cursor \\ nil) when is_atom(entity_schema) do
+        entities =
+          entity_schema
+          |> filter(filter)
+          |> order_by(^order_by)
+          |> apply_cursor(cursor)
+          |> Repo.all()
+
+        {:ok, entities}
+      end
+
+      def apply_cursor(query, {offset, limit}), do: query |> offset(^offset) |> limit(^limit)
+      def apply_cursor(query, _), do: query
 
       def get_search_query(entity, changes) when map_size(changes) > 0 do
         params = Enum.filter(changes, fn {key, value} -> !is_tuple(value) end)

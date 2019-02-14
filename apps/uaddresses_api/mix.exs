@@ -19,8 +19,7 @@ defmodule Uaddresses.Mixfile do
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test],
-      docs: [source_ref: "v#\{@version\}", main: "readme", extras: ["../../README.md"]]
+      preferred_cli_env: [coveralls: :test]
     ]
   end
 
@@ -38,6 +37,7 @@ defmodule Uaddresses.Mixfile do
   defp deps do
     [
       {:kube_rpc, git: "https://github.com/edenlabllc/kube_rpc.git"},
+      {:ecto_filter, git: "https://github.com/edenlabllc/ecto_filter"},
       {:confex, ">= 0.0.0"},
       {:poison, "~> 3.1"},
       {:ecto, "~> 2.1"},
@@ -51,7 +51,8 @@ defmodule Uaddresses.Mixfile do
       {:scrivener_ecto, "~> 1.2"},
       {:plug_logger_json, "~> 0.5"},
       {:ecto_logger_json, "~> 0.1"},
-      {:ex_machina, "~> 2.2", only: [:dev, :test]}
+      {:ex_machina, "~> 2.2", only: [:dev, :test]},
+      {:ex_doc, "~> 0.19.2", only: :dev, runtime: false}
     ]
   end
 

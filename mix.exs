@@ -7,7 +7,10 @@ defmodule Uaddresses.MixProject do
       version: @version,
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: [
+        filter_prefix: "Uaddresses.Rpc"
+      ]
     ]
   end
 

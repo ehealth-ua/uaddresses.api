@@ -1,13 +1,16 @@
 defmodule Uaddresses.Web.RegionView do
   use Uaddresses.Web, :view
-  alias Uaddresses.Web.RegionView
 
   def render("index.json", %{regions: regions}) do
-    render_many(regions, RegionView, "region.json")
+    render_many(regions, __MODULE__, "region.json")
+  end
+
+  def render("index.rpc.json", %{regions: regions}) do
+    render_many(regions, __MODULE__, "region.json")
   end
 
   def render("show.json", %{region: region}) do
-    render_one(region, RegionView, "region.json")
+    render_one(region, __MODULE__, "region.json")
   end
 
   def render("region.json", %{region: region}) do

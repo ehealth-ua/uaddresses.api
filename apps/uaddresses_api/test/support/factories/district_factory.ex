@@ -5,7 +5,7 @@ defmodule Uaddresses.Factories.DistrictFactory do
     quote do
       def district_factory do
         %Uaddresses.Districts.District{
-          name: "some name",
+          name: sequence(:district_name, &"some name #{&1}"),
           region: build(:region)
         }
       end
