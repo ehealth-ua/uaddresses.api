@@ -13,7 +13,8 @@ config :uaddresses_api, Uaddresses.Repo,
   port: "${DB_PORT}",
   pool_size: "${DB_POOL_SIZE}",
   timeout: 15_000,
-  pool_timeout: 15_000
+  pool_timeout: 15_000,
+  loggers: [{EhealthLogger.Ecto, :log, [:info]}]
 
 # For production, we often load configuration from external
 # sources, such as your system environment. For this reason,

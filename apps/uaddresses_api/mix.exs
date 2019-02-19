@@ -49,8 +49,7 @@ defmodule Uaddresses.Mixfile do
       {:phoenix_ecto, "~> 3.2"},
       {:ex_csv, "~> 0.1.5"},
       {:scrivener_ecto, "~> 1.2"},
-      {:plug_logger_json, "~> 0.5"},
-      {:ecto_logger_json, "~> 0.1"},
+      {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
       {:ex_machina, "~> 2.2", only: [:dev, :test]},
       {:ex_doc, "~> 0.19.2", only: :dev, runtime: false}
     ]

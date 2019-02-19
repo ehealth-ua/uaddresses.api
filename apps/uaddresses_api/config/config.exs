@@ -16,9 +16,12 @@ config :uaddresses_api, Uaddresses.Web.Endpoint,
   secret_key_base: "kCj2tpqzsnxcsciNm5JLDnUgJChdtFCO5RMyIlnUfSw1bhxxgYGvM/OX3v2mosnU",
   render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
 
-config :logger, :console,
-  format: "$message\n",
-  handle_otp_reports: true,
-  level: :info
+config :logger_json, :backend,
+  formatter: EhealthLogger.Formatter,
+  metadata: :all
+
+config :logger,
+  backends: [LoggerJSON],
+  level: :debug
 
 import_config "#{Mix.env()}.exs"
