@@ -1,67 +1,37 @@
 pipeline {
-  agent {
-    kubernetes {
-      label 'delete-instance-uaddresses'
-      defaultContainer 'jnlp'
-      yaml '''
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    stage: delete-instance
-spec:
-  tolerations:
-  - key: "node"
-    operator: "Equal"
-    value: "ci"
-    effect: "NoSchedule"
-  containers:
-  - name: gcloud
-    image: google/cloud-sdk:234.0.0-alpine
-    command:
-    - cat
-    tty: true
-  nodeSelector:
-    node: ci
-'''
-    }
+  agent none
+  environment {
+    PROJECT_NAME = 'ehealth'
+    INSTANCE_TYPE = 'n1-highcpu-4'
   }
   stages {
     stage('Prepare instance') {
       agent {
         kubernetes {
-          label 'prepare-instance-uaddresses'
+          label 'create-instance'
           defaultContainer 'jnlp'
-          yaml '''
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    stage: prepare-instance
-spec:
-  tolerations:
-  - key: "node"
-    operator: "Equal"
-    value: "ci"
-    effect: "NoSchedule"
-  containers:
-  - name: gcloud
-    image: google/cloud-sdk:234.0.0-alpine
-    command:
-    - cat
-    tty: true
-  nodeSelector:
-    node: ci
-'''
+          instanceCap '4'
         }
       }
       steps {
         container(name: 'gcloud', shell: '/bin/sh') {
+          sh 'apk update && apk add curl bash'
           withCredentials([file(credentialsId: 'e7e3e6df-8ef5-4738-a4d5-f56bb02a8bb2', variable: 'KEYFILE')]) {
             sh 'gcloud auth activate-service-account jenkins-pool@ehealth-162117.iam.gserviceaccount.com --key-file=${KEYFILE} --project=ehealth-162117'
-            sh 'gcloud container node-pools create uaddresses-build-${BUILD_NUMBER} --cluster=dev --machine-type=n1-highcpu-4 --node-taints=ci=${BUILD_TAG}:NoSchedule --node-labels=node=${BUILD_TAG} --num-nodes=1 --zone=europe-west1-d --preemptible'
+            sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/create_instance.sh -o create_instance.sh; bash ./create_instance.sh'
           }
           slackSend (color: '#8E24AA', message: "Instance for ${env.BUILD_TAG} created")
+        }
+      }
+      post {
+        success {
+          slackSend (color: 'good', message: "Job - ${env.BUILD_TAG} STARTED (<${env.BUILD_URL}|Open>)")
+        }
+        failure {
+          slackSend (color: 'danger', message: "Job - ${env.BUILD_TAG} FAILED to start (<${env.BUILD_URL}|Open>)")
+        }
+        aborted {
+          slackSend (color: 'warning', message: "Job - ${env.BUILD_TAG} ABORTED before start (<${env.BUILD_URL}|Open>)")
         }
       }
     }
@@ -75,6 +45,7 @@ spec:
         POSTGRES_PASSWORD = 'postgres'
         POSTGRES_DB = 'uaddresses_test'
       }
+      failFast true
       parallel {
         stage('Test') {
           agent {
@@ -93,10 +64,6 @@ spec:
     operator: "Equal"
     value: "${BUILD_TAG}"
     effect: "NoSchedule"
-  hostAliases:
-  - ip: "127.0.0.1"
-    hostnames:
-    - "travis"
   containers:
   - name: elixir
     image: elixir:1.8.1
@@ -193,7 +160,7 @@ spec:
               sh 'mix local.rebar --force'
               sh 'mix local.hex --force'
               sh 'mix deps.get'
-              sh 'sed -i "s/DB_HOST=travis/DB_HOST=${POD_IP}/g" .env'
+              sh 'sed -i "s/travis/${POD_IP}/g" .env'
               sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/start-container.sh -o start-container.sh; bash ./start-container.sh'
               withCredentials(bindings: [usernamePassword(credentialsId: '8232c368-d5f5-4062-b1e0-20ec13b0d47b', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                 sh 'echo " ---- step: Push docker image ---- ";'
@@ -213,6 +180,12 @@ spec:
       }
     }
     stage ('Deploy') {
+      when {
+        allOf {
+            environment name: 'CHANGE_ID', value: ''
+            branch 'develop'
+        }
+      }
       environment {
         APPS = '[{"app":"uaddresses_api","label":"api","namespace":"uaddresses","chart":"uaddresses", "deployment":"api"}]'
       }
@@ -289,7 +262,7 @@ spec:
 //       }
 //     }
   }
-  post { 
+  post {
     success {
       slackSend (color: 'good', message: "SUCCESSFUL: Job - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) success in ${currentBuild.durationString}")
     }
@@ -300,11 +273,14 @@ spec:
       slackSend (color: 'warning', message: "ABORTED: Job - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) canceled in ${currentBuild.durationString}")
     }
     always {
-      node('delete-instance-uaddresses') {
+      node('delete-instance') {
+        // checkout scm
         container(name: 'gcloud', shell: '/bin/sh') {
           withCredentials([file(credentialsId: 'e7e3e6df-8ef5-4738-a4d5-f56bb02a8bb2', variable: 'KEYFILE')]) {
+            checkout scm
+            sh 'apk update && apk add curl bash git'
             sh 'gcloud auth activate-service-account jenkins-pool@ehealth-162117.iam.gserviceaccount.com --key-file=${KEYFILE} --project=ehealth-162117'
-            sh 'gcloud container node-pools delete uaddresses-build-${BUILD_NUMBER} --zone=europe-west1-d --cluster=dev --quiet'
+            sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/delete_instance.sh -o delete_instance.sh; bash ./delete_instance.sh'
           }
           slackSend (color: '#4286F5', message: "Instance for ${env.BUILD_TAG} deleted")
         }
