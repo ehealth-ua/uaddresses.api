@@ -16,7 +16,7 @@ defmodule Uaddresses do
     ]
 
     opts = [strategy: :rest_for_one, name: Uaddresses.Supervisor]
-    :telemetry.attach("log-handler", [:uaddresses_api, :repo, :query], &Uaddresses.TelemetryHandler.handle_event/4, nil)
+    :telemetry.attach("log-handler", [:uaddresses, :repo, :query], &Uaddresses.TelemetryHandler.handle_event/4, nil)
 
     Supervisor.start_link(children, opts)
   end
