@@ -3,7 +3,7 @@ pipeline {
   environment {
     PROJECT_NAME = 'uaddresses'
     INSTANCE_TYPE = 'n1-highcpu-4'
-    RD = "${UUID.randomUUID().toString()}"
+    RD = "b${UUID.randomUUID().toString()}"
   }
   stages {
     stage('Prepare instance') {
