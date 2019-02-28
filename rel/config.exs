@@ -23,4 +23,6 @@ release :uaddresses_api do
       uaddresses_api: :permanent
     ]
   )
+
+  set(config_providers: [ConfexConfigProvider])
 end

@@ -1,10 +1,10 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
 config :uaddresses_api,
   namespace: Uaddresses,
   ecto_repos: [Uaddresses.Repo]
+
+config :phoenix, :json_library, Jason
 
 # This configuration file is loaded before any dependency and
 # is restricted to this project.

@@ -5,7 +5,6 @@ config :ex_unit, capture_log: true
 
 # Configure your database
 config :uaddresses_api, Uaddresses.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "uaddresses_test",
