@@ -66,7 +66,7 @@ defmodule Uaddresses.Rpc do
     with %Ecto.Changeset{valid?: true} <- Addresses.changeset(%Addresses{}, %{"addresses" => addresses}) do
       :ok
     else
-      changeset -> {:error, ValidationError.render("422.query.json", changeset)}
+      changeset -> {:error, ValidationError.render("422.json", changeset)}
     end
   end
 
@@ -124,7 +124,7 @@ defmodule Uaddresses.Rpc do
 
       {:ok, [
         %{
-          id: "4494f631-2148-4163-96f8-a9c080c78d77", 
+          id: "4494f631-2148-4163-96f8-a9c080c78d77",
           koatuu: "8500000001",
           name: "ГАСПРА"
         }]

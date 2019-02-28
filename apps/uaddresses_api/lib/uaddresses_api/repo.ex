@@ -4,6 +4,6 @@ defmodule Uaddresses.Repo do
 
   More info: https://hexdocs.pm/ecto/Ecto.Repo.html
   """
-  use Ecto.Repo, otp_app: :uaddresses_api
+  use Ecto.Repo, otp_app: :uaddresses_api, adapter: Ecto.Adapters.Postgres
   use Scrivener, page_size: 10, max_page_size: 500
 end

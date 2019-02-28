@@ -20,7 +20,7 @@ defmodule Uaddresses.RpcTest do
                 invalid: [
                   %{
                     entry: "$.addresses[0].settlement_id",
-                    entry_type: "query_parameter",
+                    entry_type: "json_data_property",
                     rules: [
                       %{
                         description: ^error_message,
