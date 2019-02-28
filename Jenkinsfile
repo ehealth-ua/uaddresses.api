@@ -1,8 +1,9 @@
 pipeline {
   agent none
   environment {
-    PROJECT_NAME = 'ehealth'
+    PROJECT_NAME = 'uaddresses'
     INSTANCE_TYPE = 'n1-highcpu-4'
+    RD = "${UUID.randomUUID().toString()}"
   }
   stages {
     stage('Prepare instance') {
@@ -62,7 +63,7 @@ spec:
   tolerations:
   - key: "ci"
     operator: "Equal"
-    value: "${BUILD_TAG}"
+    value: "${RD}"
     effect: "NoSchedule"
   containers:
   - name: elixir
@@ -76,7 +77,7 @@ spec:
     - containerPort: 5432
     tty: true
   nodeSelector:
-    node: ${BUILD_TAG}
+    node: ${RD}
 """
             }
           }
@@ -113,7 +114,7 @@ spec:
   tolerations:
   - key: "ci"
     operator: "Equal"
-    value: "${BUILD_TAG}"
+    value: "${RD}"
     effect: "NoSchedule"
   containers:
   - name: docker
@@ -147,7 +148,7 @@ spec:
     - name: docker-graph-storage 
       emptyDir: {}
   nodeSelector:
-    node: ${BUILD_TAG}
+    node: ${RD}
 """
             }
           }
@@ -203,7 +204,7 @@ spec:
   tolerations:
   - key: "ci"
     operator: "Equal"
-    value: "${BUILD_TAG}"
+    value: "${RD}"
     effect: "NoSchedule"
   containers:
   - name: kubectl
@@ -212,7 +213,7 @@ spec:
     - cat
     tty: true
   nodeSelector:
-    node: ${BUILD_TAG}
+    node: ${RD}
 """
         }
       }
@@ -274,11 +275,9 @@ spec:
     }
     always {
       node('delete-instance') {
-        // checkout scm
         container(name: 'gcloud', shell: '/bin/sh') {
           withCredentials([file(credentialsId: 'e7e3e6df-8ef5-4738-a4d5-f56bb02a8bb2', variable: 'KEYFILE')]) {
-            checkout scm
-            sh 'apk update && apk add curl bash git'
+            sh 'apk update && apk add curl bash'
             sh 'gcloud auth activate-service-account jenkins-pool@ehealth-162117.iam.gserviceaccount.com --key-file=${KEYFILE} --project=ehealth-162117'
             sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/delete_instance.sh -o delete_instance.sh; bash ./delete_instance.sh'
           }
