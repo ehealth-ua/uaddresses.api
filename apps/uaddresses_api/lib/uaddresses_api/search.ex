@@ -36,7 +36,8 @@ defmodule Uaddresses.Search do
         {:error, changeset}
       end
 
-      def search(entity_schema, [_ | _] = filter, order_by \\ [], cursor \\ nil) when is_atom(entity_schema) do
+      def search(entity_schema, filter, order_by \\ [], cursor \\ nil)
+          when is_list(filter) and is_atom(entity_schema) do
         entities =
           entity_schema
           |> filter(filter)
