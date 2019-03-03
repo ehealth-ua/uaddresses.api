@@ -49,7 +49,7 @@ defmodule Uaddresses.Mixfile do
       {:eview, "~> 0.15.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:ex_csv, "~> 0.1.5"},
-      {:scrivener_ecto, "~> 2.0"},
+      {:scrivener_ecto, git: "https://github.com/AlexKovalevych/scrivener_ecto.git", branch: "fix_page_number"},
       {:ehealth_logger, git: "https://github.com/edenlabllc/ehealth_logger.git"},
       {:ex_machina, "~> 2.2", only: [:dev, :test]},
       {:ex_doc, "~> 0.19.2", only: :dev, runtime: false}
