@@ -5,6 +5,37 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [1.53.0](https://github.com/edenlabllc/uaddresses.api/compare/1.52.1...1.53.0) (2019-3-4)
+
+
+
+
+### Features:
+
+* ecto 3 (#68)
+
+* Jenkins pr 3 (#67)
+
+* add jenkinsfile (#63)
+
+* use ehealth logger (#61)
+
+* add rpc search for settlements, regions, districts (#59)
+
+### Bug Fixes:
+
+* bump scrivener_ecto (#75)
+
+* allow search/4 accept empty filter argument (#73)
+
+* deps (#71)
+
+* log level, bump kube_rpc (#65)
+
+* install jq and change instance type (#64)
+
+* bump alpine (#57)
+
 ## [1.52.1](https://github.com/edenlabllc/uaddresses.api/compare/1.52.1...1.52.1) (2019-1-23)
 
 
