@@ -35,7 +35,7 @@ defmodule Uaddresses.Web.SettlementView do
   end
 
   def render("settlement.rpc.json", %{settlement: settlement}) do
-    Map.take(settlement, @fields)
+    Map.take(settlement, @fields ++ [:inserted_at, :updated_at])
   end
 
   def render("settlement_by_district.json", %{settlement: settlement}) do

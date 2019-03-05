@@ -22,7 +22,7 @@ defmodule Uaddresses.Web.DistrictView do
   end
 
   def render("district.rpc.json", %{district: district}) do
-    Map.take(district, @fields)
+    Map.take(district, @fields ++ [:inserted_at, :updated_at])
   end
 
   def render("district_by_region.json", %{district: district}) do

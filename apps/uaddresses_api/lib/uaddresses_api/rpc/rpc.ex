@@ -92,12 +92,14 @@ defmodule Uaddresses.Rpc do
         %{
           district_id: "56cdb8cc-99e1-4b12-b533-d1fa2be4648a",
           id: "74fb7249-7f1e-4076-9bfb-bcfed4a8389c",
+          inserted_at: ~N[2019-03-05 08:55:59.396463],
           koatuu: "8500000000",
           mountain_group: false,
           name: "ГАСПРА",
           parent_settlement_id: "6683dc0c-230a-4f03-af40-c75303aa865a",
           region_id: "ac44eb6d-4354-43cb-9852-45b98806a594",
-          type: "CITY"
+          type: "CITY",
+          updated_at: ~N[2019-03-05 08:55:59.396469]
         }]
       }
   """
@@ -125,8 +127,10 @@ defmodule Uaddresses.Rpc do
       {:ok, [
         %{
           id: "4494f631-2148-4163-96f8-a9c080c78d77",
+          inserted_at: ~N[2019-03-05 08:55:59.460432],
           koatuu: "8500000001",
-          name: "ГАСПРА"
+          name: "ГАСПРА",
+          updated_at: ~N[2019-03-05 08:55:59.460446]
         }]
       }
   """
@@ -154,9 +158,11 @@ defmodule Uaddresses.Rpc do
       {:ok, [
         %{
           id: "5282c084-1015-4404-8d34-9826c502274a",
+          inserted_at: ~N[2019-03-05 08:55:59.444467],
           koatuu: "8500000002",
           name: "ГАСПРА",
-          region_id: "6d6d0186-16f8-484c-9f68-b9395ec91830"
+          region_id: "6d6d0186-16f8-484c-9f68-b9395ec91830",
+          updated_at: ~N[2019-03-05 08:55:59.444475]
         }]
       }
   """
