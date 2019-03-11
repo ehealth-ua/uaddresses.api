@@ -10,6 +10,6 @@ defmodule Uaddresses.Districts.District do
     belongs_to(:region, Uaddresses.Regions.Region, type: Ecto.UUID)
     has_many(:settlements, Uaddresses.Settlements.Settlement)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end

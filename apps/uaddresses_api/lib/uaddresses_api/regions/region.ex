@@ -8,6 +8,6 @@ defmodule Uaddresses.Regions.Region do
     field(:koatuu, :string)
     has_many(:districts, Uaddresses.Districts.District)
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 end
