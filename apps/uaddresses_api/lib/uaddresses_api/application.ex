@@ -4,7 +4,6 @@ defmodule Uaddresses do
   """
 
   use Application
-  alias Confex.Resolver
   alias Uaddresses.Web.Endpoint
 
   def start(_type, _args) do
@@ -19,15 +18,5 @@ defmodule Uaddresses do
     :telemetry.attach("log-handler", [:uaddresses, :repo, :query], &Uaddresses.TelemetryHandler.handle_event/4, nil)
 
     Supervisor.start_link(children, opts)
-  end
-
-  def config_change(changed, _new, removed) do
-    Endpoint.config_change(changed, removed)
-    :ok
-  end
-
-  @doc false
-  def init(_key, config) do
-    Resolver.resolve(config)
   end
 end

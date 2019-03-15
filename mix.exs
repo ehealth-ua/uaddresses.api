@@ -21,8 +21,8 @@ defmodule Uaddresses.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:credo, "~> 0.10.2", only: [:dev, :test]},
+      {:excoveralls, "~> 0.10.6", only: [:dev, :test]},
+      {:credo, "~> 1.0", only: [:dev, :test]},
       {:distillery, "~> 2.0"},
       {:git_ops, "~> 0.6.0", only: [:dev]}
     ]
