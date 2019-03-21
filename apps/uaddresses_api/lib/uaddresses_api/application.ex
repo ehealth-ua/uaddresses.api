@@ -4,14 +4,13 @@ defmodule Uaddresses do
   """
 
   use Application
+  alias Uaddresses.Repo
   alias Uaddresses.Web.Endpoint
 
   def start(_type, _args) do
-    import Supervisor.Spec, warn: false
-
     children = [
-      supervisor(Uaddresses.Repo, []),
-      supervisor(Uaddresses.Web.Endpoint, [])
+      {Repo, []},
+      {Endpoint, []}
     ]
 
     opts = [strategy: :rest_for_one, name: Uaddresses.Supervisor]

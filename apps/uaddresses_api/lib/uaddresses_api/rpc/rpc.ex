@@ -15,13 +15,29 @@ defmodule Uaddresses.Rpc do
   alias Uaddresses.Web.RegionView
   alias Uaddresses.Web.SettlementView
 
-  @type settlement :: %{
+  @type settlement_rpc :: %{
           district_id: binary(),
           id: binary(),
           koatuu: binary(),
           mountain_group: boolean(),
           name: binary(),
           parent_settlement_id: binary(),
+          region_id: binary(),
+          type: binary(),
+          inserted_at: DateTime,
+          updated_at: DateTime
+        }
+
+  @type settlement :: %{
+          district: binary(),
+          district_id: binary(),
+          id: binary(),
+          koatuu: binary(),
+          mountain_group: boolean(),
+          name: binary(),
+          parent_settlement: binary(),
+          parent_settlement_id: binary(),
+          region: binary(),
           region_id: binary(),
           type: binary()
         }
@@ -75,6 +91,33 @@ defmodule Uaddresses.Rpc do
   end
 
   @doc """
+  Get settlement by id
+
+      iex> Uaddresses.Rpc.settlement_by_id("6604341e-2960-404d-aa07-8552720d7222")
+
+      {:ok,
+      %{
+        district: "some name 0",
+        district_id: "d37b3c31-809b-4a7d-ace2-8ab826df7b09",
+        id: "6604341e-2960-404d-aa07-8552720d7222",
+        koatuu: nil,
+        mountain_group: false,
+        name: "some name",
+        parent_settlement: nil,
+        parent_settlement_id: "c7f12978-9a30-4609-97c5-c9e5fcb42c57",
+        region: "some name 0",
+        region_id: "8e27e7d7-e85c-444d-b2c6-6e3ae98811da",
+        type: nil
+      }}
+  """
+  @spec settlement_by_id(binary()) :: {:ok, settlement()}
+  def settlement_by_id(id) do
+    with %Settlement{} = settlement <- Settlements.get_settlement(id) do
+      {:ok, SettlementView.render("show.json", %{settlement: settlement})}
+    end
+  end
+
+  @doc """
   Searches for settlements using filtering format.
 
   Available parameters:
@@ -103,7 +146,7 @@ defmodule Uaddresses.Rpc do
         }]
       }
   """
-  @spec search_settlements(list, list, {integer, integer} | nil) :: {:ok, list(settlement)}
+  @spec search_settlements(list, list, {integer, integer} | nil) :: {:ok, list(settlement_rpc)}
   def search_settlements(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
     with {:ok, settlements} <- Settlements.search(Settlement, filter, order_by, cursor) do
       {:ok, SettlementView.render("index.rpc.json", %{settlements: settlements})}

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.19.3">
+    <title>Uaddresses.Rpc —  v1.53.0</title>
+    <link rel="stylesheet" href="dist/html-399e30b9b028e3059575.css" />
+    <script src="dist/sidebar_items-38ee312ed6.js"></script>
+    <script async src="dist/html-399e30b9b028e3059575.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+    <div class="main">
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<button class="sidebar-button night-mode-toggle">
+  <span class="icon-theme" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Theme</span>
+</button>
+<section class="sidebar">
+
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v1.53.0
+      </h2>
+    </div>
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="Search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs"> v1.53.0</small>
+Uaddresses.Rpc              </h1>
+
+
+        <section id="moduledoc">
+<p>This module contains functions that are called from other pods via RPC.</p>
+        </section>
+
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:district/0">district()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:region/0">region()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:settlement/0">settlement()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:settlement_rpc/0">settlement_rpc()</a>
+  </div>
+</div>
+  </div>
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#search_districts/3">search_districts(filter, order_by \\ [], cursor \\ nil)</a>
+  </div>
+    <div class="summary-synopsis"><p>Searches for districts using filtering format</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#search_regions/3">search_regions(filter, order_by \\ [], cursor \\ nil)</a>
+  </div>
+    <div class="summary-synopsis"><p>Searches for regions using filtering format</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#search_settlements/3">search_settlements(filter, order_by \\ [], cursor \\ nil)</a>
+  </div>
+    <div class="summary-synopsis"><p>Searches for settlements using filtering format</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#settlement_by_id/1">settlement_by_id(id)</a>
+  </div>
+    <div class="summary-synopsis"><p>Get settlement by id</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#validate/1">validate(addresses)</a>
+  </div>
+    <div class="summary-synopsis"><p>Validates given address</p>
+</div>
+</div>
+  </div>
+        </section>
+
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+Types          </h1>
+          <div class="types-list">
+<section class="detail" id="t:district/0">
+    <div class="detail-header">
+    <a href="#t:district/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">district()</span>
+        
+      <div class="specs">
+          <pre>district() :: %{
+  id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  koatuu: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  region_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()
+}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:region/0">
+    <div class="detail-header">
+    <a href="#t:region/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">region()</span>
+        
+      <div class="specs">
+          <pre>region() :: %{id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), koatuu: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(), name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:settlement/0">
+    <div class="detail-header">
+    <a href="#t:settlement/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">settlement()</span>
+        
+      <div class="specs">
+          <pre>settlement() :: %{
+  district: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  district_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  koatuu: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  mountain_group: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  parent_settlement: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  parent_settlement_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  region: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  region_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  type: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()
+}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:settlement_rpc/0">
+    <div class="detail-header">
+    <a href="#t:settlement_rpc/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">settlement_rpc()</span>
+        
+      <div class="specs">
+          <pre>settlement_rpc() :: %{
+  district_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  koatuu: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  mountain_group: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>(),
+  name: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  parent_settlement_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  region_id: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  type: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>(),
+  inserted_at: DateTime,
+  updated_at: DateTime
+}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+          </div>
+        </section>
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+Functions          </h1>
+          <div class="functions-list">
+<section class="detail" id="search_districts/3">
+  
+    <span id="search_districts/1"></span>
+
+    <span id="search_districts/2"></span>
+  <div class="detail-header">
+    <a href="#search_districts/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">search_districts(filter, order_by \\ [], cursor \\ nil)</span>
+        
+      <div class="specs">
+          <pre>search_districts(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">list</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">list</a>(), {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()} | nil) ::
+  {:ok, [<a href="#t:district/0">district</a>()]}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Searches for districts using filtering format.</p>
+<p>Available parameters:</p>
+<table>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center">Parameter</th><th style="text-align: center">Type</th><th style="text-align: center">Example</th><th style="text-align: center">Description</th>
+</tr>
+</thead>
+<tr>
+<td style="text-align: center">filter</td><td style="text-align: center"><code class="inline">list</code></td><td style="text-align: center"><code class="inline">[{:koatuu, :equal, &quot;8500000002&quot;}]</code></td><td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">order_by</td><td style="text-align: center"><code class="inline">list</code></td><td style="text-align: center"><code class="inline">[asc: :inserted_at]</code> or <code class="inline">[desc: :status]</code></td><td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">cursor</td><td style="text-align: center"><code class="inline">{integer, integer}</code> or <code class="inline">nil</code></td><td style="text-align: center"><code class="inline">{0, 10}</code></td><td style="text-align: center"></td>
+</tr>
+</table>
+<p>Example:</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_districts</span><span class="p" data-group-id="0271882503-1">(</span><span class="p" data-group-id="0271882503-2">[</span><span class="p" data-group-id="0271882503-3">{</span><span class="ss">:name</span><span class="p">,</span><span class="w"> </span><span class="ss">:like</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p" data-group-id="0271882503-3">}</span><span class="p" data-group-id="0271882503-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0271882503-4">[</span><span class="ss">desc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="0271882503-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0271882503-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="0271882503-5">}</span><span class="p" data-group-id="0271882503-1">)</span><span class="w">
+
+</span><span class="p" data-group-id="0271882503-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0271882503-7">[</span><span class="w">
+  </span><span class="p" data-group-id="0271882503-8">%{</span><span class="w">
+    </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5282c084-1015-4404-8d34-9826c502274a&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.444467]</span><span class="p">,</span><span class="w">
+    </span><span class="ss">koatuu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8500000002&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">region_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6d6d0186-16f8-484c-9f68-b9395ec91830&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.444475]</span><span class="w">
+  </span><span class="p" data-group-id="0271882503-8">}</span><span class="p" data-group-id="0271882503-7">]</span><span class="w">
+</span><span class="p" data-group-id="0271882503-6">}</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="search_regions/3">
+  
+    <span id="search_regions/1"></span>
+
+    <span id="search_regions/2"></span>
+  <div class="detail-header">
+    <a href="#search_regions/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">search_regions(filter, order_by \\ [], cursor \\ nil)</span>
+        
+      <div class="specs">
+          <pre>search_regions(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">list</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">list</a>(), {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()} | nil) ::
+  {:ok, [<a href="#t:region/0">region</a>()]}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Searches for regions using filtering format.</p>
+<p>Available parameters:</p>
+<table>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center">Parameter</th><th style="text-align: center">Type</th><th style="text-align: center">Example</th><th style="text-align: center">Description</th>
+</tr>
+</thead>
+<tr>
+<td style="text-align: center">filter</td><td style="text-align: center"><code class="inline">list</code></td><td style="text-align: center"><code class="inline">[{:name, :equal, &quot;ГАСПРА&quot;}]</code></td><td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">order_by</td><td style="text-align: center"><code class="inline">list</code></td><td style="text-align: center"><code class="inline">[asc: :inserted_at]</code> or <code class="inline">[desc: :status]</code></td><td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">cursor</td><td style="text-align: center"><code class="inline">{integer, integer}</code> or <code class="inline">nil</code></td><td style="text-align: center"><code class="inline">{0, 10}</code></td><td style="text-align: center"></td>
+</tr>
+</table>
+<p>Example:</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_regions</span><span class="p" data-group-id="3498505384-1">(</span><span class="p" data-group-id="3498505384-2">[</span><span class="p" data-group-id="3498505384-3">{</span><span class="ss">:koatuu</span><span class="p">,</span><span class="w"> </span><span class="ss">:equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8500000001&quot;</span><span class="p" data-group-id="3498505384-3">}</span><span class="p" data-group-id="3498505384-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3498505384-4">[</span><span class="ss">desc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="3498505384-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3498505384-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="3498505384-5">}</span><span class="p" data-group-id="3498505384-1">)</span><span class="w">
+
+</span><span class="p" data-group-id="3498505384-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3498505384-7">[</span><span class="w">
+  </span><span class="p" data-group-id="3498505384-8">%{</span><span class="w">
+    </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4494f631-2148-4163-96f8-a9c080c78d77&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.460432]</span><span class="p">,</span><span class="w">
+    </span><span class="ss">koatuu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8500000001&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.460446]</span><span class="w">
+  </span><span class="p" data-group-id="3498505384-8">}</span><span class="p" data-group-id="3498505384-7">]</span><span class="w">
+</span><span class="p" data-group-id="3498505384-6">}</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="search_settlements/3">
+  
+    <span id="search_settlements/1"></span>
+
+    <span id="search_settlements/2"></span>
+  <div class="detail-header">
+    <a href="#search_settlements/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">search_settlements(filter, order_by \\ [], cursor \\ nil)</span>
+        
+      <div class="specs">
+          <pre>search_settlements(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">list</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">list</a>(), {<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>(), <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()} | nil) ::
+  {:ok, [<a href="#t:settlement_rpc/0">settlement_rpc</a>()]}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Searches for settlements using filtering format.</p>
+<p>Available parameters:</p>
+<table>
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center">Parameter</th><th style="text-align: center">Type</th><th style="text-align: center">Example</th><th style="text-align: center">Description</th>
+</tr>
+</thead>
+<tr>
+<td style="text-align: center">filter</td><td style="text-align: center"><code class="inline">list</code></td><td style="text-align: center"><code class="inline">[{:mountain_group, :equal, false}]</code></td><td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">order_by</td><td style="text-align: center"><code class="inline">list</code></td><td style="text-align: center"><code class="inline">[asc: :inserted_at]</code> or <code class="inline">[desc: :status]</code></td><td style="text-align: center"></td>
+</tr>
+<tr>
+<td style="text-align: center">cursor</td><td style="text-align: center"><code class="inline">{integer, integer}</code> or <code class="inline">nil</code></td><td style="text-align: center"><code class="inline">{0, 10}</code></td><td style="text-align: center"></td>
+</tr>
+</table>
+<p>Example:</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_settlements</span><span class="p" data-group-id="0166680540-1">(</span><span class="p" data-group-id="0166680540-2">[</span><span class="p" data-group-id="0166680540-3">{</span><span class="ss">:koatuu</span><span class="p">,</span><span class="w"> </span><span class="ss">:equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8500000000&quot;</span><span class="p" data-group-id="0166680540-3">}</span><span class="p" data-group-id="0166680540-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0166680540-4">[</span><span class="ss">asc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="0166680540-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0166680540-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="0166680540-5">}</span><span class="p" data-group-id="0166680540-1">)</span><span class="w">
+
+</span><span class="p" data-group-id="0166680540-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0166680540-7">[</span><span class="w">
+  </span><span class="p" data-group-id="0166680540-8">%{</span><span class="w">
+    </span><span class="ss">district_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;56cdb8cc-99e1-4b12-b533-d1fa2be4648a&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;74fb7249-7f1e-4076-9bfb-bcfed4a8389c&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.396463]</span><span class="p">,</span><span class="w">
+    </span><span class="ss">koatuu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8500000000&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">mountain_group</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p">,</span><span class="w">
+    </span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">parent_settlement_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6683dc0c-230a-4f03-af40-c75303aa865a&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">region_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ac44eb6d-4354-43cb-9852-45b98806a594&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CITY&quot;</span><span class="p">,</span><span class="w">
+    </span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.396469]</span><span class="w">
+  </span><span class="p" data-group-id="0166680540-8">}</span><span class="p" data-group-id="0166680540-7">]</span><span class="w">
+</span><span class="p" data-group-id="0166680540-6">}</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="settlement_by_id/1">
+    <div class="detail-header">
+    <a href="#settlement_by_id/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">settlement_by_id(id)</span>
+        
+      <div class="specs">
+          <pre>settlement_by_id(<a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">binary</a>()) :: {:ok, <a href="#t:settlement/0">settlement</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Get settlement by id</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">settlement_by_id</span><span class="p" data-group-id="7241372326-1">(</span><span class="s">&quot;6604341e-2960-404d-aa07-8552720d7222&quot;</span><span class="p" data-group-id="7241372326-1">)</span><span class="w">
+
+</span><span class="p" data-group-id="7241372326-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
+</span><span class="p" data-group-id="7241372326-3">%{</span><span class="w">
+  </span><span class="ss">district</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;some name 0&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">district_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;d37b3c31-809b-4a7d-ace2-8ab826df7b09&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6604341e-2960-404d-aa07-8552720d7222&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">koatuu</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p">,</span><span class="w">
+  </span><span class="ss">mountain_group</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p">,</span><span class="w">
+  </span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;some name&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">parent_settlement</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p">,</span><span class="w">
+  </span><span class="ss">parent_settlement_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;c7f12978-9a30-4609-97c5-c9e5fcb42c57&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">region</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;some name 0&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">region_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8e27e7d7-e85c-444d-b2c6-6e3ae98811da&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="w">
+</span><span class="p" data-group-id="7241372326-3">}</span><span class="p" data-group-id="7241372326-2">}</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="validate/1">
+    <div class="detail-header">
+    <a href="#validate/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">validate(addresses)</span>
+        
+      <div class="specs">
+          <pre>validate([<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()]) :: :ok | :error | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Validates given address.</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">addresses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="8100699059-1">[</span><span class="p" data-group-id="8100699059-2">%{</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;apartment&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;23&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;area&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Черкаська&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;building&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;15&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;country&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;UA&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;region&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;ЖАШКІВСЬКИЙ&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;settlement&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;some name&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;settlement_id&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;aa1d4510-175e-4747-89f1-c68159d07e96&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;settlement_type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;CITY&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;street&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;вул. Ніжинська&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;street_type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;STREET&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;RESIDENCE&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;zip&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;02090&quot;</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="p" data-group-id="8100699059-2">}</span><span class="p" data-group-id="8100699059-1">]</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">validate</span><span class="p" data-group-id="8100699059-3">(</span><span class="n">addresses</span><span class="p" data-group-id="8100699059-3">)</span><span class="w">
+
+</span><span class="ss">:ok</span></code></pre>
+  </section>
+</section>
+          </div>
+        </section>
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.19.3),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  
+  </body>
+</html>
+

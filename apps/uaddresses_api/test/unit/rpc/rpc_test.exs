@@ -74,6 +74,19 @@ defmodule Uaddresses.RpcTest do
     end
   end
 
+  describe "get settlement by id" do
+    test "settlement not found" do
+      refute Rpc.settlement_by_id(UUID.generate())
+    end
+
+    test "success get settlement by id" do
+      settlement = insert(:settlement)
+      id = settlement.id
+
+      assert {:ok, %{id: ^id}} = Rpc.settlement_by_id(id)
+    end
+  end
+
   describe "search entities" do
     test "success search_settlements/3" do
       settlement = insert(:settlement, name: "ГАСПРА", mountain_group: false)
