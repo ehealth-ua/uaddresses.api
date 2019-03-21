@@ -2,9 +2,10 @@ pipeline {
   agent none
   environment {
     PROJECT_NAME = 'uaddresses'
-    INSTANCE_TYPE = 'n1-highcpu-4'
+    INSTANCE_TYPE = 'n1-highmem-4'
     RD = "b${UUID.randomUUID().toString()}"
-    RD_CROP="b${RD.take(14)}"
+    RD_CROP = "b${RD.take(14)}"
+    NAME = "${RD.take(5)}"
   }
   stages {
     stage('Prepare instance') {
@@ -12,7 +13,6 @@ pipeline {
         kubernetes {
           label 'create-instance'
           defaultContainer 'jnlp'
-          instanceCap '4'
         }
       }
       steps {
@@ -52,19 +52,16 @@ pipeline {
         stage('Test') {
           agent {
             kubernetes {
-              label 'uaddresses-test'
+              label "uaddresses-test-$NAME"
               defaultContainer 'jnlp'
               yaml """
 apiVersion: v1
 kind: Pod
-metadata:
-  labels:
-    stage: test
 spec:
   tolerations:
   - key: "ci"
     operator: "Equal"
-    value: "$PROJECT_NAME-$BUILD_ID-$RD_CROP"
+    value: "$RD_CROP"
     effect: "NoSchedule"
   containers:
   - name: elixir
@@ -72,13 +69,27 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "4048Mi"
+        cpu: "2000m"
   - name: postgres
     image: postgres:9.6
     ports:
     - containerPort: 5432
     tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
   nodeSelector:
-    node: $PROJECT_NAME-$BUILD_ID-$RD_CROP
+    node: "$RD_CROP"
 """
             }
           }
@@ -103,7 +114,7 @@ spec:
           }
           agent {
             kubernetes {
-              label 'uaddresses-build'
+              label "uaddresses-build-$NAME"
               defaultContainer 'jnlp'
               yaml """
 apiVersion: v1
@@ -115,11 +126,11 @@ spec:
   tolerations:
   - key: "ci"
     operator: "Equal"
-    value: "$PROJECT_NAME-$BUILD_ID-$RD_CROP"
+    value: "$RD_CROP"
     effect: "NoSchedule"
   containers:
   - name: docker
-    image: liubenokvlad/docker:18.09-alpine-elixir-1.8.1
+    image: edenlabllc/docker:18.09-alpine-elixir-1.8.1
     env:
     - name: POD_IP
       valueFrom:
@@ -130,11 +141,25 @@ spec:
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
   - name: postgres
-    image: lakone/postgres:9.6.11-alpine
+    image: edenlabllc/postgres:9.6.11-alpine
     ports:
     - containerPort: 5432
     tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
   - name: dind
     image: docker:18.09.2-dind
     securityContext: 
@@ -142,6 +167,13 @@ spec:
     ports:
     - containerPort: 2375
     tty: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "500m"
+      limits:
+        memory: "5048Mi"
+        cpu: "2000m"
     volumeMounts: 
     - name: docker-graph-storage 
       mountPath: /var/lib/docker
@@ -149,7 +181,7 @@ spec:
     - name: docker-graph-storage 
       emptyDir: {}
   nodeSelector:
-    node: $PROJECT_NAME-$BUILD_ID-$RD_CROP
+    node: "$RD_CROP"
 """
             }
           }
@@ -170,14 +202,6 @@ spec:
               }
             }
           }
-          // post {
-          //     always {
-          //   container(name: 'docker', shell: '/bin/sh') {
-          //     sh 'echo " ---- step: Remove docker image from host ---- ";'
-          //     sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/remove-containers.sh -o remove-containers.sh; bash ./remove-containers.sh'
-          //   }
-          //     }
-          // }
         }
       }
     }
@@ -193,7 +217,7 @@ spec:
       }
       agent {
         kubernetes {
-          label 'uaddresses-deploy'
+          label "uaddresses-deploy-$NAME"
           defaultContainer 'jnlp'
           yaml """
 apiVersion: v1
@@ -205,16 +229,23 @@ spec:
   tolerations:
   - key: "ci"
     operator: "Equal"
-    value: "$PROJECT_NAME-$BUILD_ID-$RD_CROP"
+    value: "$RD_CROP"
     effect: "NoSchedule"
   containers:
   - name: kubectl
-    image: lachlanevenson/k8s-kubectl:v1.13.2
+    image: edenlabllc/k8s-kubectl:v1.13.2
     command:
     - cat
     tty: true
+    resources:
+      requests:
+        memory: "1024Mi"
+        cpu: "500m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
   nodeSelector:
-    node: $PROJECT_NAME-$BUILD_ID-$RD_CROP
+    node: "$RD_CROP"
 """
         }
       }
@@ -226,43 +257,6 @@ spec:
         }
       }
     }
-//     stage('Delete instance') {
-//       agent {
-//         kubernetes {
-//           label 'delete-instance-uaddresses-${BUILD_TAG}'
-//           defaultContainer 'jnlp'
-//           yaml '''
-// apiVersion: v1
-// kind: Pod
-// metadata:
-//   labels:
-//     stage: prepare-instance
-// spec:
-//   tolerations:
-//   - key: "node"
-//     operator: "Equal"
-//     value: "ci"
-//     effect: "NoSchedule"
-//   containers:
-//   - name: gcloud
-//     image: google/cloud-sdk:234.0.0-alpine
-//     command:
-//     - cat
-//     tty: true
-//   nodeSelector:
-//     node: build-uaddresses-${BUILD_TAG}
-// '''
-//         }
-//       }
-//       steps {
-//         container(name: 'gcloud', shell: '/bin/sh') {
-//           withCredentials(file(credentialsId: 'e7e3e6df-8ef5-4738-a4d5-f56bb02a8bb2', variable: 'service-account')) {
-//             sh 'gcloud auth activate-service-account jenkins-pool@ehealth-162117.iam.gserviceaccount.com --key-file=$service-account --project=ehealth-162117'
-//             sh 'gcloud container node-pools delete uaddresses-build-${BUILD_TAG} --zone=europe-west1-d --cluster=dev --quiet'
-//           }
-//         }
-//       }
-//     }
   }
   post {
     success {
