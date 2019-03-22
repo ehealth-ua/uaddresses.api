@@ -2,7 +2,7 @@ pipeline {
   agent none
   environment {
     PROJECT_NAME = 'uaddresses'
-    INSTANCE_TYPE = 'n1-highmem-4'
+    INSTANCE_TYPE = 'n1-highmem-16'
     RD = "b${UUID.randomUUID().toString()}"
     RD_CROP = "b${RD.take(14)}"
     NAME = "${RD.take(5)}"
