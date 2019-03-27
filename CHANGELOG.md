@@ -5,6 +5,21 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [1.54.0](https://github.com/edenlabllc/uaddresses.api/compare/1.53.0...1.54.0) (2019-3-27)
+
+
+
+
+### Features:
+
+* Settlement rpc#4422 (#88)
+
+* phoenix instruments (#79)
+
+### Bug Fixes:
+
+* refactor(uaddresses_api): return timestamps with timezones (#82)
+
 ## [1.53.0](https://github.com/edenlabllc/uaddresses.api/compare/1.52.1...1.53.0) (2019-3-4)
 
 
