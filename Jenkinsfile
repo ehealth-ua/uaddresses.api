@@ -1,282 +1,153 @@
+def author() {
+  return sh(returnStdout: true, script: 'git log -n 1 --format="%an"').trim()
+}
 pipeline {
-  agent none
+  agent {
+    node { 
+      label 'ehealth-build-big' 
+      }
+  }
   environment {
     PROJECT_NAME = 'uaddresses'
-    INSTANCE_TYPE = 'n1-highmem-16'
-    RD = "b${UUID.randomUUID().toString()}"
-    RD_CROP = "b${RD.take(14)}"
-    NAME = "${RD.take(5)}"
+    MIX_ENV = 'test'
+    DOCKER_NAMESPACE = 'edenlabllc'
+    POSTGRES_VERSION = '10'
+    POSTGRES_USER = 'postgres'
+    POSTGRES_PASSWORD = 'postgres'
+    POSTGRES_DB = 'postgres'
+    NO_ECTO_SETUP = 'true'
   }
   stages {
-    stage('Prepare instance') {
-      agent {
-        kubernetes {
-          label 'create-instance'
-          defaultContainer 'jnlp'
-        }
+    stage('Init') {
+      options {
+        timeout(activity: true, time: 3)
       }
       steps {
-        container(name: 'gcloud', shell: '/bin/sh') {
-          sh 'apk update && apk add curl bash'
-          withCredentials([file(credentialsId: 'e7e3e6df-8ef5-4738-a4d5-f56bb02a8bb2', variable: 'KEYFILE')]) {
-            sh 'gcloud auth activate-service-account jenkins-pool@ehealth-162117.iam.gserviceaccount.com --key-file=${KEYFILE} --project=ehealth-162117'
-            sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/create_instance.sh -o create_instance.sh; bash ./create_instance.sh'
-          }
-          slackSend (color: '#8E24AA', message: "Instance for ${env.BUILD_TAG} created")
-        }
-      }
-      post {
-        success {
-          slackSend (color: 'good', message: "Job - ${env.BUILD_TAG} STARTED (<${env.BUILD_URL}|Open>)")
-        }
-        failure {
-          slackSend (color: 'danger', message: "Job - ${env.BUILD_TAG} FAILED to start (<${env.BUILD_URL}|Open>)")
-        }
-        aborted {
-          slackSend (color: 'warning', message: "Job - ${env.BUILD_TAG} ABORTED before start (<${env.BUILD_URL}|Open>)")
-        }
+        sh 'cat /etc/hostname'
+        sh 'sudo docker rm -f $(sudo docker ps -a -q) || true'
+        sh 'sudo docker rmi $(sudo docker images -q) || true'
+        sh 'sudo docker system prune -f'
+        sh '''
+          sudo docker run -d --name postgres -p 5432:5432 edenlabllc/alpine-postgre:pglogical-gis-1.1;
+          sudo docker ps;
+        '''
+        sh '''
+          until psql -U postgres -h localhost -c "create database ehealth";
+            do
+              sleep 2
+            done
+          psql -U postgres -h localhost -c "create database prm_dev";
+          psql -U postgres -h localhost -c "create database fraud_dev";
+          psql -U postgres -h localhost -c "create database event_manager_dev";
+        '''
+        sh '''
+          mix local.hex --force;
+          mix local.rebar --force;
+          mix deps.get;
+          mix deps.compile;
+        '''
       }
     }
-    stage('Test and build') {
-      environment {
-        MIX_ENV = 'test'
-        DOCKER_NAMESPACE = 'edenlabllc'
-        APPS = '[{"app":"uaddresses_api","chart":"uaddresses","namespace":"uaddresses","deployment":"api","label":"api"}]'
-        POSTGRES_VERSION = '9.6'
-        POSTGRES_USER = 'postgres'
-        POSTGRES_PASSWORD = 'postgres'
-        POSTGRES_DB = 'uaddresses_test'
+    stage('Test') {
+      options {
+        timeout(activity: true, time: 3)
       }
-      failFast true
+      steps {
+        sh '''
+          (curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/tests.sh -o tests.sh; chmod +x ./tests.sh; ./tests.sh) || exit 1;
+          '''
+      }
+    }
+    stage('Build') {
+//      failFast true
       parallel {
-        stage('Test') {
-          agent {
-            kubernetes {
-              label "uaddresses-test-$NAME"
-              defaultContainer 'jnlp'
-              yaml """
-apiVersion: v1
-kind: Pod
-spec:
-  tolerations:
-  - key: "ci"
-    operator: "Equal"
-    value: "$RD_CROP"
-    effect: "NoSchedule"
-  containers:
-  - name: elixir
-    image: elixir:1.8.1
-    command:
-    - cat
-    tty: true
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "500m"
-      limits:
-        memory: "4048Mi"
-        cpu: "2000m"
-  - name: postgres
-    image: postgres:9.6
-    ports:
-    - containerPort: 5432
-    tty: true
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "500m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
-  nodeSelector:
-    node: "$RD_CROP"
-"""
-            }
+        stage('Build uaddresses-app') {
+          options {
+            timeout(activity: true, time: 3)
           }
-          steps {
-            container(name: 'elixir', shell: '/bin/sh') {
-              sh '''
-                mix local.hex --force
-                mix local.rebar --force
-                mix deps.get
-                curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/tests.sh -o tests.sh; bash ./tests.sh
-              '''
-            }
-          }
-        }
-        stage('Build') {
           environment {
-            APPS = '[{"app":"uaddresses_api","label":"api","namespace":"uaddresses","chart":"uaddresses", "deployment":"api"}]'
-            DOCKER_CREDENTIALS = 'credentials("20c2924a-6114-46dc-8e39-bfadd1cf8acf")'
-            POSTGRES_USER = 'postgres'
-            POSTGRES_PASSWORD = 'postgres'
-            POSTGRES_DB = 'uaddresses_dev'
-          }
-          agent {
-            kubernetes {
-              label "uaddresses-build-$NAME"
-              defaultContainer 'jnlp'
-              yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    stage: build
-spec:
-  tolerations:
-  - key: "ci"
-    operator: "Equal"
-    value: "$RD_CROP"
-    effect: "NoSchedule"
-  containers:
-  - name: docker
-    image: edenlabllc/docker:18.09-alpine-elixir-1.8.1
-    env:
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.podIP
-    - name: DOCKER_HOST 
-      value: tcp://localhost:2375 
-    command:
-    - cat
-    tty: true
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "500m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
-  - name: postgres
-    image: edenlabllc/postgres:9.6.11-alpine
-    ports:
-    - containerPort: 5432
-    tty: true
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "500m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
-  - name: dind
-    image: docker:18.09.2-dind
-    securityContext: 
-        privileged: true 
-    ports:
-    - containerPort: 2375
-    tty: true
-    resources:
-      requests:
-        memory: "512Mi"
-        cpu: "500m"
-      limits:
-        memory: "5048Mi"
-        cpu: "2000m"
-    volumeMounts: 
-    - name: docker-graph-storage 
-      mountPath: /var/lib/docker
-  volumes: 
-    - name: docker-graph-storage 
-      emptyDir: {}
-  nodeSelector:
-    node: "$RD_CROP"
-"""
-            }
+            APPS='[{"app":"uaddresses_api","label":"api","namespace":"uaddresses","chart":"uaddresses", "deployment":"api"}]'
           }
           steps {
-            container(name: 'docker', shell: '/bin/sh') {
-              sh 'apk update && apk add --no-cache jq curl bash elixir git ncurses-libs zlib ca-certificates openssl erlang-crypto erlang-runtime-tools;'
-              sh 'echo " ---- step: Build docker image ---- ";'
-              sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/build-container.sh -o build-container.sh; bash ./build-container.sh'
-              sh 'echo " ---- step: Start docker container ---- ";'
-              sh 'mix local.rebar --force'
-              sh 'mix local.hex --force'
-              sh 'mix deps.get'
-              sh 'sed -i "s/travis/${POD_IP}/g" .env'
-              sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/start-container.sh -o start-container.sh; bash ./start-container.sh'
-              withCredentials(bindings: [usernamePassword(credentialsId: '8232c368-d5f5-4062-b1e0-20ec13b0d47b', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                sh 'echo " ---- step: Push docker image ---- ";'
-                sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/push-changes.sh -o push-changes.sh; bash ./push-changes.sh'
-              }
-            }
+            sh '''
+              curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/build-container.sh -o build-container.sh;
+              chmod +x ./build-container.sh;
+              ./build-container.sh;  
+            '''
           }
         }
       }
     }
-    stage ('Deploy') {
-      when {
-        allOf {
-            environment name: 'CHANGE_ID', value: ''
-            branch 'develop'
-        }
+    stage('Run uaddresses-app and push') {
+      options {
+        timeout(activity: true, time: 3)
       }
       environment {
-        APPS = '[{"app":"uaddresses_api","label":"api","namespace":"uaddresses","chart":"uaddresses", "deployment":"api"}]'
-      }
-      agent {
-        kubernetes {
-          label "uaddresses-deploy-$NAME"
-          defaultContainer 'jnlp'
-          yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    stage: deploy
-spec:
-  tolerations:
-  - key: "ci"
-    operator: "Equal"
-    value: "$RD_CROP"
-    effect: "NoSchedule"
-  containers:
-  - name: kubectl
-    image: edenlabllc/k8s-kubectl:v1.13.2
-    command:
-    - cat
-    tty: true
-    resources:
-      requests:
-        memory: "1024Mi"
-        cpu: "500m"
-      limits:
-        memory: "2048Mi"
-        cpu: "1000m"
-  nodeSelector:
-    node: "$RD_CROP"
-"""
-        }
+        APPS='[{"app":"uaddresses_api","label":"api","namespace":"uaddresses","chart":"uaddresses", "deployment":"api"}]'
       }
       steps {
-        container(name: 'kubectl', shell: '/bin/sh') {
-          sh 'apk add curl bash jq'
-          sh 'echo " ---- step: Deploy to cluster ---- ";'
-          sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/autodeploy.sh -o autodeploy.sh; bash ./autodeploy.sh'
+        sh '''
+          curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/start-container.sh -o start-container.sh;
+          chmod +x ./start-container.sh; 
+          ./start-container.sh;
+        '''
+        withCredentials(bindings: [usernamePassword(credentialsId: '8232c368-d5f5-4062-b1e0-20ec13b0d47b', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+          sh 'echo " ---- step: Push docker image ---- ";'
+          sh '''
+              curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/push-changes.sh -o push-changes.sh;
+              chmod +x ./push-changes.sh;
+              ./push-changes.sh
+            '''
         }
       }
     }
-  }
+
+
+    stage('Deploy') {
+      options {
+        timeout(activity: true, time: 3)
+      }
+      environment {
+        APPS='[{"app":"uaddresses_api","label":"api","namespace":"uaddresses","chart":"uaddresses", "deployment":"api"}]'
+      }
+      steps {
+        withCredentials([string(credentialsId: '86a8df0b-edef-418f-844a-cd1fa2cf813d', variable: 'GITHUB_TOKEN')]) {
+          withCredentials([file(credentialsId: '091bd05c-0219-4164-8a17-777f4caf7481', variable: 'GCLOUD_KEY')]) {
+            sh '''
+              curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/autodeploy.sh -o autodeploy.sh;
+              chmod +x ./autodeploy.sh;
+              ./autodeploy.sh
+            '''
+          }
+        }
+      }
+    }
+  }  
   post {
     success {
-      slackSend (color: 'good', message: "SUCCESSFUL: Job - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) success in ${currentBuild.durationString}")
+      script {
+        if (env.CHANGE_ID == null) {
+          slackSend (color: 'good', message: "Build <${env.RUN_DISPLAY_URL}|#${env.BUILD_NUMBER}> (<https://github.com/edenlabllc/ehealth.api/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.take(7)}>) of ${env.JOB_NAME} by ${author()} *success* in ${currentBuild.durationString.replace(' and counting', '')}")
+        } else if (env.BRANCH_NAME.startsWith('PR')) {
+          slackSend (color: 'good', message: "Build <${env.RUN_DISPLAY_URL}|#${env.BUILD_NUMBER}> (<https://github.com/edenlabllc/ehealth.api/pull/${env.CHANGE_ID}|${env.GIT_COMMIT.take(7)}>) of ${env.JOB_NAME} in PR #${env.CHANGE_ID} by ${author()} *success* in ${currentBuild.durationString.replace(' and counting', '')}")
+        }
+      }
     }
     failure {
-      slackSend (color: 'danger', message: "FAILED: Job - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) failed in ${currentBuild.durationString}")
+      script {
+        if (env.CHANGE_ID == null) {
+          slackSend (color: 'danger', message: "Build <${env.RUN_DISPLAY_URL}|#${env.BUILD_NUMBER}> (<https://github.com/edenlabllc/ehealth.api/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.take(7)}>) of ${env.JOB_NAME} by ${author()} *failed* in ${currentBuild.durationString.replace(' and counting', '')}")
+        } else if (env.BRANCH_NAME.startsWith('PR')) {
+          slackSend (color: 'danger', message: "Build <${env.RUN_DISPLAY_URL}|#${env.BUILD_NUMBER}> (<https://github.com/edenlabllc/ehealth.api/pull/${env.CHANGE_ID}|${env.GIT_COMMIT.take(7)}>) of ${env.JOB_NAME} in PR #${env.CHANGE_ID} by ${author()} *failed* in ${currentBuild.durationString.replace(' and counting', '')}")
+        }
+      }
     }
     aborted {
-      slackSend (color: 'warning', message: "ABORTED: Job - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) canceled in ${currentBuild.durationString}")
-    }
-    always {
-      node('delete-instance') {
-        container(name: 'gcloud', shell: '/bin/sh') {
-          withCredentials([file(credentialsId: 'e7e3e6df-8ef5-4738-a4d5-f56bb02a8bb2', variable: 'KEYFILE')]) {
-            sh 'apk update && apk add curl bash'
-            sh 'gcloud auth activate-service-account jenkins-pool@ehealth-162117.iam.gserviceaccount.com --key-file=${KEYFILE} --project=ehealth-162117'
-            sh 'curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins/delete_instance.sh -o delete_instance.sh; bash ./delete_instance.sh'
-          }
-          slackSend (color: '#4286F5', message: "Instance for ${env.BUILD_TAG} deleted")
+      script {
+        if (env.CHANGE_ID == null) {
+          slackSend (color: 'warning', message: "Build <${env.RUN_DISPLAY_URL}|#${env.BUILD_NUMBER}> (<https://github.com/edenlabllc/ehealth.api/commit/${env.GIT_COMMIT}|${env.GIT_COMMIT.take(7)}>) of ${env.JOB_NAME} by ${author()} *canceled* in ${currentBuild.durationString.replace(' and counting', '')}")
+        } else if (env.BRANCH_NAME.startsWith('PR')) {
+          slackSend (color: 'warning', message: "Build <${env.RUN_DISPLAY_URL}|#${env.BUILD_NUMBER}> (<https://github.com/edenlabllc/ehealth.api/pull/${env.CHANGE_ID}|${env.GIT_COMMIT.take(7)}>) of ${env.JOB_NAME} in PR #${env.CHANGE_ID} by ${author()} *canceled* in ${currentBuild.durationString.replace(' and counting', '')}")
         }
       }
     }
