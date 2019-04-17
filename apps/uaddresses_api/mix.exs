@@ -36,7 +36,7 @@ defmodule Uaddresses.Mixfile do
 
   defp deps do
     [
-      {:kube_rpc, git: "https://github.com/edenlabllc/kube_rpc.git"},
+      {:kube_rpc, "~> 0.2.0"},
       {:ecto_filter, git: "https://github.com/edenlabllc/ecto_filter", branch: "ecto_3"},
       {:jason, "~> 1.1"},
       {:confex_config_provider, "~> 0.1.0"},
