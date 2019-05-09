@@ -5,7 +5,7 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
-## [1.54.0](https://github.com/edenlabllc/uaddresses.api/compare/1.53.0...1.54.0) (2019-3-27)
+## [1.54.0](https://github.com/edenlabllc/uaddresses.api/compare/1.54.0...1.54.0) (2019-5-9)
 
 
 
@@ -15,17 +15,6 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 * Settlement rpc#4422 (#88)
 
 * phoenix instruments (#79)
-
-### Bug Fixes:
-
-* refactor(uaddresses_api): return timestamps with timezones (#82)
-
-## [1.53.0](https://github.com/edenlabllc/uaddresses.api/compare/1.52.1...1.53.0) (2019-3-4)
-
-
-
-
-### Features:
 
 * ecto 3 (#68)
 
@@ -39,6 +28,8 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes:
 
+* refactor(uaddresses_api): return timestamps with timezones (#82)
+
 * bump scrivener_ecto (#75)
 
 * allow search/4 accept empty filter argument (#73)
@@ -50,8 +41,3 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 * install jq and change instance type (#64)
 
 * bump alpine (#57)
-
-## [1.52.1](https://github.com/edenlabllc/uaddresses.api/compare/1.52.1...1.52.1) (2019-1-23)
-
-
-
