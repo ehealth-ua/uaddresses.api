@@ -5,6 +5,7 @@ defmodule Uaddresses.Rpc do
 
   alias EView.Views.ValidationError
   alias Uaddresses.Addresses
+  alias Uaddresses.Addresses.Address
   alias Uaddresses.Districts
   alias Uaddresses.Districts.District
   alias Uaddresses.Regions
@@ -56,7 +57,7 @@ defmodule Uaddresses.Rpc do
         }
 
   @doc """
-  Validates given address.
+  Validates given addresses.
 
       iex> addresses = [%{
       ...>   "apartment" => "23",
@@ -75,11 +76,38 @@ defmodule Uaddresses.Rpc do
       ...> Uaddresses.Rpc.validate(addresses)
 
       :ok
-  """
 
-  @spec validate(list(map)) :: :ok | :error | {:error, map}
+  Validates given address.
+
+      iex> address = %{
+      ...>   "apartment" => "23",
+      ...>   "area" => "Черкаська",
+      ...>   "building" => "15",
+      ...>   "country" => "UA",
+      ...>   "region" => "ЖАШКІВСЬКИЙ",
+      ...>   "settlement" => "some name",
+      ...>   "settlement_id" => "aa1d4510-175e-4747-89f1-c68159d07e96",
+      ...>   "settlement_type" => "CITY",
+      ...>   "street" => "вул. Ніжинська",
+      ...>   "street_type" => "STREET",
+      ...>   "type" => "RESIDENCE",
+      ...>   "zip" => "02090"
+      ...> }
+      ...> Uaddresses.Rpc.validate(address)
+
+      :ok
+  """
+  @spec validate(list(map) | map()) :: :ok | :error | {:error, map}
   def validate(addresses) when is_list(addresses) do
     with %Ecto.Changeset{valid?: true} <- Addresses.changeset(%Addresses{}, %{"addresses" => addresses}) do
+      :ok
+    else
+      changeset -> {:error, ValidationError.render("422.json", changeset)}
+    end
+  end
+
+  def validate(address) when is_map(address) do
+    with %Ecto.Changeset{valid?: true} <- Address.changeset(%Address{}, address) do
       :ok
     else
       changeset -> {:error, ValidationError.render("422.json", changeset)}

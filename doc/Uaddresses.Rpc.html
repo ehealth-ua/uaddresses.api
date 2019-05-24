@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.19.3">
-    <title>Uaddresses.Rpc —  v1.53.0</title>
+    <title>Uaddresses.Rpc —  v1.54.0</title>
     <link rel="stylesheet" href="dist/html-399e30b9b028e3059575.css" />
     <script src="dist/sidebar_items-38ee312ed6.js"></script>
     <script async src="dist/html-399e30b9b028e3059575.js"></script>
@@ -29,7 +29,7 @@
       <h1 class="sidebar-projectName">
       </h1>
       <h2 class="sidebar-projectVersion">
-        v1.53.0
+        v1.54.0
       </h2>
     </div>
   </a>
@@ -58,7 +58,7 @@
 
 
       <h1>
-        <small class="visible-xs"> v1.53.0</small>
+        <small class="visible-xs"> v1.54.0</small>
 Uaddresses.Rpc              </h1>
 
 
@@ -135,7 +135,7 @@ Uaddresses.Rpc              </h1>
   <div class="summary-signature">
     <a href="#validate/1">validate(addresses)</a>
   </div>
-    <div class="summary-synopsis"><p>Validates given address</p>
+    <div class="summary-synopsis"><p>Validates given addresses</p>
 </div>
 </div>
   </div>
@@ -290,18 +290,18 @@ Functions          </h1>
 </tr>
 </table>
 <p>Example:</p>
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_districts</span><span class="p" data-group-id="0271882503-1">(</span><span class="p" data-group-id="0271882503-2">[</span><span class="p" data-group-id="0271882503-3">{</span><span class="ss">:name</span><span class="p">,</span><span class="w"> </span><span class="ss">:like</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p" data-group-id="0271882503-3">}</span><span class="p" data-group-id="0271882503-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0271882503-4">[</span><span class="ss">desc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="0271882503-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0271882503-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="0271882503-5">}</span><span class="p" data-group-id="0271882503-1">)</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_districts</span><span class="p" data-group-id="0322405639-1">(</span><span class="p" data-group-id="0322405639-2">[</span><span class="p" data-group-id="0322405639-3">{</span><span class="ss">:name</span><span class="p">,</span><span class="w"> </span><span class="ss">:like</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p" data-group-id="0322405639-3">}</span><span class="p" data-group-id="0322405639-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0322405639-4">[</span><span class="ss">desc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="0322405639-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0322405639-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="0322405639-5">}</span><span class="p" data-group-id="0322405639-1">)</span><span class="w">
 
-</span><span class="p" data-group-id="0271882503-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0271882503-7">[</span><span class="w">
-  </span><span class="p" data-group-id="0271882503-8">%{</span><span class="w">
+</span><span class="p" data-group-id="0322405639-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0322405639-7">[</span><span class="w">
+  </span><span class="p" data-group-id="0322405639-8">%{</span><span class="w">
     </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;5282c084-1015-4404-8d34-9826c502274a&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.444467]</span><span class="p">,</span><span class="w">
     </span><span class="ss">koatuu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8500000002&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">region_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6d6d0186-16f8-484c-9f68-b9395ec91830&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.444475]</span><span class="w">
-  </span><span class="p" data-group-id="0271882503-8">}</span><span class="p" data-group-id="0271882503-7">]</span><span class="w">
-</span><span class="p" data-group-id="0271882503-6">}</span></code></pre>
+  </span><span class="p" data-group-id="0322405639-8">}</span><span class="p" data-group-id="0322405639-7">]</span><span class="w">
+</span><span class="p" data-group-id="0322405639-6">}</span></code></pre>
   </section>
 </section>
 <section class="detail" id="search_regions/3">
@@ -347,17 +347,17 @@ Functions          </h1>
 </tr>
 </table>
 <p>Example:</p>
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_regions</span><span class="p" data-group-id="3498505384-1">(</span><span class="p" data-group-id="3498505384-2">[</span><span class="p" data-group-id="3498505384-3">{</span><span class="ss">:koatuu</span><span class="p">,</span><span class="w"> </span><span class="ss">:equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8500000001&quot;</span><span class="p" data-group-id="3498505384-3">}</span><span class="p" data-group-id="3498505384-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3498505384-4">[</span><span class="ss">desc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="3498505384-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3498505384-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="3498505384-5">}</span><span class="p" data-group-id="3498505384-1">)</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_regions</span><span class="p" data-group-id="0100056072-1">(</span><span class="p" data-group-id="0100056072-2">[</span><span class="p" data-group-id="0100056072-3">{</span><span class="ss">:koatuu</span><span class="p">,</span><span class="w"> </span><span class="ss">:equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8500000001&quot;</span><span class="p" data-group-id="0100056072-3">}</span><span class="p" data-group-id="0100056072-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0100056072-4">[</span><span class="ss">desc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="0100056072-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0100056072-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="0100056072-5">}</span><span class="p" data-group-id="0100056072-1">)</span><span class="w">
 
-</span><span class="p" data-group-id="3498505384-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3498505384-7">[</span><span class="w">
-  </span><span class="p" data-group-id="3498505384-8">%{</span><span class="w">
+</span><span class="p" data-group-id="0100056072-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0100056072-7">[</span><span class="w">
+  </span><span class="p" data-group-id="0100056072-8">%{</span><span class="w">
     </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;4494f631-2148-4163-96f8-a9c080c78d77&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.460432]</span><span class="p">,</span><span class="w">
     </span><span class="ss">koatuu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8500000001&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ГАСПРА&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.460446]</span><span class="w">
-  </span><span class="p" data-group-id="3498505384-8">}</span><span class="p" data-group-id="3498505384-7">]</span><span class="w">
-</span><span class="p" data-group-id="3498505384-6">}</span></code></pre>
+  </span><span class="p" data-group-id="0100056072-8">}</span><span class="p" data-group-id="0100056072-7">]</span><span class="w">
+</span><span class="p" data-group-id="0100056072-6">}</span></code></pre>
   </section>
 </section>
 <section class="detail" id="search_settlements/3">
@@ -403,10 +403,10 @@ Functions          </h1>
 </tr>
 </table>
 <p>Example:</p>
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_settlements</span><span class="p" data-group-id="0166680540-1">(</span><span class="p" data-group-id="0166680540-2">[</span><span class="p" data-group-id="0166680540-3">{</span><span class="ss">:koatuu</span><span class="p">,</span><span class="w"> </span><span class="ss">:equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8500000000&quot;</span><span class="p" data-group-id="0166680540-3">}</span><span class="p" data-group-id="0166680540-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0166680540-4">[</span><span class="ss">asc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="0166680540-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0166680540-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="0166680540-5">}</span><span class="p" data-group-id="0166680540-1">)</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">search_settlements</span><span class="p" data-group-id="3158390411-1">(</span><span class="p" data-group-id="3158390411-2">[</span><span class="p" data-group-id="3158390411-3">{</span><span class="ss">:koatuu</span><span class="p">,</span><span class="w"> </span><span class="ss">:equal</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;8500000000&quot;</span><span class="p" data-group-id="3158390411-3">}</span><span class="p" data-group-id="3158390411-2">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3158390411-4">[</span><span class="ss">asc</span><span class="p">:</span><span class="w"> </span><span class="ss">:inserted_at</span><span class="p" data-group-id="3158390411-4">]</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3158390411-5">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p" data-group-id="3158390411-5">}</span><span class="p" data-group-id="3158390411-1">)</span><span class="w">
 
-</span><span class="p" data-group-id="0166680540-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0166680540-7">[</span><span class="w">
-  </span><span class="p" data-group-id="0166680540-8">%{</span><span class="w">
+</span><span class="p" data-group-id="3158390411-6">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="3158390411-7">[</span><span class="w">
+  </span><span class="p" data-group-id="3158390411-8">%{</span><span class="w">
     </span><span class="ss">district_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;56cdb8cc-99e1-4b12-b533-d1fa2be4648a&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;74fb7249-7f1e-4076-9bfb-bcfed4a8389c&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">inserted_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.396463]</span><span class="p">,</span><span class="w">
@@ -417,8 +417,8 @@ Functions          </h1>
     </span><span class="ss">region_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ac44eb6d-4354-43cb-9852-45b98806a594&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;CITY&quot;</span><span class="p">,</span><span class="w">
     </span><span class="ss">updated_at</span><span class="p">:</span><span class="w"> </span><span class="ld">~N[2019-03-05 08:55:59.396469]</span><span class="w">
-  </span><span class="p" data-group-id="0166680540-8">}</span><span class="p" data-group-id="0166680540-7">]</span><span class="w">
-</span><span class="p" data-group-id="0166680540-6">}</span></code></pre>
+  </span><span class="p" data-group-id="3158390411-8">}</span><span class="p" data-group-id="3158390411-7">]</span><span class="w">
+</span><span class="p" data-group-id="3158390411-6">}</span></code></pre>
   </section>
 </section>
 <section class="detail" id="settlement_by_id/1">
@@ -435,10 +435,10 @@ Functions          </h1>
   </div>
   <section class="docstring">
 <p>Get settlement by id</p>
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">settlement_by_id</span><span class="p" data-group-id="7241372326-1">(</span><span class="s">&quot;6604341e-2960-404d-aa07-8552720d7222&quot;</span><span class="p" data-group-id="7241372326-1">)</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">settlement_by_id</span><span class="p" data-group-id="1040240742-1">(</span><span class="s">&quot;6604341e-2960-404d-aa07-8552720d7222&quot;</span><span class="p" data-group-id="1040240742-1">)</span><span class="w">
 
-</span><span class="p" data-group-id="7241372326-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
-</span><span class="p" data-group-id="7241372326-3">%{</span><span class="w">
+</span><span class="p" data-group-id="1040240742-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w">
+</span><span class="p" data-group-id="1040240742-3">%{</span><span class="w">
   </span><span class="ss">district</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;some name 0&quot;</span><span class="p">,</span><span class="w">
   </span><span class="ss">district_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;d37b3c31-809b-4a7d-ace2-8ab826df7b09&quot;</span><span class="p">,</span><span class="w">
   </span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;6604341e-2960-404d-aa07-8552720d7222&quot;</span><span class="p">,</span><span class="w">
@@ -450,7 +450,7 @@ Functions          </h1>
   </span><span class="ss">region</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;some name 0&quot;</span><span class="p">,</span><span class="w">
   </span><span class="ss">region_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;8e27e7d7-e85c-444d-b2c6-6e3ae98811da&quot;</span><span class="p">,</span><span class="w">
   </span><span class="ss">type</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="w">
-</span><span class="p" data-group-id="7241372326-3">}</span><span class="p" data-group-id="7241372326-2">}</span></code></pre>
+</span><span class="p" data-group-id="1040240742-3">}</span><span class="p" data-group-id="1040240742-2">}</span></code></pre>
   </section>
 </section>
 <section class="detail" id="validate/1">
@@ -462,12 +462,12 @@ Functions          </h1>
     <h1 class="signature">validate(addresses)</span>
         
       <div class="specs">
-          <pre>validate([<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()]) :: :ok | :error | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}</pre>
+          <pre>validate([<a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()] | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()) :: :ok | :error | {:error, <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">map</a>()}</pre>
       </div>
   </div>
   <section class="docstring">
-<p>Validates given address.</p>
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">addresses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="8100699059-1">[</span><span class="p" data-group-id="8100699059-2">%{</span><span class="w">
+<p>Validates given addresses.</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">addresses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="4385194390-1">[</span><span class="p" data-group-id="4385194390-2">%{</span><span class="w">
 </span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;apartment&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;23&quot;</span><span class="p">,</span><span class="w">
 </span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;area&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Черкаська&quot;</span><span class="p">,</span><span class="w">
 </span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;building&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;15&quot;</span><span class="p">,</span><span class="w">
@@ -480,8 +480,26 @@ Functions          </h1>
 </span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;street_type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;STREET&quot;</span><span class="p">,</span><span class="w">
 </span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;RESIDENCE&quot;</span><span class="p">,</span><span class="w">
 </span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;zip&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;02090&quot;</span><span class="w">
-</span><span class="gp unselectable">...&gt; </span><span class="p" data-group-id="8100699059-2">}</span><span class="p" data-group-id="8100699059-1">]</span><span class="w">
-</span><span class="gp unselectable">...&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">validate</span><span class="p" data-group-id="8100699059-3">(</span><span class="n">addresses</span><span class="p" data-group-id="8100699059-3">)</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="p" data-group-id="4385194390-2">}</span><span class="p" data-group-id="4385194390-1">]</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">validate</span><span class="p" data-group-id="4385194390-3">(</span><span class="n">addresses</span><span class="p" data-group-id="4385194390-3">)</span><span class="w">
+
+</span><span class="ss">:ok</span></code></pre>
+<p>Validates given address.</p>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">address</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p" data-group-id="6594824004-1">%{</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;apartment&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;23&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;area&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;Черкаська&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;building&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;15&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;country&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;UA&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;region&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;ЖАШКІВСЬКИЙ&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;settlement&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;some name&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;settlement_id&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;aa1d4510-175e-4747-89f1-c68159d07e96&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;settlement_type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;CITY&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;street&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;вул. Ніжинська&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;street_type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;STREET&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;type&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;RESIDENCE&quot;</span><span class="p">,</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="w">  </span><span class="s">&quot;zip&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="s">&quot;02090&quot;</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="p" data-group-id="6594824004-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="nc">Uaddresses.Rpc</span><span class="o">.</span><span class="n">validate</span><span class="p" data-group-id="6594824004-2">(</span><span class="n">address</span><span class="p" data-group-id="6594824004-2">)</span><span class="w">
 
 </span><span class="ss">:ok</span></code></pre>
   </section>
