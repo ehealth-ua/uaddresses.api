@@ -8,10 +8,10 @@ defmodule Uaddresses.RpcTest do
 
   describe "validate/1" do
     test "invalid params" do
-      assert :error == Rpc.validate(%{})
+      assert :error == Rpc.validate(nil)
     end
 
-    test "validation failed" do
+    test "validation list failed" do
       settlement_id = UUID.generate()
       error_message = "settlement with id = #{settlement_id} does not exist"
 
@@ -49,7 +49,43 @@ defmodule Uaddresses.RpcTest do
                ])
     end
 
-    test "validation sucess" do
+    test "validation map failed" do
+      settlement_id = UUID.generate()
+      error_message = "settlement with id = #{settlement_id} does not exist"
+
+      assert {:error,
+              %{
+                invalid: [
+                  %{
+                    entry: "$.settlement_id",
+                    entry_type: "json_data_property",
+                    rules: [
+                      %{
+                        description: ^error_message,
+                        params: [],
+                        rule: nil
+                      }
+                    ]
+                  }
+                ]
+              }} =
+               Rpc.validate(%{
+                 "type" => "RESIDENCE",
+                 "country" => "UA",
+                 "area" => "Житомирська",
+                 "region" => "Бердичівський",
+                 "settlement" => "Київ",
+                 "settlement_type" => "CITY",
+                 "settlement_id" => settlement_id,
+                 "street_type" => "STREET",
+                 "street" => "вул. Ніжинська",
+                 "building" => "15",
+                 "apartment" => "23",
+                 "zip" => "02090"
+               })
+    end
+
+    test "validation list success" do
       region = insert(:region, name: "Черкаська")
       district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
       settlement = insert(:settlement, region: region, district: district)
@@ -71,6 +107,28 @@ defmodule Uaddresses.RpcTest do
                    "zip" => "02090"
                  }
                ])
+    end
+
+    test "validation map success" do
+      region = insert(:region, name: "Черкаська")
+      district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
+      settlement = insert(:settlement, region: region, district: district)
+
+      assert :ok =
+               Rpc.validate(%{
+                 "type" => "RESIDENCE",
+                 "country" => "UA",
+                 "area" => region.name,
+                 "region" => district.name,
+                 "settlement" => settlement.name,
+                 "settlement_type" => "CITY",
+                 "settlement_id" => settlement.id,
+                 "street_type" => "STREET",
+                 "street" => "вул. Ніжинська",
+                 "building" => "15",
+                 "apartment" => "23",
+                 "zip" => "02090"
+               })
     end
   end
 
