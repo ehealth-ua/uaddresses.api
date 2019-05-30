@@ -3,23 +3,19 @@ defmodule Uaddresses.Repo.Migrations.AddedTimestamps do
 
   def change do
     alter table(:streets) do
-      add :inserted_at, :naive_datetime, default: fragment("now()")
-      add :updated_at, :naive_datetime, default: fragment("now()")
+      timestamps(type: :utc_datetime_usec)
     end
 
     alter table(:settlements) do
-      add :inserted_at, :naive_datetime, default: fragment("now()")
-      add :updated_at, :naive_datetime, default: fragment("now()")
+      timestamps(type: :utc_datetime_usec)
     end
 
     alter table(:districts) do
-      add :inserted_at, :naive_datetime, default: fragment("now()")
-      add :updated_at, :naive_datetime, default: fragment("now()")
+      timestamps(type: :utc_datetime_usec)
     end
 
     alter table(:regions) do
-      add :inserted_at, :naive_datetime, default: fragment("now()")
-      add :updated_at, :naive_datetime, default: fragment("now()")
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

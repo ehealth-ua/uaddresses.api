@@ -6,15 +6,17 @@ defmodule Uaddresses.Rpc do
   alias EView.Views.ValidationError
   alias Uaddresses.Addresses
   alias Uaddresses.Addresses.Address
-  alias Uaddresses.Districts
-  alias Uaddresses.Districts.District
+  alias Uaddresses.Areas
+  alias Uaddresses.Areas.Area
   alias Uaddresses.Regions
   alias Uaddresses.Regions.Region
   alias Uaddresses.Settlements
   alias Uaddresses.Settlements.Settlement
-  alias Uaddresses.Web.DistrictView
-  alias Uaddresses.Web.RegionView
-  alias Uaddresses.Web.SettlementView
+  alias Uaddresses.Web.V1.DistrictView
+  alias Uaddresses.Web.V1.RegionView
+  alias Uaddresses.Web.V1.SettlementView
+
+  # TODO: Rename RPC functions according to new naming
 
   @type settlement_rpc :: %{
           district_id: binary(),
@@ -176,7 +178,7 @@ defmodule Uaddresses.Rpc do
   """
   @spec search_settlements(list, list, {integer, integer} | nil) :: {:ok, list(settlement_rpc)}
   def search_settlements(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
-    with {:ok, settlements} <- Settlements.search(Settlement, filter, order_by, cursor) do
+    with {:ok, settlements} <- Settlements.search(Settlement, filter_v1_params(filter), order_by, cursor) do
       {:ok, SettlementView.render("index.rpc.json", %{settlements: settlements})}
     end
   end
@@ -207,7 +209,7 @@ defmodule Uaddresses.Rpc do
   """
   @spec search_regions(list, list, {integer, integer} | nil) :: {:ok, list(region)}
   def search_regions(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
-    with {:ok, regions} <- Regions.search(Region, filter, order_by, cursor) do
+    with {:ok, regions} <- Areas.search(Area, filter_v1_params(filter), order_by, cursor) do
       {:ok, RegionView.render("index.rpc.json", %{regions: regions})}
     end
   end
@@ -239,8 +241,16 @@ defmodule Uaddresses.Rpc do
   """
   @spec search_districts(list, list, {integer, integer} | nil) :: {:ok, list(district)}
   def search_districts(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
-    with {:ok, districts} <- Districts.search(District, filter, order_by, cursor) do
+    with {:ok, districts} <- Regions.search(Region, filter_v1_params(filter), order_by, cursor) do
       {:ok, DistrictView.render("index.rpc.json", %{districts: districts})}
     end
+  end
+
+  defp filter_v1_params(filter) do
+    Enum.map(filter, fn
+      {:region_id, operation, value} -> {:area_id, operation, value}
+      {:district_id, operation, value} -> {:region_id, operation, value}
+      value -> value
+    end)
   end
 end

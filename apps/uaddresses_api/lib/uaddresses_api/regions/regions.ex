@@ -3,10 +3,10 @@ defmodule Uaddresses.Regions do
   The boundary for the Regions system.
   """
 
+  use Uaddresses.Search
   import Ecto.{Query, Changeset}, warn: false
 
-  use Uaddresses.Search
-
+  alias Uaddresses.Areas
   alias Uaddresses.Regions.Region
   alias Uaddresses.Regions.Search
   alias Uaddresses.Repo
@@ -29,7 +29,7 @@ defmodule Uaddresses.Regions do
   @doc """
   Gets a single region.
 
-  Raises `Ecto.NoResultsError` if the Region does not exist.
+  Raises `Ecto.NoResultsError` if the District does not exist.
 
   ## Examples
 
@@ -40,25 +40,22 @@ defmodule Uaddresses.Regions do
       ** (Ecto.NoResultsError)
 
   """
-  def get_region!(id), do: Repo.get!(Region, id)
+  def get_region!(id) do
+    Region
+    |> preload(:area)
+    |> Repo.get!(id)
+  end
 
-  def preload_districts(%Region{} = region), do: Repo.preload(region, :districts)
-
-  @doc """
-  Gets a single region.
-
-  Raises `Ecto.NoResultsError` if the Region does not exist.
-
-  ## Examples
-
-      iex> get_region(123)
-      %Region{}
-
-      iex> get_region(456)
-      nil
-  """
   def get_region(nil), do: nil
-  def get_region(id), do: Repo.get(Region, id)
+
+  def get_region(id) do
+    Region
+    |> preload(:area)
+    |> Repo.get(id)
+  end
+
+  defp preload_areas({:ok, region}), do: {:ok, Repo.preload(region, :area)}
+  defp preload_areas({:error, reason}), do: {:error, reason}
 
   @doc """
   Creates a region.
@@ -76,6 +73,7 @@ defmodule Uaddresses.Regions do
     %Region{}
     |> region_changeset(attrs)
     |> Repo.insert()
+    |> preload_areas()
   end
 
   @doc """
@@ -94,6 +92,7 @@ defmodule Uaddresses.Regions do
     region
     |> region_changeset(attrs)
     |> Repo.update()
+    |> preload_areas()
   end
 
   @doc """
@@ -125,16 +124,48 @@ defmodule Uaddresses.Regions do
     region_changeset(region, %{})
   end
 
-  defp region_changeset(%Region{} = region, attrs) do
-    region
-    |> cast(attrs, [:name, :koatuu])
-    |> validate_required([:name])
-    |> unique_constraint(:name, name: "regions_unique_name_index")
+  defp region_changeset(%Region{} = district, attrs) do
+    district
+    |> cast(attrs, [:name, :area_id, :koatuu])
+    |> validate_required([:name, :area_id])
+    |> validate_change(:area_id, fn :area_id, value ->
+      if Areas.get_area(value), do: [], else: [:area_id, "Selected region doesn't exists"]
+    end)
+  end
+
+  def get_search_query(entity, %{area_id: _} = changes) do
+    changes =
+      changes
+      |> Enum.filter(fn {key, _value} -> key != :area end)
+      |> Enum.into(%{})
+
+    entity
+    |> super(changes)
+    |> preload(:area)
+  end
+
+  def get_search_query(entity, %{area: area} = changes) do
+    changes =
+      changes
+      |> Enum.filter(fn {key, _value} -> key != :area end)
+      |> Enum.into(%{})
+
+    entity
+    |> super(changes)
+    |> join(:left, [d], r in assoc(d, :area))
+    |> preload(:area)
+    |> where([d, r], fragment("lower(?)", r.name) == ^String.downcase(area))
+  end
+
+  def get_search_query(entity, changes) do
+    entity
+    |> super(changes)
+    |> preload(:area)
   end
 
   defp search_changeset(attrs) do
     %Search{}
-    |> cast(attrs, [:name, :koatuu])
+    |> cast(attrs, [:area_id, :area, :name, :koatuu])
     |> set_attributes_option([:name, :koatuu], :like)
   end
 end

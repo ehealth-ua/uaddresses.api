@@ -1,7 +1,7 @@
 defmodule Uaddresses.Streets.Search do
   use Ecto.Schema
 
-  schema "" do
+  embedded_schema do
     field(:settlement_id, Ecto.UUID)
     field(:name, :string)
     field(:type, :string)

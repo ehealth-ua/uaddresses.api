@@ -1,5 +1,7 @@
-defmodule Uaddresses.Web.RegionView do
+defmodule Uaddresses.Web.V1.RegionView do
   use Uaddresses.Web, :view
+
+  alias Uaddresses.Web.V1.DistrictView
 
   @fields ~w(id name koatuu)a
 
@@ -20,6 +22,6 @@ defmodule Uaddresses.Web.RegionView do
   def render("region.rpc.json", %{region: region}), do: Map.take(region, @fields ++ [:inserted_at, :updated_at])
 
   def render("list_districts.json", %{districts: districts}) do
-    render_many(districts, Uaddresses.Web.DistrictView, "district_by_region.json")
+    render_many(districts, DistrictView, "district_by_region.json")
   end
 end

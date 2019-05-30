@@ -3,7 +3,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
 
   import Uaddresses.SimpleFactory
 
-  alias Uaddresses.Districts.District
+  alias Uaddresses.Regions.Region
 
   @create_attrs %{name: "some name", region_id: "7488a646-e31f-11e4-aace-600308960662", koatuu: "1"}
   @update_attrs %{name: "some updated name", region_id: "7488a646-e31f-11e4-aace-600308960668", koatuu: "1"}
@@ -14,8 +14,8 @@ defmodule Uaddresses.Web.DistrictControllerTest do
   end
 
   test "creates district and renders district when data is valid", %{conn: conn} do
-    %{id: region_id} = region()
-    create_attrs = Map.put(@create_attrs, :region_id, region_id)
+    %{id: area_id} = area()
+    create_attrs = Map.put(@create_attrs, :region_id, area_id)
 
     conn = post(conn, district_path(conn, :create), district: create_attrs)
     assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -25,8 +25,8 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     assert json_response(conn, 200)["data"] == %{
              "id" => id,
              "name" => "some name",
-             "region" => "some region",
-             "region_id" => region_id,
+             "region" => "some area",
+             "region_id" => area_id,
              "koatuu" => "1"
            }
   end
@@ -37,10 +37,10 @@ defmodule Uaddresses.Web.DistrictControllerTest do
   end
 
   test "updates chosen district and renders district when data is valid", %{conn: conn} do
-    %District{id: id} = district = fixture(:district)
-    region_id = district.region.id
-    update_attrs = Map.put(@update_attrs, :region_id, region_id)
-    conn = put(conn, district_path(conn, :update, district), district: update_attrs)
+    %Region{id: id} = region = fixture(:region)
+    area_id = region.area.id
+    update_attrs = Map.put(@update_attrs, :region_id, area_id)
+    conn = put(conn, district_path(conn, :update, region), district: update_attrs)
     assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
     conn = get(conn, district_path(conn, :show, id))
@@ -48,28 +48,28 @@ defmodule Uaddresses.Web.DistrictControllerTest do
     assert json_response(conn, 200)["data"] == %{
              "id" => id,
              "name" => "some updated name",
-             "region" => "some region",
-             "region_id" => region_id,
+             "region" => "some area",
+             "region_id" => area_id,
              "koatuu" => "1"
            }
   end
 
   test "does not update chosen district and renders errors when data is invalid", %{conn: conn} do
-    district = fixture(:district)
-    conn = put(conn, district_path(conn, :update, district), district: @invalid_attrs)
+    region = fixture(:region)
+    conn = put(conn, district_path(conn, :update, region), district: @invalid_attrs)
     assert json_response(conn, 422)["errors"] != %{}
   end
 
   test "list of settlements by district", %{conn: conn} do
-    district = district()
-    district2 = district(%{name: "District name 2", region_id: region(%{name: "Region name"}).id})
+    region = region()
+    region2 = region(%{name: "District name 2", area_id: area(%{name: "Area name"}).id})
 
-    first = settlement(%{name: "First settlement", region_id: district.region_id, district_id: district.id})
-    second = settlement(%{name: "Second settlement", region_id: district.region_id, district_id: district.id})
-    third = settlement(%{name: "Third settlement", region_id: district.region_id, district_id: district.id})
-    _fourth = settlement(%{name: "Forth settlement", region_id: district2.region_id, district_id: district2.id})
+    first = settlement(%{name: "First settlement", area_id: region.area_id, region_id: region.id})
+    second = settlement(%{name: "Second settlement", area_id: region.area_id, region_id: region.id})
+    third = settlement(%{name: "Third settlement", area_id: region.area_id, region_id: region.id})
+    _fourth = settlement(%{name: "Forth settlement", area_id: region2.area_id, region_id: region2.id})
 
-    conn = get(conn, "/districts/#{district.id}/settlements")
+    conn = get(conn, "/districts/#{region.id}/settlements")
 
     assert json_response(conn, 200)["data"] == [
              %{"id" => first.id, "settlement_name" => "First settlement"},
@@ -77,22 +77,22 @@ defmodule Uaddresses.Web.DistrictControllerTest do
              %{"id" => third.id, "settlement_name" => "Third settlement"}
            ]
 
-    conn = get(conn, "/details/district/#{district.id}/settlements?page_size=1&page=2")
+    conn = get(conn, "/details/district/#{region.id}/settlements?page_size=1&page=2")
     assert json_response(conn, 200)["data"] == [%{"id" => second.id, "settlement_name" => "Second settlement"}]
 
-    get(conn, "/details/district/#{district.id}/settlements?name=ond")
+    conn = get(conn, "/details/district/#{region.id}/settlements?name=ond")
     assert json_response(conn, 200)["data"] == [%{"id" => second.id, "settlement_name" => "Second settlement"}]
   end
 
   test "search", %{conn: conn} do
-    r_1 = region(%{name: "Київ", koatuu: "1"})
-    r_2 = region(%{name: "Одеська", koatuu: "1"})
-    d_1 = district(%{region_id: r_1.id, name: "Дарницький", koatuu: "11"})
-    d_2 = district(%{region_id: r_1.id, name: "Подільський", koatuu: "12"})
-    d_3 = district(%{region_id: r_2.id, name: "Миколаївський", koatuu: "13"})
-    d_4 = district(%{region_id: r_2.id, name: "Комінтернівський", koatuu: "14"})
+    r_1 = area(%{name: "Київ", koatuu: "1"})
+    r_2 = area(%{name: "Одеська", koatuu: "1"})
+    d_1 = region(%{area_id: r_1.id, name: "Дарницький", koatuu: "11"})
+    d_2 = region(%{area_id: r_1.id, name: "Подільський", koatuu: "12"})
+    d_3 = region(%{area_id: r_2.id, name: "Миколаївський", koatuu: "13"})
+    d_4 = region(%{area_id: r_2.id, name: "Комінтернівський", koatuu: "14"})
 
-    response_data = get_districts_response_data(conn, "/districts/")
+    response_data = get_response_data(conn, "/districts/")
 
     assert response_data == [
              %{"id" => d_1.id, "name" => "Дарницький", "region" => "Київ", "region_id" => r_1.id, "koatuu" => "11"},
@@ -113,22 +113,22 @@ defmodule Uaddresses.Web.DistrictControllerTest do
              }
            ]
 
-    response_data = get_districts_response_data(conn, "/districts/?region=київ")
+    response_data = get_response_data(conn, "/districts/?region=київ")
 
-    expected_districts = [
+    expected_regions = [
       %{"id" => d_1.id, "name" => "Дарницький", "region" => "Київ", "region_id" => r_1.id, "koatuu" => "11"},
       %{"id" => d_2.id, "name" => "Подільський", "region" => "Київ", "region_id" => r_1.id, "koatuu" => "12"}
     ]
 
-    for district <- expected_districts, do: assert(district in response_data)
+    for region <- expected_regions, do: assert(region in response_data)
 
-    response_data = get_districts_response_data(conn, "/districts/?region=київ&page_size=1")
-    assert response_data |> hd() |> Kernel.in(expected_districts)
+    response_data = get_response_data(conn, "/districts/?region=київ&page_size=1")
+    assert response_data |> hd() |> Kernel.in(expected_regions)
 
-    response_data = get_districts_response_data(conn, "/districts/?region=київ&page_size=1&page=2")
-    assert response_data |> hd() |> Kernel.in(expected_districts)
+    response_data = get_response_data(conn, "/districts/?region=київ&page_size=1&page=2")
+    assert response_data |> hd() |> Kernel.in(expected_regions)
 
-    response_data = get_districts_response_data(conn, "/districts/?region=київ&region_id=#{r_2.id}")
+    response_data = get_response_data(conn, "/districts/?region=київ&region_id=#{r_2.id}")
 
     assert response_data == [
              %{
@@ -147,7 +147,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
              }
            ]
 
-    response_data = get_districts_response_data(conn, "/districts/?name=інтерні")
+    response_data = get_response_data(conn, "/districts/?name=інтерні")
 
     assert response_data == [
              %{
@@ -159,7 +159,7 @@ defmodule Uaddresses.Web.DistrictControllerTest do
              }
            ]
 
-    response_data = get_districts_response_data(conn, "/districts/?koatuu=1")
+    response_data = get_response_data(conn, "/districts/?koatuu=1")
 
     assert response_data == [
              %{"id" => d_1.id, "name" => "Дарницький", "region" => "Київ", "region_id" => r_1.id, "koatuu" => "11"},
@@ -180,14 +180,14 @@ defmodule Uaddresses.Web.DistrictControllerTest do
              }
            ]
 
-    response_data = get_districts_response_data(conn, "/districts/?koatuu=2")
+    response_data = get_response_data(conn, "/districts/?koatuu=2")
 
     assert response_data == [
              %{"id" => d_2.id, "name" => "Подільський", "region" => "Київ", "region_id" => r_1.id, "koatuu" => "12"}
            ]
   end
 
-  defp get_districts_response_data(conn, url) do
+  defp get_response_data(conn, url) do
     conn = get(conn, url)
     json_response(conn, 200)["data"]
   end

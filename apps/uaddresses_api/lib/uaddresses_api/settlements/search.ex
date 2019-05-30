@@ -3,9 +3,9 @@ defmodule Uaddresses.Settlements.Search do
 
   embedded_schema do
     field(:name, :string)
-    field(:district, :string)
-    field(:district_id, :string)
     field(:region, :string)
+    field(:region_id, :string)
+    field(:area, :string)
     field(:type, :string)
     field(:mountain_group, :string)
     field(:koatuu, :string)

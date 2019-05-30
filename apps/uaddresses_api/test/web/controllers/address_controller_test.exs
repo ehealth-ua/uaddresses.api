@@ -7,9 +7,9 @@ defmodule Uaddresses.Web.AddressControllerTest do
 
   describe "validate addresses" do
     test "success validate addresses", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
-      settlement = insert(:settlement, region: region, district: district)
+      area = insert(:area, name: "Черкаська")
+      region = insert(:region, name: "ЖАШКІВСЬКИЙ", area: area)
+      settlement = insert(:settlement, area: area, region: region)
 
       conn =
         post(conn, address_path(conn, :validate), %{
@@ -20,9 +20,9 @@ defmodule Uaddresses.Web.AddressControllerTest do
     end
 
     test "success validate address", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
-      settlement = insert(:settlement, region: region, district: district)
+      area = insert(:area, name: "Черкаська")
+      region = insert(:region, name: "ЖАШКІВСЬКИЙ", area: area)
+      settlement = insert(:settlement, area: area, region: region)
 
       conn =
         post(conn, address_path(conn, :validate), %{
@@ -58,8 +58,8 @@ defmodule Uaddresses.Web.AddressControllerTest do
     end
 
     test "invalid settlement value", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      settlement = insert(:settlement, region: region)
+      area = insert(:area, name: "Черкаська")
+      settlement = insert(:settlement, area: area)
 
       conn =
         post(conn, address_path(conn, :validate), %{
@@ -71,13 +71,13 @@ defmodule Uaddresses.Web.AddressControllerTest do
     end
 
     test "invalid region_id", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      settlement = insert(:settlement, region: region)
-      region_id = UUID.generate()
+      area = insert(:area, name: "Черкаська")
+      settlement = insert(:settlement, area: area)
+      area_id = UUID.generate()
 
       settlement =
         settlement
-        |> cast(%{"region_id" => region_id}, ~w(region_id)a)
+        |> cast(%{"area_id" => area_id}, ~w(area_id)a)
         |> Repo.update!()
 
       conn =
@@ -86,12 +86,12 @@ defmodule Uaddresses.Web.AddressControllerTest do
         })
 
       assert resp = json_response(conn, 422)
-      assert_error(resp, "$.settlement_id", "region with id = #{region_id} does not exist")
+      assert_error(resp, "$.settlement_id", "area with id = #{area_id} does not exist")
     end
 
     test "invalid region value", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      settlement = insert(:settlement, region: region)
+      area = insert(:area, name: "Черкаська")
+      settlement = insert(:settlement, area: area)
 
       conn =
         post(conn, address_path(conn, :validate), %{
@@ -103,32 +103,36 @@ defmodule Uaddresses.Web.AddressControllerTest do
     end
 
     test "invalid district_id", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      settlement = insert(:settlement, region: region)
-      district_id = UUID.generate()
+      area = insert(:area, name: "Черкаська")
+      settlement = insert(:settlement, area: area)
+      region_id = UUID.generate()
 
       settlement =
         settlement
-        |> cast(%{"district_id" => district_id}, ~w(district_id)a)
+        |> cast(%{"region_id" => region_id}, ~w(region_id)a)
         |> Repo.update!()
+
+      address = build(:address, settlement_id: settlement.id, settlement: settlement.name)
 
       conn =
         post(conn, address_path(conn, :validate), %{
-          "address" => build(:address, settlement_id: settlement.id, settlement: settlement.name, region: "some region")
+          "address" => Map.merge(address, %{region: "some area"})
         })
 
       assert resp = json_response(conn, 422)
-      assert_error(resp, "$.settlement_id", "district with id = #{district_id} does not exist")
+      assert_error(resp, "$.settlement_id", "region with id = #{region_id} does not exist")
     end
 
     test "invalid district value", %{conn: conn} do
-      region = insert(:region, name: "Черкаська")
-      district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
-      settlement = insert(:settlement, region: region, district: district)
+      area = insert(:area, name: "Черкаська")
+      region = insert(:region, name: "ЖАШКІВСЬКИЙ", area: area)
+      settlement = insert(:settlement, area: area, region: region)
+
+      address = build(:address, settlement_id: settlement.id, settlement: settlement.name)
 
       conn =
         post(conn, address_path(conn, :validate), %{
-          "address" => build(:address, settlement_id: settlement.id, settlement: settlement.name, region: "invalid")
+          "address" => Map.merge(address, %{region: "invalid"})
         })
 
       assert resp = json_response(conn, 422)
