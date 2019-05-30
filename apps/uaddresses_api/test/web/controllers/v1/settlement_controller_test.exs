@@ -1,4 +1,4 @@
-defmodule Uaddresses.Web.SettlementControllerTest do
+defmodule Uaddresses.Web.V1.SettlementControllerTest do
   use Uaddresses.Web.ConnCase
 
   import Uaddresses.SimpleFactory
@@ -34,9 +34,9 @@ defmodule Uaddresses.Web.SettlementControllerTest do
   end
 
   test "creates settlement and renders settlement when data is valid", %{conn: conn} do
-    %{id: region_id} = region()
-    %{id: district_id} = district(%{region_id: region_id, name: "some name"})
-    create_attrs = Map.merge(@create_attrs, %{region_id: region_id, district_id: district_id})
+    %{id: area_id} = area()
+    %{id: region_id} = region(%{area_id: area_id, name: "some name"})
+    create_attrs = Map.merge(@create_attrs, %{region_id: area_id, district_id: region_id})
 
     conn = post(conn, settlement_path(conn, :create), settlement: create_attrs)
     assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -47,10 +47,10 @@ defmodule Uaddresses.Web.SettlementControllerTest do
              "type" => "1",
              "id" => id,
              "district" => "some name",
-             "district_id" => district_id,
+             "district_id" => region_id,
              "name" => "some name",
-             "region" => "some region",
-             "region_id" => region_id,
+             "region" => "some area",
+             "region_id" => area_id,
              "mountain_group" => false,
              "koatuu" => "1",
              "parent_settlement" => nil,
@@ -72,9 +72,9 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
   test "updates chosen settlement and renders settlement when data is valid", %{conn: conn} do
     %Settlement{id: id} = settlement = fixture(:settlement)
+    area_id = settlement.area.id
     region_id = settlement.region.id
-    district_id = settlement.district.id
-    update_attrs = Map.merge(@update_attrs, %{region_id: region_id, district_id: district_id})
+    update_attrs = Map.merge(@update_attrs, %{region_id: area_id, district_id: region_id})
 
     conn = put(conn, settlement_path(conn, :update, settlement), settlement: update_attrs)
     assert %{"id" => ^id} = json_response(conn, 200)["data"]
@@ -85,10 +85,10 @@ defmodule Uaddresses.Web.SettlementControllerTest do
              "type" => "1",
              "id" => id,
              "district" => "some name",
-             "district_id" => district_id,
+             "district_id" => region_id,
              "name" => "some updated name",
-             "region" => "some region",
-             "region_id" => region_id,
+             "region" => "some area",
+             "region_id" => area_id,
              "mountain_group" => true,
              "koatuu" => "1",
              "parent_settlement" => nil,
@@ -109,17 +109,17 @@ defmodule Uaddresses.Web.SettlementControllerTest do
   end
 
   test "search", %{conn: conn} do
-    r_1 = region(%{name: "Київська", koatuu: "1"})
-    r_2 = region(%{name: "Одеська", koatuu: "1"})
-    d_1 = district(%{region_id: r_1.id, name: "Білоцерківський"})
-    d_2 = district(%{region_id: r_1.id, name: "Рокитнянський"})
-    d_3 = district(%{region_id: r_2.id, name: "Миколаївський"})
-    d_4 = district(%{region_id: r_2.id, name: "Комінтернівський"})
+    r_1 = area(%{name: "Київська", koatuu: "1"})
+    r_2 = area(%{name: "Одеська", koatuu: "1"})
+    d_1 = region(%{area_id: r_1.id, name: "Білоцерківський"})
+    d_2 = region(%{area_id: r_1.id, name: "Рокитнянський"})
+    d_3 = region(%{area_id: r_2.id, name: "Миколаївський"})
+    d_4 = region(%{area_id: r_2.id, name: "Комінтернівський"})
 
     s_1 =
       settlement(%{
-        region_id: r_1.id,
-        district_id: d_2.id,
+        area_id: r_1.id,
+        region_id: d_2.id,
         name: "Рокитне",
         type: "1",
         koatuu: "11",
@@ -128,8 +128,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_2 =
       settlement(%{
-        region_id: r_1.id,
-        district_id: d_2.id,
+        area_id: r_1.id,
+        region_id: d_2.id,
         name: "Бакумівка",
         type: "2",
         koatuu: "12",
@@ -138,8 +138,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_3 =
       settlement(%{
-        region_id: r_1.id,
-        district_id: d_1.id,
+        area_id: r_1.id,
+        region_id: d_1.id,
         name: "Володарка",
         type: "3",
         koatuu: "13",
@@ -148,8 +148,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_4 =
       settlement(%{
-        region_id: r_1.id,
-        district_id: d_1.id,
+        area_id: r_1.id,
+        region_id: d_1.id,
         name: "Біла Церква",
         type: "4",
         koatuu: "14",
@@ -158,8 +158,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_5 =
       settlement(%{
-        region_id: r_2.id,
-        district_id: d_3.id,
+        area_id: r_2.id,
+        region_id: d_3.id,
         name: "Миколаївка",
         type: "5",
         koatuu: "15",
@@ -168,8 +168,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_6 =
       settlement(%{
-        region_id: r_2.id,
-        district_id: d_3.id,
+        area_id: r_2.id,
+        region_id: d_3.id,
         name: "Якесь село",
         type: "6",
         koatuu: "16",
@@ -178,8 +178,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_7 =
       settlement(%{
-        region_id: r_2.id,
-        district_id: d_4.id,
+        area_id: r_2.id,
+        region_id: d_4.id,
         name: "Комінтерне",
         type: "7",
         koatuu: "17",
@@ -188,8 +188,8 @@ defmodule Uaddresses.Web.SettlementControllerTest do
 
     s_8 =
       settlement(%{
-        region_id: r_2.id,
-        district_id: d_4.id,
+        area_id: r_2.id,
+        region_id: d_4.id,
         name: "Новосілки 2",
         type: "8",
         koatuu: "18",

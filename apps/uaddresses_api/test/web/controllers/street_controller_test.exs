@@ -29,11 +29,10 @@ defmodule Uaddresses.Web.StreetControllerTest do
 
   test "creates street and renders street when data is valid", %{conn: conn} do
     %{id: settlement_id} = settlement = settlement()
-    district_id = settlement.district.id
-    region_id = settlement.region.id
+    district_id = settlement.region.id
+    area_id = settlement.area.id
 
-    create_attrs =
-      Map.merge(@create_attrs, %{region_id: region_id, district_id: district_id, settlement_id: settlement_id})
+    create_attrs = Map.merge(@create_attrs, %{area_id: area_id, district_id: district_id, settlement_id: settlement_id})
 
     conn = post(conn, street_path(conn, :create), street: create_attrs)
     assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -80,14 +79,14 @@ defmodule Uaddresses.Web.StreetControllerTest do
   end
 
   test "search", %{conn: conn} do
-    r_1 = region(%{name: "Київ", koatuu: "1"})
-    r_2 = region(%{name: "Одеська", koatuu: "1"})
-    d_1 = district(%{region_id: r_1.id, name: "Київ"})
-    d_3 = district(%{region_id: r_2.id, name: "Миколаївський"})
+    r_1 = area(%{name: "Київ", koatuu: "1"})
+    r_2 = area(%{name: "Одеська", koatuu: "1"})
+    d_1 = region(%{area_id: r_1.id, name: "Київ"})
+    d_3 = region(%{area_id: r_2.id, name: "Миколаївський"})
 
-    set_1 = settlement(%{region_id: r_1.id, district_id: d_1.id, name: "Київ"})
+    set_1 = settlement(%{area_id: r_1.id, district_id: d_1.id, name: "Київ"})
 
-    set_2 = settlement(%{region_id: r_2.id, district_id: d_3.id, name: "Миколаївка"})
+    set_2 = settlement(%{area_id: r_2.id, district_id: d_3.id, name: "Миколаївка"})
 
     str_1 = street(%{settlement_id: set_2.id, name: "Соломії Крушельницької", type: "вулиця"})
     str_2 = street(%{settlement_id: set_1.id, name: "Тараса Шевченка", type: "бульвар"})

@@ -86,17 +86,17 @@ defmodule Uaddresses.RpcTest do
     end
 
     test "validation list success" do
-      region = insert(:region, name: "Черкаська")
-      district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
-      settlement = insert(:settlement, region: region, district: district)
+      area = insert(:area, name: "Черкаська")
+      region = insert(:region, name: "ЖАШКІВСЬКИЙ", area: area)
+      settlement = insert(:settlement, area: area, region: region)
 
       assert :ok =
                Rpc.validate([
                  %{
                    "type" => "RESIDENCE",
                    "country" => "UA",
-                   "area" => region.name,
-                   "region" => district.name,
+                   "area" => area.name,
+                   "region" => region.name,
                    "settlement" => settlement.name,
                    "settlement_type" => "CITY",
                    "settlement_id" => settlement.id,
@@ -110,16 +110,16 @@ defmodule Uaddresses.RpcTest do
     end
 
     test "validation map success" do
-      region = insert(:region, name: "Черкаська")
-      district = insert(:district, name: "ЖАШКІВСЬКИЙ", region: region)
-      settlement = insert(:settlement, region: region, district: district)
+      area = insert(:area, name: "Черкаська")
+      region = insert(:region, name: "ЖАШКІВСЬКИЙ", area: area)
+      settlement = insert(:settlement, area: area, region: region)
 
       assert :ok =
                Rpc.validate(%{
                  "type" => "RESIDENCE",
                  "country" => "UA",
-                 "area" => region.name,
-                 "region" => district.name,
+                 "area" => area.name,
+                 "region" => region.name,
                  "settlement" => settlement.name,
                  "settlement_type" => "CITY",
                  "settlement_id" => settlement.id,
@@ -159,32 +159,58 @@ defmodule Uaddresses.RpcTest do
     end
 
     test "success search_regions/3" do
-      region = insert(:region, name: "ГАСПРА")
-      insert(:region, name: "ГАСПРА_2")
-      insert(:region, name: "ГАСПРА_3")
-      insert_list(4, :region)
+      area = insert(:area, name: "ГАСПРА")
+      insert(:area, name: "ГАСПРА_2")
+      insert(:area, name: "ГАСПРА_3")
+      insert_list(4, :area)
 
       filter = [{:name, :like, "ГАСПРА"}]
       {:ok, resp_entities} = Rpc.search_regions(filter, [desc: :koatuu], {0, 10})
 
       assert 3 == length(resp_entities)
-      assert region.id in Enum.map(resp_entities, & &1.id)
+      assert area.id in Enum.map(resp_entities, & &1.id)
     end
 
     test "success search_districts/3" do
-      district = insert(:district, name: "ГАСПРА")
-      insert(:district, name: "ГАСПРА_2")
-      insert_list(4, :district)
+      region = insert(:region, name: "ГАСПРА")
+      insert(:region, name: "ГАСПРА_2")
+      insert_list(4, :region)
 
       filter = [{:name, :like, "ГАСПРА"}]
       {:ok, resp_entities} = Rpc.search_districts(filter, [], {0, 10})
 
       assert 2 == length(resp_entities)
-      assert district.id in Enum.map(resp_entities, & &1.id)
+      assert region.id in Enum.map(resp_entities, & &1.id)
     end
 
     test "search_settlements empty response" do
       assert {:ok, []} == Rpc.search_settlements([{:id, :in, [UUID.generate()]}])
+    end
+
+    test "search_districts successfully compatible with v1 naming" do
+      # areas were regions
+      # regions were districts
+
+      area = insert(:area)
+      insert_list(2, :region, area: area)
+      insert_list(4, :region)
+
+      filter = [{:region_id, :equal, area.id}]
+
+      assert {:ok, districts} = Rpc.search_districts(filter)
+      assert 2 == length(districts)
+    end
+
+    test "search_settlements successfully compatible with v1 naming" do
+      area = insert(:area)
+      region = insert(:region, area: area)
+      insert_list(2, :settlement, area: area, region: region)
+      insert_list(4, :settlement)
+
+      filter = [{:region_id, :equal, area.id}, {:district_id, :equal, region.id}]
+
+      assert {:ok, settlements} = Rpc.search_settlements(filter)
+      assert 2 == length(settlements)
     end
   end
 end

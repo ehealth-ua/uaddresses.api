@@ -148,21 +148,10 @@ defmodule Uaddresses.Streets do
     street
     |> cast(attrs, [:settlement_id, :type, :name])
     |> validate_required([:settlement_id, :type, :name])
-    |> validate_settlement_exists(:settlement_id)
+    |> validate_change(:settlement_id, fn :settlement_id, value ->
+      if Settlements.get_settlement(value), do: [], else: [:settlement_id, "Selected settlement doesn't exists"]
+    end)
   end
-
-  defp validate_settlement_exists(changeset, field) do
-    changeset
-    |> get_field(field)
-    |> Settlements.get_settlement()
-    |> result_settlement_exists_validation(changeset)
-  end
-
-  defp result_settlement_exists_validation(nil, changeset) do
-    add_error(changeset, :settlement_id, "Selected settlement doesn't exists'")
-  end
-
-  defp result_settlement_exists_validation(%Uaddresses.Settlements.Settlement{}, changeset), do: changeset
 
   defp search_changeset(attrs) do
     %Search{}

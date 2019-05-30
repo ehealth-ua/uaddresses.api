@@ -3,12 +3,11 @@ defmodule Uaddresses.Addresses.Address do
 
   use Ecto.Schema
   import Ecto.Changeset
-  alias Uaddresses.Districts.District
+
+  alias Uaddresses.Areas.Area
   alias Uaddresses.Regions.Region
   alias Uaddresses.Settlements
   alias Uaddresses.Settlements.Settlement
-
-  @primary_key false
 
   @fields_required ~w(
     type
@@ -28,6 +27,7 @@ defmodule Uaddresses.Addresses.Address do
     building
   )a
 
+  @primary_key false
   embedded_schema do
     field(:type, :string)
     field(:country, :string)
@@ -55,42 +55,42 @@ defmodule Uaddresses.Addresses.Address do
            {:settlement_id, Settlements.get_settlement(changes.settlement_id)},
          {:settlement_value, true} <-
            {:settlement_value, String.upcase(settlement.name) == String.upcase(changes.settlement)},
-         {:region_id, %Region{} = region, _} <- {:region_id, settlement.region, settlement.region_id},
-         {:region_value, true} <- {:region_value, String.upcase(region.name) == String.upcase(changes.area)} do
-      validate_district(settlement, changeset)
+         {:area_id, %Area{} = area, _} <- {:area_id, settlement.area, settlement.area_id},
+         {:area_value, true} <- {:area_value, String.upcase(area.name) == String.upcase(changes.area)} do
+      validate_region(settlement, changeset)
     else
       {:settlement_id, _} ->
         add_error(changeset, :settlement_id, "settlement with id = #{changes.settlement_id} does not exist")
 
-      {:region_id, _, region_id} ->
-        add_error(changeset, :settlement_id, "region with id = #{region_id} does not exist")
+      {:area_id, _, area_id} ->
+        add_error(changeset, :settlement_id, "area with id = #{area_id} does not exist")
 
       {:settlement_value, _} ->
         add_error(changeset, :settlement, "invalid settlement value")
 
-      {:region_value, _} ->
+      {:area_value, _} ->
         add_error(changeset, :area, "invalid area value")
     end
   end
 
   defp validate_settlement(changeset), do: changeset
 
-  defp validate_district(
-         %Settlement{district_id: district_id} = settlement,
-         %Ecto.Changeset{changes: %{region: region}, valid?: true} = changeset
+  defp validate_region(
+         %Settlement{region_id: region_id} = settlement,
+         %Ecto.Changeset{changes: %{region: region_name}, valid?: true} = changeset
        )
-       when not is_nil(district_id) do
-    with {:district_id, %District{} = district} <- {:district_id, settlement.district},
-         {:district_value, true} <- {:district_value, String.upcase(district.name) == String.upcase(region)} do
+       when not is_nil(region_id) do
+    with {:region_id, %Region{} = region} <- {:region_id, settlement.region},
+         {:region_value, true} <- {:region_value, String.upcase(region.name) == String.upcase(region_name)} do
       changeset
     else
-      {:district_id, _} ->
-        add_error(changeset, :settlement_id, "district with id = #{district_id} does not exist")
+      {:region_id, _} ->
+        add_error(changeset, :settlement_id, "region with id = #{region_id} does not exist")
 
-      {:district_value, _} ->
+      {:region_value, _} ->
         add_error(changeset, :region, "invalid region value")
     end
   end
 
-  defp validate_district(_, changeset), do: changeset
+  defp validate_region(_, changeset), do: changeset
 end

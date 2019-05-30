@@ -34,7 +34,7 @@ defmodule Uaddresses.Web.FallbackController do
     |> render(:"400", %{message: message})
   end
 
-  def call(conn, %Ecto.Changeset{valid?: false, data: %Uaddresses.Districts.Search{}} = changeset) do
+  def call(conn, %Ecto.Changeset{valid?: false, data: %Uaddresses.Regions.Search{}} = changeset) do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(ValidationError)

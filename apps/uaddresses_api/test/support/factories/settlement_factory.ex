@@ -8,8 +8,8 @@ defmodule Uaddresses.Factories.SettlementFactory do
       def settlement_factory do
         %Uaddresses.Settlements.Settlement{
           name: "some name",
+          area: build(:area),
           region: build(:region),
-          district: build(:district),
           parent_settlement_id: UUID.generate()
         }
       end

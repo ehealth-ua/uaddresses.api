@@ -58,11 +58,6 @@ defmodule Uaddresses.Search do
 
         Enum.reduce(changes, q, fn {key, val}, query ->
           case val do
-            {value, :full_text} ->
-              query
-              |> where([r], fragment("? % ?", field(r, ^key), ^value))
-              |> order_by([r], desc: fragment("similarity(?, ?)", field(r, ^key), ^value))
-
             {value, :like} ->
               where(
                 query,

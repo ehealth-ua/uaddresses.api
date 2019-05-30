@@ -1,4 +1,4 @@
-defmodule Uaddresses.Web.SettlementView do
+defmodule Uaddresses.Web.V1.SettlementView do
   use Uaddresses.Web, :view
 
   @fields ~w(
@@ -7,8 +7,6 @@ defmodule Uaddresses.Web.SettlementView do
     name
     mountain_group
     koatuu
-    region_id
-    district_id
     parent_settlement_id
   )a
 
@@ -29,13 +27,20 @@ defmodule Uaddresses.Web.SettlementView do
     |> Map.take(@fields)
     |> Map.merge(%{
       parent_settlement: get_name(settlement.parent_settlement),
-      region: get_name(settlement.region),
-      district: get_name(settlement.district)
+      region: get_name(settlement.area),
+      region_id: settlement.area_id,
+      district_id: settlement.region_id,
+      district: get_name(settlement.region)
     })
   end
 
   def render("settlement.rpc.json", %{settlement: settlement}) do
-    Map.take(settlement, @fields ++ [:inserted_at, :updated_at])
+    settlement
+    |> Map.take(@fields ++ [:inserted_at, :updated_at])
+    |> Map.merge(%{
+      region_id: settlement.area_id,
+      district_id: settlement.region_id
+    })
   end
 
   def render("settlement_by_district.json", %{settlement: settlement}) do
@@ -45,6 +50,6 @@ defmodule Uaddresses.Web.SettlementView do
     }
   end
 
-  defp get_name(nil), do: nil
-  defp get_name(obj), do: obj.name
+  defp get_name(%{name: name}), do: name
+  defp get_name(_), do: nil
 end

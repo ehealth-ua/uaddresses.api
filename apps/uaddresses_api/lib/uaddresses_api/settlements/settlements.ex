@@ -6,10 +6,8 @@ defmodule Uaddresses.Settlements do
   use Uaddresses.Search
   import Ecto.{Query, Changeset}, warn: false
 
-  alias Uaddresses.Districts
-  alias Uaddresses.Districts.District
+  alias Uaddresses.Areas
   alias Uaddresses.Regions
-  alias Uaddresses.Regions.Region
   alias Uaddresses.Repo
   alias Uaddresses.Settlements.Search
   alias Uaddresses.Settlements.Settlement
@@ -45,7 +43,7 @@ defmodule Uaddresses.Settlements do
   """
   def get_settlement!(id) do
     Settlement
-    |> preload([:region, :district, :parent_settlement])
+    |> preload([:area, :region, :parent_settlement])
     |> Repo.get!(id)
   end
 
@@ -53,7 +51,7 @@ defmodule Uaddresses.Settlements do
 
   def get_settlement(id) do
     Settlement
-    |> preload([:region, :district, :parent_settlement])
+    |> preload([:area, :region, :parent_settlement])
     |> Repo.get(id)
   end
 
@@ -95,7 +93,7 @@ defmodule Uaddresses.Settlements do
     |> preload_embed()
   end
 
-  defp preload_embed({:ok, settlement}), do: {:ok, Repo.preload(settlement, [:region, :district, :parent_settlement])}
+  defp preload_embed({:ok, settlement}), do: {:ok, Repo.preload(settlement, [:area, :region, :parent_settlement])}
 
   defp preload_embed({:error, reason}), do: {:error, reason}
 
@@ -115,95 +113,58 @@ defmodule Uaddresses.Settlements do
     Repo.delete(settlement)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking settlement changes.
-
-  ## Examples
-
-      iex> change_settlement(settlement)
-      %Ecto.Changeset{source: %Settlement{}}
-
-  """
-  def change_settlement(%Settlement{} = settlement) do
-    settlement_changeset(settlement, %{})
-  end
-
   defp settlement_changeset(%Settlement{} = settlement, attrs) do
     settlement
     |> cast(attrs, [
-      :district_id,
       :region_id,
+      :area_id,
       :name,
       :mountain_group,
       :type,
       :koatuu,
       :parent_settlement_id
     ])
-    |> validate_required([:region_id, :name])
-    |> validate_region_exists(:region_id)
-    |> validate_district_exists(:district_id)
+    |> validate_required([:area_id, :name])
+    |> validate_change(:area_id, fn :area_id, value ->
+      if Areas.get_area(value), do: [], else: [:region_id, "Selected region doesn't exists"]
+    end)
+    |> validate_change(:region_id, fn :region_id, value ->
+      if Regions.get_region(value), do: [], else: [:district_id, "Selected district doesn't exists"]
+    end)
   end
-
-  defp validate_region_exists(changeset, field) do
-    changeset
-    |> get_field(field)
-    |> Regions.get_region()
-    |> result_region_exists_validation(changeset)
-  end
-
-  defp result_region_exists_validation(nil, changeset) do
-    add_error(changeset, :region_id, "Selected region doesn't exists'")
-  end
-
-  defp result_region_exists_validation(%Region{}, changeset), do: changeset
-
-  defp validate_district_exists(changeset, field) do
-    changeset
-    |> get_field(field)
-    |> case do
-      nil -> changeset
-      field -> field |> Districts.get_district() |> result_district_exists_validation(changeset)
-    end
-  end
-
-  defp result_district_exists_validation(nil, changeset) do
-    add_error(changeset, :district_id, "Selected district doesn't exists'")
-  end
-
-  defp result_district_exists_validation(%District{}, changeset), do: changeset
 
   def get_search_query(entity, changes) when map_size(changes) > 0 do
     direct_changes =
       changes
-      |> Enum.filter(fn {key, _value} -> !(key in [:region, :district]) end)
+      |> Enum.reject(fn {key, _value} -> key in [:area, :region] end)
       |> Enum.into(%{})
 
     query =
       entity
       |> super(direct_changes)
-      |> join(:left, [s], r in assoc(s, :region))
-      |> join(:left, [s], d in assoc(s, :district))
-      |> preload([:region, :district, :parent_settlement])
+      |> join(:left, [s], r in assoc(s, :area))
+      |> join(:left, [s], d in assoc(s, :region))
+      |> preload([:area, :region, :parent_settlement])
 
     query =
-      case Map.has_key?(changes, :region) do
+      case Map.has_key?(changes, :area) do
         true ->
           where(
             query,
             [s, r, d],
-            fragment("lower(?)", r.name) == ^String.downcase(Map.get(changes, :region))
+            fragment("lower(?)", r.name) == ^String.downcase(Map.get(changes, :area))
           )
 
         _ ->
           query
       end
 
-    case Map.has_key?(changes, :district) do
+    case Map.has_key?(changes, :region) do
       true ->
         where(
           query,
           [s, r, d],
-          fragment("lower(?)", d.name) == ^String.downcase(Map.get(changes, :district))
+          fragment("lower(?)", d.name) == ^String.downcase(Map.get(changes, :region))
         )
 
       _ ->
@@ -214,14 +175,13 @@ defmodule Uaddresses.Settlements do
   def get_search_query(entity, changes) do
     entity
     |> super(changes)
-    |> preload([:region, :district, :parent_settlement])
+    |> preload([:area, :region, :parent_settlement])
   end
 
   defp search_changeset(attrs) do
     %Search{}
-    |> cast(attrs, [:name, :district, :district_id, :region, :type, :koatuu, :mountain_group])
-    |> set_attributes_option([:name], :full_text)
-    |> set_attributes_option([:koatuu], :like)
+    |> cast(attrs, [:name, :region, :region_id, :area, :type, :koatuu, :mountain_group])
+    |> set_attributes_option([:name, :koatuu], :like)
     |> set_attributes_option([:type], :ignore_case)
   end
 end

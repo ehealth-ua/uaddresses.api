@@ -1,7 +1,9 @@
-defmodule Uaddresses.Web.DistrictView do
+defmodule Uaddresses.Web.V1.DistrictView do
   use Uaddresses.Web, :view
 
-  @fields ~w(id region_id name koatuu)a
+  alias Uaddresses.Web.V1.SettlementView
+
+  @fields ~w(id name koatuu)a
 
   def render("index.json", %{districts: districts}) do
     render_many(districts, __MODULE__, "district.json")
@@ -18,11 +20,16 @@ defmodule Uaddresses.Web.DistrictView do
   def render("district.json", %{district: district}) do
     district
     |> Map.take(@fields)
-    |> Map.put(:region, district.region.name)
+    |> Map.merge(%{
+      region_id: district.area_id,
+      region: district.area.name
+    })
   end
 
   def render("district.rpc.json", %{district: district}) do
-    Map.take(district, @fields ++ [:inserted_at, :updated_at])
+    district
+    |> Map.take(@fields ++ [:inserted_at, :updated_at])
+    |> Map.put(:region_id, district.area_id)
   end
 
   def render("district_by_region.json", %{district: district}) do
@@ -33,6 +40,6 @@ defmodule Uaddresses.Web.DistrictView do
   end
 
   def render("list_settlements.json", %{settlements: settlements}) do
-    render_many(settlements, Uaddresses.Web.SettlementView, "settlement_by_district.json")
+    render_many(settlements, SettlementView, "settlement_by_district.json")
   end
 end

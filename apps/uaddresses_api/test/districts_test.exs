@@ -1,60 +1,60 @@
-defmodule Uaddresses.DistrictsTest do
+defmodule Uaddresses.RegionsTest do
   use Uaddresses.DataCase
 
   import Uaddresses.SimpleFactory
 
-  alias Uaddresses.Districts
-  alias Uaddresses.Districts.District
+  alias Uaddresses.Regions
+  alias Uaddresses.Regions.Region
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
-  @invalid_attrs %{name: nil, region_id: nil}
+  @invalid_attrs %{name: nil, area_id: nil}
 
-  test "get_district! returns the district with given id" do
-    district = fixture(:district)
-    assert Districts.get_district!(district.id) == district
+  test "get_region! returns the district with given id" do
+    region = fixture(:region)
+    assert Regions.get_region!(region.id) == region
   end
 
-  test "create_district/1 with valid data creates a district" do
-    %{id: region_id} = region()
+  test "create_region/1 with valid data creates a district" do
+    %{id: area_id} = area()
 
-    assert {:ok, %District{} = district} =
+    assert {:ok, %Region{} = region} =
              @create_attrs
-             |> Map.put(:region_id, region_id)
-             |> Districts.create_district()
+             |> Map.put(:area_id, area_id)
+             |> Regions.create_region()
 
-    assert district.name == "some name"
-    assert district.region_id == region_id
+    assert region.name == "some name"
+    assert region.area_id == area_id
   end
 
-  test "create_district/1 with invalid data returns error changeset" do
-    assert {:error, %Ecto.Changeset{}} = Districts.create_district(@invalid_attrs)
+  test "create_region/1 with invalid data returns error changeset" do
+    assert {:error, %Ecto.Changeset{}} = Regions.create_region(@invalid_attrs)
   end
 
-  test "update_district/2 with valid data updates the district" do
-    district = fixture(:district)
-    region_id = district.region.id
-    updated_params = Map.put(@update_attrs, :region_id, region_id)
-    assert {:ok, district} = Districts.update_district(district, updated_params)
-    assert %District{} = district
-    assert district.name == "some updated name"
-    assert district.region_id == region_id
+  test "update_region/2 with valid data updates the region" do
+    region = fixture(:region)
+    area_id = region.area.id
+    updated_params = Map.put(@update_attrs, :area_id, area_id)
+    assert {:ok, region} = Regions.update_region(region, updated_params)
+    assert %Region{} = region
+    assert region.name == "some updated name"
+    assert region.area_id == area_id
   end
 
-  test "update_district/2 with invalid data returns error changeset" do
-    district = fixture(:district)
-    assert {:error, %Ecto.Changeset{}} = Districts.update_district(district, @invalid_attrs)
-    assert district == Districts.get_district!(district.id)
+  test "update_region/2 with invalid data returns error changeset" do
+    region = fixture(:region)
+    assert {:error, %Ecto.Changeset{}} = Regions.update_region(region, @invalid_attrs)
+    assert region == Regions.get_region!(region.id)
   end
 
-  test "delete_district/1 deletes the district" do
-    district = fixture(:district)
-    assert {:ok, %District{}} = Districts.delete_district(district)
-    assert_raise Ecto.NoResultsError, fn -> Districts.get_district!(district.id) end
+  test "delete_region/1 deletes the region" do
+    region = fixture(:region)
+    assert {:ok, %Region{}} = Regions.delete_region(region)
+    assert_raise Ecto.NoResultsError, fn -> Regions.get_region!(region.id) end
   end
 
-  test "change_district/1 returns a district changeset" do
-    district = fixture(:district)
-    assert %Ecto.Changeset{} = Districts.change_district(district)
+  test "change_region/1 returns a region changeset" do
+    region = fixture(:region)
+    assert %Ecto.Changeset{} = Regions.change_region(region)
   end
 end
