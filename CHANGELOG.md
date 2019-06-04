@@ -5,6 +5,17 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.0.0](https://github.com/edenlabllc/uaddresses.api/compare/1.54.0...2.0.0) (2019-6-4)
+### Breaking Changes:
+
+* Rename regions to areas, districts to regions (#101)
+
+
+
+### Features:
+
+* validate address rpc (#102)
+
 ## [1.54.0](https://github.com/edenlabllc/uaddresses.api/compare/1.54.0...1.54.0) (2019-5-9)
 
 
