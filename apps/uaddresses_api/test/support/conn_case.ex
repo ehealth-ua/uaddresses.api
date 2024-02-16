@@ -14,10 +14,13 @@ defmodule Uaddresses.Web.ConnCase do
   """
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       # Import conveniences for testing with connections
-      use Phoenix.ConnTest
+      import Plug.Conn
+      import Phoenix.ConnTest
       import Uaddresses.Web.Router.Helpers
       import Ecto
       import Ecto.Changeset
@@ -31,15 +34,18 @@ defmodule Uaddresses.Web.ConnCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Uaddresses.Repo)
+    :ok = Sandbox.checkout(Uaddresses.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Uaddresses.Repo, {:shared, self()})
+      Sandbox.mode(Uaddresses.Repo, {:shared, self()})
     end
 
     conn =
-      Phoenix.ConnTest.build_conn()
-      |> Plug.Conn.put_req_header("content-type", "application/json")
+      Plug.Conn.put_req_header(
+        Phoenix.ConnTest.build_conn(),
+        "content-type",
+        "application/json"
+      )
 
     {:ok, conn: conn}
   end

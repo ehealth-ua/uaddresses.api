@@ -3,14 +3,15 @@ def author() {
 }
 pipeline {
   agent {
-    node { 
-      label 'ehealth-build' 
+    node {
+      label 'jenkins-build-elixir-1-12-2-big'
       }
   }
   environment {
     PROJECT_NAME = 'uaddresses'
     MIX_ENV = 'test'
-    DOCKER_NAMESPACE = 'edenlabllc'
+    DOCKER_NAMESPACE = 'eu.gcr.io/ehealth-162117'
+    DOCKER_HOSTNAME = 'https://eu.gcr.io'
     POSTGRES_VERSION = '10'
     POSTGRES_USER = 'postgres'
     POSTGRES_PASSWORD = 'postgres'
@@ -70,7 +71,7 @@ pipeline {
             sh '''
               curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/build-container.sh -o build-container.sh;
               chmod +x ./build-container.sh;
-              ./build-container.sh;  
+              ./build-container.sh;
             '''
           }
         }
@@ -86,16 +87,20 @@ pipeline {
       steps {
         sh '''
           curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/start-container.sh -o start-container.sh;
-          chmod +x ./start-container.sh; 
+          chmod +x ./start-container.sh;
           ./start-container.sh;
         '''
-        withCredentials(bindings: [usernamePassword(credentialsId: '8232c368-d5f5-4062-b1e0-20ec13b0d47b', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-          sh 'echo " ---- step: Push docker image ---- ";'
-          sh '''
-              curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/push-changes.sh -o push-changes.sh;
-              chmod +x ./push-changes.sh;
-              ./push-changes.sh
-            '''
+        withCredentials([string(credentialsId: '86a8df0b-edef-418f-844a-cd1fa2cf813d', variable: 'GITHUB_TOKEN')]) {
+          withCredentials(bindings: [usernamePassword(credentialsId: 'e0c950a9-ea23-408d-bfc2-ee0e8c39e25c', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+            withCredentials([file(credentialsId: '091bd05c-0219-4164-8a17-777f4caf7481', variable: 'GCLOUD_KEY')]) {
+            sh 'echo " ---- step: Push docker image ---- ";'
+            sh '''
+                curl -s https://raw.githubusercontent.com/edenlabllc/ci-utils/umbrella_jenkins_gce/push-changes.sh -o push-changes.sh;
+                chmod +x ./push-changes.sh;
+                ./push-changes.sh
+              '''
+            }
+          }
         }
       }
     }
@@ -120,7 +125,7 @@ pipeline {
         }
       }
     }
-  }  
+  }
   post {
     success {
       script {

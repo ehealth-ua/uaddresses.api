@@ -1,15 +1,22 @@
 defmodule Uaddresses.MixProject do
   use Mix.Project
 
-  @version "2.0.0"
+  @version "2.3.0"
   def project do
     [
+      name: "uaddresses.api",
       version: @version,
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: [
-        filter_prefix: "Uaddresses.Rpc"
+        filter_modules: "^.*\.Rpc$"
+      ],
+      releases: [
+        uaddresses_api: [
+          include_executables_for: [:unix],
+          applications: [runtime_tools: :permanent, uaddresses_api: :permanent]
+        ]
       ]
     ]
   end
@@ -21,10 +28,10 @@ defmodule Uaddresses.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:excoveralls, "~> 0.10.6", only: [:dev, :test]},
-      {:credo, "~> 1.0", only: [:dev, :test]},
-      {:distillery, "~> 2.0"},
-      {:git_ops, "~> 0.6.0", only: [:dev]}
+      {:excoveralls, "~> 0.14.2", only: [:dev, :test]},
+      {:plug, "~> 1.12.1"},
+      {:credo, "~> 1.6.1", only: [:dev, :test]},
+      {:git_ops, "~> 2.4.5", only: [:dev]}
     ]
   end
 end

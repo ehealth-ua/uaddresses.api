@@ -6,6 +6,7 @@ defmodule Uaddresses.Factories.RegionFactory do
       def region_factory do
         %Uaddresses.Regions.Region{
           name: sequence(:region_name, &"some name #{&1}"),
+          koatuu: "1234567",
           area: build(:area)
         }
       end

@@ -5,6 +5,69 @@ See [Conventional Commits](Https://conventionalcommits.org) for commit guideline
 
 <!-- changelog -->
 
+## [2.3.0](https://github.com/edenlabllc/uaddresses.api/compare/2.2.2...2.3.0) (2021-12-08)
+
+
+
+### Features:
+
+* search street route (#158)
+
+### Bug Fixes:
+
+* search streets (#166)
+
+* rpc filters (#162)
+
+* search district rpc call (#161)
+
+## [2.2.2](https://github.com/edenlabllc/uaddresses.api/compare/2.2.1...2.2.2) (2021-09-22)
+
+
+
+### Bug Fixes:
+
+* credo config (#145)
+
+## [2.2.1](https://github.com/edenlabllc/uaddresses.api/compare/2.2.0...2.2.1) (2021-8-11)
+
+
+
+### Bug Fixes:
+
+* use related paths to conf files (#135)
+
+* update ehealth logger version (#130)
+
+* changes ci for private registry (#124)
+
+## [2.2.0](https://github.com/edenlabllc/uaddresses.api/compare/2.1.0...2.2.0) (2020-9-18)
+
+
+
+### Features:
+
+* update scrivener_ecto, postrex, ecto_sql, ecto libs to latest versions (#122)
+
+* update kube_rpc lib version (#121)
+
+## [2.1.0](https://github.com/edenlabllc/uaddresses.api/compare/2.0.0...2.1.0) (2019-11-1)
+
+
+
+
+### Features:
+
+* Elixir 1.9 (#110)
+
+* add missed rpc functions (#107)
+
+### Bug Fixes:
+
+* config (#112)
+
+* settlements name index (#109)
+
 ## [2.0.0](https://github.com/edenlabllc/uaddresses.api/compare/1.54.0...2.0.0) (2019-6-4)
 ### Breaking Changes:
 

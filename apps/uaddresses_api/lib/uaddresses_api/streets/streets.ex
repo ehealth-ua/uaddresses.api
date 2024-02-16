@@ -3,9 +3,9 @@ defmodule Uaddresses.Streets do
   The boundary for the Streets system.
   """
 
-  import Ecto.{Query, Changeset}, warn: false
-
   use Uaddresses.Search
+
+  import Ecto.{Query, Changeset}, warn: false
 
   alias Scrivener.Page
   alias Uaddresses.Repo

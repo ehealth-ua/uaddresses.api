@@ -2,8 +2,10 @@ defmodule Uaddresses.Addresses do
   @moduledoc false
 
   use Ecto.Schema
-  alias Uaddresses.Addresses.Address
+
   import Ecto.Changeset
+
+  alias Uaddresses.Addresses.Address
 
   @primary_key false
   embedded_schema do

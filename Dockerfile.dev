@@ -1,0 +1,13 @@
+FROM elixir:1.12.2-alpine
+
+ENV MIX_ENV=dev
+
+RUN apk update \
+    && apk upgrade --no-cache \
+    && apk add --no-cache \
+      alpine-sdk \
+      inotify-tools \
+    && mix local.rebar --force \
+    && mix local.hex --force
+
+WORKDIR /uaddresses.api

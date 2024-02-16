@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # Configuration for test environment
 config :ex_unit, capture_log: true
@@ -8,7 +8,7 @@ config :uaddresses_api, Uaddresses.Repo,
   username: "postgres",
   password: "postgres",
   database: "uaddresses_test",
-  hostname: "localhost",
+  hostname: System.get_env("DB_HOST", "localhost"),
   pool: Ecto.Adapters.SQL.Sandbox,
   ownership_timeout: 120_000_000
 

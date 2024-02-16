@@ -1,6 +1,4 @@
-# This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+import Config
 
 # By default, the umbrella project as well as each child
 # application will require this configuration file, ensuring
@@ -31,4 +29,6 @@ config :git_ops,
   # Pass in `true` to use `"README.md"` or a string to customize
   manage_readme_version: "README.md"
 
-import_config "../apps/*/config/config.exs"
+for config <- Path.join([__DIR__, "../apps/*/config/config.exs"]) |> Path.expand() |> Path.wildcard() do
+  import_config config
+end

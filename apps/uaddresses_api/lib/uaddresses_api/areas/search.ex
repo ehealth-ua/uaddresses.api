@@ -1,4 +1,6 @@
 defmodule Uaddresses.Areas.Search do
+  @moduledoc false
+
   use Ecto.Schema
 
   embedded_schema do

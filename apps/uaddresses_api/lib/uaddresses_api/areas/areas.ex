@@ -3,9 +3,9 @@ defmodule Uaddresses.Areas do
   The boundary for the Areas system.
   """
 
-  import Ecto.{Query, Changeset}, warn: false
-
   use Uaddresses.Search
+
+  import Ecto.{Query, Changeset}, warn: false
 
   alias Uaddresses.Areas.Area
   alias Uaddresses.Areas.Search

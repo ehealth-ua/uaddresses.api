@@ -145,6 +145,23 @@ defmodule Uaddresses.RpcTest do
     end
   end
 
+  describe "update settlement" do
+    test "success" do
+      %{id: id} = insert(:settlement)
+      new_name = "new name"
+
+      assert {:ok,
+              %{
+                id: ^id,
+                name: ^new_name
+              }} = Rpc.update_settlement(id, %{name: new_name})
+    end
+
+    test "not found" do
+      refute Rpc.update_settlement(UUID.generate(), %{})
+    end
+  end
+
   describe "search entities" do
     test "success search_settlements/3" do
       settlement = insert(:settlement, name: "ГАСПРА", mountain_group: false)
@@ -183,11 +200,22 @@ defmodule Uaddresses.RpcTest do
       assert region.id in Enum.map(resp_entities, & &1.id)
     end
 
+    test "success search_streets/3" do
+      street = insert(:street, name: "ГАСПРА")
+      insert_list(2, :street, name: "ГАСПРА_2")
+
+      filter = [{:settlement_id, :equal, street.settlement_id}]
+      {:ok, resp_entities} = Rpc.search_streets(filter, [asc: :name], {0, 2})
+
+      assert 1 == length(resp_entities)
+      assert street.id == hd(resp_entities).id
+    end
+
     test "search_settlements empty response" do
       assert {:ok, []} == Rpc.search_settlements([{:id, :in, [UUID.generate()]}])
     end
 
-    test "search_districts successfully compatible with v1 naming" do
+    test "search_districts successfully compatible with v1 naming by region_id" do
       # areas were regions
       # regions were districts
 
@@ -199,6 +227,34 @@ defmodule Uaddresses.RpcTest do
 
       assert {:ok, districts} = Rpc.search_districts(filter)
       assert 2 == length(districts)
+    end
+
+    test "search_districts successfully compatible with v1 naming by region" do
+      # areas were regions
+      # regions were districts
+
+      insert(:region, area: insert(:area, name: "some special name"))
+      insert_list(2, :region, area: insert(:area))
+      insert_list(4, :region)
+
+      filter = [{:region, :equal, "some special name"}]
+
+      assert {:ok, districts} = Rpc.search_districts(filter)
+      assert 1 == length(districts)
+    end
+
+    test "search_districts successfully compatible with v1 naming by name and koatuu" do
+      # areas were regions
+      # regions were districts
+
+      insert(:region, area: insert(:area))
+      insert(:region, area: insert(:area), name: "secret name", koatuu: "7777777")
+      insert_list(4, :region, koatuu: "1111111")
+
+      filter = [{:koatuu, :like, "7777777"}, {:name, :like, "secret name"}]
+
+      assert {:ok, districts} = Rpc.search_districts(filter)
+      assert 1 == length(districts)
     end
 
     test "search_settlements successfully compatible with v1 naming" do
