@@ -51,46 +51,72 @@ defmodule Uaddresses.Addresses.Address do
   end
 
   defp validate_settlement(%Ecto.Changeset{changes: changes, valid?: true} = changeset) do
-    with {:settlement_id, %Settlement{} = settlement} <-
-           {:settlement_id, Settlements.get_settlement(changes.settlement_id)},
-         {:settlement_value, true} <-
-           {:settlement_value, String.upcase(settlement.name) == String.upcase(changes.settlement)},
-         {:area_id, %Area{} = area, _} <- {:area_id, settlement.area, settlement.area_id},
-         {:area_value, true} <- {:area_value, String.upcase(area.name) == String.upcase(changes.area)} do
+    with {:ok, settlement} <- get_settlement(changes.settlement_id, changeset),
+         :ok <- compare_settlement_names(changes.settlement, settlement, changeset),
+         :ok <- check_area(settlement.area, settlement.area_id, changeset),
+         :ok <- compare_area_names(changes.area, settlement.area, changeset) do
       validate_region(settlement, changeset)
-    else
-      {:settlement_id, _} ->
-        add_error(changeset, :settlement_id, "settlement with id = #{changes.settlement_id} does not exist")
-
-      {:area_id, _, area_id} ->
-        add_error(changeset, :settlement_id, "area with id = #{area_id} does not exist")
-
-      {:settlement_value, _} ->
-        add_error(changeset, :settlement, "invalid settlement value")
-
-      {:area_value, _} ->
-        add_error(changeset, :area, "invalid area value")
     end
   end
 
   defp validate_settlement(changeset), do: changeset
+
+  defp get_settlement(settlement_id, changeset) do
+    case Settlements.get_settlement(settlement_id) do
+      %Settlement{} = settlement ->
+        {:ok, settlement}
+
+      _ ->
+        add_error(changeset, :settlement_id, "settlement with id = #{settlement_id} does not exist")
+    end
+  end
+
+  defp compare_settlement_names(settlement_name, settlement, changeset) do
+    if String.upcase(settlement_name) == String.upcase(settlement.name) do
+      :ok
+    else
+      add_error(changeset, :settlement, "invalid settlement value")
+    end
+  end
+
+  defp check_area(%Area{}, _, _), do: :ok
+
+  defp check_area(_, area_id, changeset),
+    do: add_error(changeset, :settlement_id, "area with id = #{area_id} does not exist")
+
+  defp compare_area_names(area_name, area, changeset) do
+    if String.upcase(area_name) == String.upcase(area.name) do
+      :ok
+    else
+      add_error(changeset, :area, "invalid area value")
+    end
+  end
 
   defp validate_region(
          %Settlement{region_id: region_id} = settlement,
          %Ecto.Changeset{changes: %{region: region_name}, valid?: true} = changeset
        )
        when not is_nil(region_id) do
-    with {:region_id, %Region{} = region} <- {:region_id, settlement.region},
-         {:region_value, true} <- {:region_value, String.upcase(region.name) == String.upcase(region_name)} do
+    with {:ok, region} <- get_region_from_settlement(settlement, changeset),
+         :ok <- compare_region_names(region_name, region, changeset) do
       changeset
-    else
-      {:region_id, _} ->
-        add_error(changeset, :settlement_id, "region with id = #{region_id} does not exist")
-
-      {:region_value, _} ->
-        add_error(changeset, :region, "invalid region value")
     end
   end
 
   defp validate_region(_, changeset), do: changeset
+
+  defp get_region_from_settlement(settlement, changeset) do
+    case settlement.region do
+      %Region{} = region -> {:ok, region}
+      _ -> add_error(changeset, :settlement_id, "region with id = #{settlement.region_id} does not exist")
+    end
+  end
+
+  defp compare_region_names(region_name, region, changeset) do
+    if String.upcase(region.name) == String.upcase(region_name) do
+      :ok
+    else
+      add_error(changeset, :region, "invalid region value")
+    end
+  end
 end

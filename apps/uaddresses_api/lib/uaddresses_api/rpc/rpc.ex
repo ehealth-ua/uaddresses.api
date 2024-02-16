@@ -3,6 +3,8 @@ defmodule Uaddresses.Rpc do
   This module contains functions that are called from other pods via RPC.
   """
 
+  import Uaddresses.Web.V1Helper
+
   alias EView.Views.ValidationError
   alias Uaddresses.Addresses
   alias Uaddresses.Addresses.Address
@@ -12,6 +14,9 @@ defmodule Uaddresses.Rpc do
   alias Uaddresses.Regions.Region
   alias Uaddresses.Settlements
   alias Uaddresses.Settlements.Settlement
+  alias Uaddresses.Streets
+  alias Uaddresses.Streets.Street
+  alias Uaddresses.Web.StreetView
   alias Uaddresses.Web.V1.DistrictView
   alias Uaddresses.Web.V1.RegionView
   alias Uaddresses.Web.V1.SettlementView
@@ -58,6 +63,12 @@ defmodule Uaddresses.Rpc do
           region_id: binary()
         }
 
+  @type street :: %{
+          id: binary(),
+          type: binary(),
+          name: binary()
+        }
+
   @doc """
   Validates given addresses.
 
@@ -101,17 +112,15 @@ defmodule Uaddresses.Rpc do
   """
   @spec validate(list(map) | map()) :: :ok | :error | {:error, map}
   def validate(addresses) when is_list(addresses) do
-    with %Ecto.Changeset{valid?: true} <- Addresses.changeset(%Addresses{}, %{"addresses" => addresses}) do
-      :ok
-    else
+    case Addresses.changeset(%Addresses{}, %{"addresses" => addresses}) do
+      %Ecto.Changeset{valid?: true} -> :ok
       changeset -> {:error, ValidationError.render("422.json", changeset)}
     end
   end
 
   def validate(address) when is_map(address) do
-    with %Ecto.Changeset{valid?: true} <- Address.changeset(%Address{}, address) do
-      :ok
-    else
+    case Address.changeset(%Address{}, address) do
+      %Ecto.Changeset{valid?: true} -> :ok
       changeset -> {:error, ValidationError.render("422.json", changeset)}
     end
   end
@@ -178,7 +187,7 @@ defmodule Uaddresses.Rpc do
   """
   @spec search_settlements(list, list, {integer, integer} | nil) :: {:ok, list(settlement_rpc)}
   def search_settlements(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
-    with {:ok, settlements} <- Settlements.search(Settlement, filter_v1_params(filter), order_by, cursor) do
+    with {:ok, settlements} <- Settlements.search(Settlement, get_filters(filter), order_by, cursor) do
       {:ok, SettlementView.render("index.rpc.json", %{settlements: settlements})}
     end
   end
@@ -209,7 +218,7 @@ defmodule Uaddresses.Rpc do
   """
   @spec search_regions(list, list, {integer, integer} | nil) :: {:ok, list(region)}
   def search_regions(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
-    with {:ok, regions} <- Areas.search(Area, filter_v1_params(filter), order_by, cursor) do
+    with {:ok, regions} <- Areas.search(Area, get_filters(filter), order_by, cursor) do
       {:ok, RegionView.render("index.rpc.json", %{regions: regions})}
     end
   end
@@ -241,16 +250,91 @@ defmodule Uaddresses.Rpc do
   """
   @spec search_districts(list, list, {integer, integer} | nil) :: {:ok, list(district)}
   def search_districts(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
-    with {:ok, districts} <- Regions.search(Region, filter_v1_params(filter), order_by, cursor) do
+    with {:ok, districts} <- Regions.search(Region, get_filters(filter), order_by, cursor) do
       {:ok, DistrictView.render("index.rpc.json", %{districts: districts})}
     end
   end
 
-  defp filter_v1_params(filter) do
-    Enum.map(filter, fn
-      {:region_id, operation, value} -> {:area_id, operation, value}
-      {:district_id, operation, value} -> {:region_id, operation, value}
-      value -> value
-    end)
+  @doc """
+  Searches for districts using filtering format.
+
+  Available parameters:
+
+  | Parameter           | Type                          | Example                                                             | Description                     |
+  | :-----------------: | :---------------------------: | :------------------------------------------------------------------:| :-----------------------------: |
+  | filter              | `list`                        | `[{:settlement_id, :equal, "eea333b5-e26d-4e3e-92e2-2ab37b131502"}]`|                                 |
+  | order_by            | `list`                        | `[asc: :name]` or `[desc: :name]`                                   |                                  |
+  | cursor              | `{integer, integer}` or `nil` | `{0, 10}`                                                           |                                 |
+
+  Example:
+      iex> Uaddresses.Rpc.search_streets([{:settlement_id, :equal, "eea333b5-e26d-4e3e-92e2-2ab37b131502"}], [desc: :name], {0, 10})
+
+      {:ok, [
+        %{
+          id: "5282c084-1015-4404-8d34-9826c502274a",
+          inserted_at: ~N[2019-03-05 08:55:59.444467],
+          name: "Єрмоленка Володимира",
+          type: "вул",
+          updated_at: ~N[2019-03-05 08:55:59.444475]
+        }]
+      }
+  """
+  @spec search_streets(list, list, {integer, integer} | nil) :: {:ok, list(street)}
+  def search_streets(filter, order_by \\ [], cursor \\ nil) when filter != [] or is_tuple(cursor) do
+    with {:ok, streets} <- Streets.search(Street, get_filters(filter), order_by, cursor) do
+      {:ok, StreetView.render("index.rpc.json", %{streets: streets})}
+    end
   end
+
+  @doc """
+  Update settlement by id
+
+  Example:
+      iex> Uaddresses.Rpc.update_settlement("88e44407-6505-45e3-9cee-b4cae8879aae", %{name: "new name"})
+      {:ok,
+      %{
+        district: "some name 14",
+        district_id: "6273557f-d7ed-4f72-ba99-763262ae5fe2",
+        id: "88e44407-6505-45e3-9cee-b4cae8879aae",
+        koatuu: nil,
+        mountain_group: false,
+        name: "new name",
+        parent_settlement: nil,
+        parent_settlement_id: "4969a8fe-d469-447e-97e5-d5f84725021d",
+        region: "some name 23",
+        region_id: "efbd20ec-6f3f-4656-a13a-b12787f45dcb",
+        type: nil
+      }}
+  """
+  @spec update_settlement(id :: binary(), params :: map) :: {:ok, settlement} | nil | Ecto.Changeset.t()
+  def update_settlement(id, params) do
+    with %Settlement{} = settlement <- Settlements.get_settlement(id),
+         {:ok, %Settlement{} = settlement} <- Settlements.update_settlement(settlement, params_to_v1(params)) do
+      {:ok, SettlementView.render("show.json", %{settlement: settlement})}
+    end
+  end
+
+  defp get_filters(filter), do: get_filters(%{}, filter)
+
+  defp get_filters(search_fields, []), do: search_fields
+
+  defp get_filters(search_fields, [{:region, _, value} | filter]),
+    do: search_fields |> generate_filter(:area, value) |> get_filters(filter)
+
+  defp get_filters(search_fields, [{:region_id, _, value} | filter]),
+    do: search_fields |> generate_filter(:area_id, value) |> get_filters(filter)
+
+  defp get_filters(search_fields, [{:district_id, _, value} | filter]),
+    do: search_fields |> generate_filter(:region_id, value) |> get_filters(filter)
+
+  defp get_filters(search_fields, [{:district, _, value} | filter]),
+    do: search_fields |> generate_filter(:region, value) |> get_filters(filter)
+
+  defp get_filters(search_fields, [{:settlement_id, _, value} | filter]),
+    do: search_fields |> generate_filter(:settlement_id, value) |> get_filters(filter)
+
+  defp get_filters(search_fields, [{name, option, value} | filter]),
+    do: search_fields |> generate_filter(name, {value, option}) |> get_filters(filter)
+
+  defp generate_filter(map, key, value), do: Map.put_new(map, key, value)
 end

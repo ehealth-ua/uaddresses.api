@@ -1,4 +1,6 @@
 defmodule Uaddresses.Settlements.Settlement do
+  @moduledoc false
+
   use Ecto.Schema
 
   alias Ecto.UUID

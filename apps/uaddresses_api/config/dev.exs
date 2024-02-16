@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # Configuration for test environment
 
@@ -20,7 +20,7 @@ config :uaddresses_api, Uaddresses.Repo,
   username: "postgres",
   password: "postgres",
   database: "uaddresses_dev",
-  hostname: "localhost"
+  hostname: System.get_env("DB_HOST", "localhost")
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

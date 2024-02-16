@@ -1,22 +1,19 @@
 # Uaddresses
-To start your Phoenix app:
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Start Phoenix endpoint with `mix phoenix.server`
+Web application. Provides API service for searching regions, settlements, districts and streets in Ukraine.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Docker image: [edenlabllc/uaddresses_api](https://hub.docker.com/r/edenlabllc/uaddresses_api).
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+## Documentation
 
-## Specification
+- [Production API documentation](https://uaddressesapi.docs.apiary.io/)
+- [RPC server documentation](doc/index.html)
 
-- [API docs](http://docs.uaddress.apiary.io/#reference/0/search-regions)
+## Installation dependencies
 
-## Learn more
+- PostgreSQL 11.3+
+- Docker 19+
 
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+## Configuration
+
+See [ENVIRONMENT.md](docs/ENVIRONMENT.md).

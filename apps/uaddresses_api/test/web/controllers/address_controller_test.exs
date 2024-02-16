@@ -1,9 +1,10 @@
 defmodule Uaddresses.Web.AddressControllerTest do
   use Uaddresses.Web.ConnCase
 
+  import Ecto.Changeset
+
   alias Ecto.UUID
   alias Uaddresses.Repo
-  import Ecto.Changeset
 
   describe "validate addresses" do
     test "success validate addresses", %{conn: conn} do

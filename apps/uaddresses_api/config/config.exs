@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :uaddresses_api,
   namespace: Uaddresses,
@@ -14,8 +14,10 @@ config :phoenix, :json_library, Jason
 config :uaddresses_api, Uaddresses.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "kCj2tpqzsnxcsciNm5JLDnUgJChdtFCO5RMyIlnUfSw1bhxxgYGvM/OX3v2mosnU",
-  render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)],
-  instrumenters: [LoggerJSON.Phoenix.Instruments]
+  render_errors: [view: EView.Views.PhoenixError, accepts: ~w(json)]
+
+config :plug_cowboy,
+  log_exceptions_with_status_code: []
 
 config :logger_json, :backend,
   formatter: EhealthLogger.Formatter,

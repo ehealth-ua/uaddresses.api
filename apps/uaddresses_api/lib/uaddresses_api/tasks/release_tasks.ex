@@ -1,15 +1,20 @@
 defmodule Uaddresses.ReleaseTasks do
   @moduledoc false
 
+  require Logger
+
   def migrate do
-    migrations_dir = Application.app_dir(:uaddresses_api, "priv/repo/migrations")
+    if System.get_env("DB_MIGRATE") == "true" do
+      Logger.info("[WARNING] Migrating database!")
+      migrations_dir = Application.app_dir(:uaddresses_api, "priv/repo/migrations")
 
-    load_app()
+      load_app()
 
-    repo = Uaddresses.Repo
-    repo.start_link()
+      repo = Uaddresses.Repo
+      repo.start_link()
 
-    Ecto.Migrator.run(repo, migrations_dir, :up, all: true)
+      Ecto.Migrator.run(repo, migrations_dir, :up, all: true)
+    end
 
     System.halt(0)
     :init.stop()

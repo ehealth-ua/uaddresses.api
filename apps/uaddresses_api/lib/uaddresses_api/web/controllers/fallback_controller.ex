@@ -38,20 +38,20 @@ defmodule Uaddresses.Web.FallbackController do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(ValidationError)
-    |> render(:"422.query", changeset)
+    |> render(:"422.query", %{changeset: changeset})
   end
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(ValidationError)
-    |> render(:"422", changeset)
+    |> render(:"422", %{changeset: changeset})
   end
 
   def call(conn, %Ecto.Changeset{valid?: false} = changeset) do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(ValidationError)
-    |> render(:"422", changeset)
+    |> render(:"422", %{changeset: changeset})
   end
 end

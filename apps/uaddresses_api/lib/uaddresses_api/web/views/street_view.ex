@@ -2,6 +2,13 @@ defmodule Uaddresses.Web.StreetView do
   use Uaddresses.Web, :view
   alias Uaddresses.Web.StreetView
 
+  @fields ~w(
+    id
+    name
+    type
+    settlement_id
+  )a
+
   def render("index.json", %{streets: streets}) do
     render_many(streets, StreetView, "street.json")
   end
@@ -9,6 +16,12 @@ defmodule Uaddresses.Web.StreetView do
   def render("show.json", %{street: street}) do
     render_one(street, StreetView, "street.json")
   end
+
+  def render("index.rpc.json", %{streets: streets}) do
+    render_many(streets, __MODULE__, "street.rpc.json")
+  end
+
+  def render("street.rpc.json", %{street: street}), do: Map.take(street, @fields ++ [:inserted_at, :updated_at])
 
   def render("street.json", %{street: street}) do
     %{

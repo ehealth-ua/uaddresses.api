@@ -31,7 +31,7 @@ defmodule Uaddresses.Web.V1.RegionController do
   end
 
   def update(conn, %{"id" => id, "region" => region_params}) do
-    with %Uaddresses.Areas.Area{} = region = Areas.get_area!(id),
+    with %Uaddresses.Areas.Area{} = region <- Areas.get_area!(id),
          {:ok, %Area{} = region} <- Areas.update_area(region, region_params) do
       render(conn, "show.json", region: region)
     end

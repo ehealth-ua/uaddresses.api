@@ -14,6 +14,8 @@ defmodule Uaddresses.DataCase do
 
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       alias Uaddresses.Repo
@@ -27,10 +29,10 @@ defmodule Uaddresses.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Uaddresses.Repo)
+    :ok = Sandbox.checkout(Uaddresses.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Uaddresses.Repo, {:shared, self()})
+      Sandbox.mode(Uaddresses.Repo, {:shared, self()})
     end
 
     :ok

@@ -1,4 +1,6 @@
 defmodule Uaddresses.Areas.Area do
+  @moduledoc false
+
   use Ecto.Schema
 
   alias Uaddresses.Regions.Region

@@ -1,4 +1,6 @@
 defmodule Uaddresses.Streets.Street do
+  @moduledoc false
+
   use Ecto.Schema
 
   alias Ecto.UUID

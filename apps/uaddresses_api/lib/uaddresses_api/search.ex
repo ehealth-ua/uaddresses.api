@@ -37,10 +37,10 @@ defmodule Uaddresses.Search do
       end
 
       def search(entity_schema, filter, order_by \\ [], cursor \\ nil)
-          when is_list(filter) and is_atom(entity_schema) do
+          when is_atom(entity_schema) do
         entities =
           entity_schema
-          |> filter(filter)
+          |> get_search_query(filter)
           |> order_by(^order_by)
           |> apply_cursor(cursor)
           |> Repo.all()
